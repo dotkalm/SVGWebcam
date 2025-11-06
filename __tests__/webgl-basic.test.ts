@@ -1,5 +1,7 @@
 import { createTestContext } from '../src/webgl/createContext';
 import { createMockGL } from '../__mocks__/webgl';
+import vertexShaderSrc from '../src/shaders/basic.vert';
+import fragmentShaderSrc from '../src/shaders/basic.frag';
 
 test('creates a WebGLRenderingContext', () => {
   const gl = createMockGL();
@@ -21,19 +23,6 @@ describe('WebGL basic context', () => {
 
     it('can compile a simple shader', () => {
         const gl = createTestContext();
-
-        const vertexShaderSrc = `
-      attribute vec4 a_position;
-      void main() {
-        gl_Position = a_position;
-      }
-    `;
-
-        const fragmentShaderSrc = `
-      void main() {
-        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-      }
-    `;
 
         const compileShader = (shaderType: number, source: string) => {
             const shader = gl.createShader(shaderType)!;

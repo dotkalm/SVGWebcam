@@ -3,12 +3,22 @@ declare module '*.glsl' {
   export default content;
 }
 
-declare module '*.vert.glsl' {
+declare module '*.vert' {
   const content: string;
   export default content;
 }
 
-declare module '*.frag.glsl' {
+declare module '*.frag' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.vs' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.fs' {
   const content: string;
   export default content;
 }
