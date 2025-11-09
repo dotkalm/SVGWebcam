@@ -1,4 +1,3 @@
-// src/components/WebcamCapture.tsx
 'use client';
 
 import { useRef } from 'react';
@@ -9,6 +8,10 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useWebcam } from '@/hooks/useWebcam';
 import { useWebGLContext } from '@/hooks/useWebGLContext';
+import { useVideoTexture } from '@/hooks/useVideoTexture';
+import { useWebGLRenderer } from '@/hooks/useWebGLRenderer';
+import vertexShaderSrc from '@/shaders/video.vert';
+import fragmentShaderSrc from '@/shaders/video.frag';
 
 interface WebcamCaptureProps {
   width?: number;
@@ -34,6 +37,22 @@ export default function WebcamCapture({
     enabled: isStreaming
   });
 
+  // Create texture from video frames
+  const { texture } = useVideoTexture({
+    gl,
+    videoRef,
+    enabled: isStreaming && !!gl
+  });
+
+  // Render texture to canvas
+  const { program } = useWebGLRenderer({
+    gl,
+    texture,
+    vertexShaderSource: vertexShaderSrc,
+    fragmentShaderSource: fragmentShaderSrc,
+    enabled: !!gl && !!texture
+  });
+
   const error = webcamError || glError;
 
   return (
@@ -51,15 +70,17 @@ export default function WebcamCapture({
           overflow: 'hidden'
         }}
       >
+        {/* Hidden video - we'll render via WebGL instead */}
         <video
           ref={videoRef}
           width={width}
           height={height}
-          style={{ display: 'block' }}
+          style={{ display: 'none' }}
           playsInline
           muted
         />
 
+        {/* Canvas for WebGL rendering */}
         <canvas
           ref={canvasRef}
           width={width}
@@ -93,7 +114,7 @@ export default function WebcamCapture({
 
       {isStreaming && (
         <Alert severity="success">
-          Webcam active {gl && '| WebGL ready'}
+          Webcam active {gl && '| WebGL ready'} {texture && '| Video texture streaming'} {program && '| Rendering'}
         </Alert>
       )}
     </Box>
