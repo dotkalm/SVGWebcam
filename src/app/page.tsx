@@ -1,4 +1,4 @@
-import Webcam from '@/components/Webcam';
+import { EdgeDetector } from '@/components/EdgeDetector';
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
         color: 'white',
       }}
     >
-      <Webcam />
+      <EdgeDetector />
     </div>
   );
 }
