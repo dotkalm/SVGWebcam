@@ -1,17 +1,12 @@
 'use client';
-import { useEffect, useRef, RefObject } from 'react';
+import { useEffect, useRef } from 'react';
+import type { TUseVideoTexture } from '@/types';
 
-interface UseVideoTextureOptions {
-  gl: WebGLRenderingContext | null;
-  videoRef: RefObject<HTMLVideoElement | null>;
-  enabled: boolean;
-}
-
-export function useVideoTexture({
-  gl,
-  videoRef,
-  enabled
-}: UseVideoTextureOptions) {
+export const useVideoTexture: TUseVideoTexture = ({
+    gl,
+    videoRef,
+    enabled
+}) => {
     const textureRef = useRef<WebGLTexture | null>(null);
     const animationFrameRef = useRef<number | null>(null);
 

@@ -1,4 +1,3 @@
-import { type RefObject } from 'react';
 import vertexShaderSource from '@/shaders/source.vert';
 import gaussianBlurFragmentShader from '@/shaders/gaussian.frag';
 import gradientFragmentShader from '@/shaders/gradient.frag';
@@ -6,10 +5,10 @@ import nonMaxSuppressionFragmentShader from '@/shaders/nonMax.frag';
 import thresholdFragmentShader from '@/shaders/threshold.frag';
 
 import {
-    createShader,
-    createProgram,
-    createTexture,
-    createFramebuffer,
+  createShader,
+  createProgram,
+  createTexture,
+  createFramebuffer,
 } from '@/utils';
 import type { TInitWebGL } from '@/types';
 
@@ -39,16 +38,16 @@ export const initWebGL: TInitWebGL = (
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -1, -1,  1, -1,  -1, 1,
-    -1, 1,   1, -1,  1, 1,
+    -1, -1, 1, -1, -1, 1,
+    -1, 1, 1, -1, 1, 1,
   ]), gl.STATIC_DRAW);
   buffersRef.current.position = positionBuffer;
 
   const texCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    0, 1,  1, 1,  0, 0,
-    0, 0,  1, 1,  1, 0,
+    0, 1, 1, 1, 0, 0,
+    0, 0, 1, 1, 1, 0,
   ]), gl.STATIC_DRAW);
   buffersRef.current.texCoord = texCoordBuffer;
 

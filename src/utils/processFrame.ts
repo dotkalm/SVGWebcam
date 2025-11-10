@@ -13,8 +13,6 @@ export const processFrame: TProcessFrame = (
 ) => {
   const width = video.videoWidth;
   const height = video.videoHeight;
-  console.log(textures, lowThreshold, highThreshold);
-  // Upload video frame to input texture
   gl.bindTexture(gl.TEXTURE_2D, textures.input);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
 

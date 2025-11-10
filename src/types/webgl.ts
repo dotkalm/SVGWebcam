@@ -36,7 +36,6 @@ export interface TVideoFrame {
     timestamp: number;
 }
 
-
 export type TUniformValue = number | [number, number];
 
 export type TVideoFrameData = {
@@ -46,73 +45,32 @@ export type TVideoFrameData = {
   timestamp: number;
 };
 
-export type TInitWebGL = (
-  gl: WebGLRenderingContext,
-  programsRef: React.RefObject<TWebGLPrograms>,
-  framebuffersRef: React.RefObject<TWebGLFramebuffers>,
-  texturesRef: React.RefObject<TWebGLTextures>,
-  buffersRef: React.RefObject<TWebGLBuffers>
-) => void;
+export interface TUseVideoTextureOptions {
+  gl: WebGLRenderingContext | null;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  enabled: boolean;
+}
 
-export type TCleanupWebGL = (
-  gl: WebGLRenderingContext,
-  programs: TWebGLPrograms,
-  framebuffers: TWebGLFramebuffers,
-  textures: TWebGLTextures
-) => void;
+export interface TUseVideoTextureReturn {
+  texture: WebGLTexture | null;
+}
 
-export type TCreateFramebuffer = (
-  gl: WebGLRenderingContext,
-  texture: WebGLTexture | null
-) => WebGLFramebuffer | null;
+export interface TUseEdgeDetectionOptions {
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  isStreaming: boolean;
+  lowThreshold: number;
+  highThreshold: number;
+}
 
-export type TProcessFrame = (
-  gl: WebGLRenderingContext,
-  video: HTMLVideoElement,
-  programs: TWebGLPrograms,
-  framebuffers: TWebGLFramebuffers,
-  textures: TWebGLTextures,
-  buffers: TWebGLBuffers,
-  lowThreshold: number,
-  highThreshold: number
-) => void;
+export interface TUseWebcamOptions {
+  width?: number;
+  height?: number;
+  facingMode?: 'user' | 'environment';
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+}
 
-export type TRenderPass = (
-  gl: WebGLRenderingContext,
-  program: WebGLProgram | null | undefined,
-  framebuffer: WebGLFramebuffer | null | undefined,
-  inputTexture: WebGLTexture | null | undefined,
-  buffers: TWebGLBuffers,
-  width: number,
-  height: number,
-  uniforms: Record<string, TUniformValue>
-) => void;
-
-export type TCreateTexture = (
-  gl: WebGLRenderingContext,
-  width?: number,
-  height?: number
-) => WebGLTexture | null;
-
-export type TCreateShader = (
-  gl: WebGLRenderingContext,
-  type: number,
-  source: string
-) => WebGLShader | null;
-
-export type TCreateProgram = (
-  gl: WebGLRenderingContext,
-  vertexShader: WebGLShader,
-  fragmentShader: WebGLShader
-) => WebGLProgram | null;
-
-export type TCreateVideoTexture = (
-  gl: WebGLRenderingContext,
-  frame: TVideoFrameData, 
-) => WebGLTexture | null;
-
-export type TUpdateVideoTexture = (
-  gl: WebGLRenderingContext,
-  texture: WebGLTexture,
-  frame: TVideoFrameData
-) => void;
+export interface TUseWebcamReturn {
+  isStreaming: boolean;
+  error: string | null;
+}
