@@ -26,3 +26,10 @@ export interface Rectangle {
 }
 
 export type DetectedShape = Circle | Ellipse | Rectangle;
+
+export interface TCapturedFrame {
+  data: number[];  // Array instead of Uint8Array for JSON compatibility
+  width: number;
+  height: number;
+  description: string;
+}
