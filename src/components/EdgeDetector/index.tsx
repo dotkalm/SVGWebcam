@@ -16,20 +16,19 @@ export const EdgeDetector: FC<TCannyEdgeDetectorProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-
   const { isStreaming } = useGetWebcam({
-    width: 640,
-    height: 480,
     facingMode: 'user',
-    videoRef
+    height: 480,
+    videoRef,
+    width: 640,
   });
 
   useWebGLCanvas({
     canvasRef,
-    videoRef,
+    highThreshold,
     isStreaming,
     lowThreshold,
-    highThreshold
+    videoRef,
   });
 
   return (
@@ -44,7 +43,7 @@ export const EdgeDetector: FC<TCannyEdgeDetectorProps> = ({
         video: {
           border: '1px solid #ccc',
           display: 'none',
-        }
+        },
       }}>
         <Box>
           <video
@@ -61,7 +60,11 @@ export const EdgeDetector: FC<TCannyEdgeDetectorProps> = ({
           />
         </Box>
       </Box>
-      <Box>
+      <Box
+        sx={{
+          color: '#fff',
+        }}
+      >
         <Typography>Low Threshold: {lowThreshold}</Typography>
         <Typography>High Threshold: {highThreshold}</Typography>
       </Box>

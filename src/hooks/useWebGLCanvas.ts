@@ -6,13 +6,14 @@ import {
   initWebGL,
   processFrame,
 } from '@/utils';
+
 import type {
   TWebGLBuffers,
   TWebGLFramebuffers,
   TWebGLPrograms,
   TWebGLTextures,
   TUseWebGLCanvas,
-} from '@/types/webgl';
+} from '@/types';
 
 interface UseEdgeDetectionOptions {
   canvasRef: React.RefObject<HTMLCanvasElement>;

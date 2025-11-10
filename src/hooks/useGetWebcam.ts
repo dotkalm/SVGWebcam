@@ -13,29 +13,43 @@ export const useGetWebcam: TUseGetWebcam = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const initWebcam = async () => {
-      if (!videoRef.current) return;
-      
+      if (!videoRef.current || isCancelled) return;
+
       try {
         setError(null);
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { width, height, facingMode }
         });
-        
+
+        if (isCancelled || !videoRef.current) return;
+
         videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-        setIsStreaming(true);
+
+        try {
+          await videoRef.current.play();
+          if (!isCancelled) {
+            setIsStreaming(true);
+          }
+        } catch (playError) {
+          console.warn('Play was interrupted, this is usually fine');
+        }
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Error accessing webcam';
-        console.error('Error accessing webcam:', err);
-        setError(errorMsg);
-        setIsStreaming(false);
+        if (!isCancelled) {
+          const errorMsg = err instanceof Error ? err.message : 'Error accessing webcam';
+          console.error('Error accessing webcam:', err);
+          setError(errorMsg);
+          setIsStreaming(false);
+        }
       }
     };
 
     initWebcam();
 
     return () => {
+      isCancelled = true;
       if (videoRef.current?.srcObject) {
         const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
         tracks.forEach(track => track.stop());
@@ -43,7 +57,7 @@ export const useGetWebcam: TUseGetWebcam = ({
       }
       setIsStreaming(false);
     };
-  }, [videoRef, width, height, facingMode]);
+  }, [width, height, facingMode]);
 
   return {
     isStreaming,
