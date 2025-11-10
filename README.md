@@ -3,7 +3,7 @@ Booted - a prank software that overlays a parking enforcement boot on images of 
 WIP 
 currently accessing the webcam 
 piping video frames to canvas and calling webgl2 shader files to process edge detection
-<img width="674" height="567" alt="Screenshot 2025-11-10 at 2 30 50 PM" src="https://github.com/user-attachments/assets/9646784c-9819-4a7b-950b-78207e54d16c" />
+<img width="551" height="420" alt="Screenshot 2025-11-10 at 4 54 04 PM" src="https://github.com/user-attachments/assets/68552f10-f588-41a1-b2ee-b8ba12c419dd" />
 
 ## Here is the workflow
 
