@@ -72,6 +72,7 @@ export interface SemiCircleDetectionOptions {
  * @param options - Detection options
  * @returns Array of detected horizontal lines
  */
+
 export function detectHorizontalLines(
   edgeData: Uint8Array,
   width: number,
