@@ -6,11 +6,13 @@
 interface Point {
   x: number;
   y: number;
+  intensity?: number;
 }
 
 interface EdgePath {
   points: Point[];
   intensity: number;
+  intensities?: number[];
 }
 
 /**
@@ -43,7 +45,8 @@ export function edgeDataToSVG(
   const paths = extractEdgePaths(data, width, height, threshold, minPathLength);
   const simplifiedPaths = paths.map(path => ({
     points: simplifyPath(path.points, simplification),
-    intensity: path.intensity
+    intensity: path.intensity,
+    intensities: path.intensities // Preserve intensities array
   }));
 
   // Get current time for animation
@@ -86,6 +89,7 @@ function extractEdgePaths(
   // Follow edge chain from starting point
   const followEdge = (startX: number, startY: number): EdgePath | null => {
     const points: Point[] = [];
+    const intensities: number[] = [];
     let x = startX;
     let y = startY;
     let totalIntensity = 0;
@@ -99,8 +103,10 @@ function extractEdgePaths(
     while (true) {
       if (!isEdge(x, y) || isVisited(x, y)) break;
 
-      points.push({ x, y });
-      totalIntensity += getPixel(x, y);
+      const pixelIntensity = getPixel(x, y);
+      points.push({ x, y, intensity: pixelIntensity });
+      intensities.push(pixelIntensity);
+      totalIntensity += pixelIntensity;
       markVisited(x, y);
 
       // Find next edge pixel
@@ -123,7 +129,8 @@ function extractEdgePaths(
 
     return {
       points,
-      intensity: totalIntensity / (points.length * 255) // Normalize to 0-1
+      intensity: totalIntensity / (points.length * 255), // Normalize to 0-1
+      intensities
     };
   };
 
@@ -215,7 +222,21 @@ function generateSVG(
 
       const opacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
       
-      return `    <path d="${d}" stroke="${strokeColor}" stroke-width="${strokeWidth}" fill="none" opacity="${opacity.toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 7 .2 2 10 62 4 20" stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
+      // Create dash array from actual pixel intensity values
+      // Sample every few points to avoid too many values
+      const intensities = path.intensities || [];
+      const sampleRate = Math.max(1, Math.floor(intensities.length / 20));
+      const dashArray = intensities.length > 0
+        ? intensities
+            .filter((_, i) => i % sampleRate === 0)
+            .map(intensity => {
+              // Map intensity (0-255) to dash length (1-30)
+              return Math.max(1, Math.floor(intensity / 255 * 30));
+            })
+            .join(' ')
+        : '5 5'; // Fallback dash pattern
+      
+      return `    <path d="${d}" stroke="${strokeColor}" stroke-width="${strokeWidth}" fill="none" opacity="${opacity.toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${dashArray}" stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
     })
     .filter(p => p.length > 0)
     .join('\n');
