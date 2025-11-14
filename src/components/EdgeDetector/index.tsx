@@ -42,7 +42,7 @@ export const EdgeDetector: FC<TCannyEdgeDetectorProps> = ({
         gap: '1rem',
         video: {
           border: '1px solid #ccc',
-          display: 'block', 
+          display: 'none', 
         },
       }}>
         <Box>
