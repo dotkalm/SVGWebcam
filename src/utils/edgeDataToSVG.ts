@@ -46,7 +46,10 @@ export function edgeDataToSVG(
     intensity: path.intensity
   }));
 
-  return generateSVG(simplifiedPaths, width, height, strokeWidth, strokeColor);
+  // Get current time for animation
+  const time = typeof performance !== 'undefined' ? performance.now() : Date.now();
+
+  return generateSVG(simplifiedPaths, width, height, strokeWidth, strokeColor, time);
 }
 
 /**
@@ -193,8 +196,14 @@ function generateSVG(
   width: number,
   height: number,
   strokeWidth: number,
-  strokeColor: string
+  strokeColor: string,
+  time?: number
 ): string {
+  // Calculate oscillating dash offset based on time
+  const dashOffset = time !== undefined 
+    ? calculateDashOffset(time)
+    : 0;
+
   const pathElements = paths
     .map(path => {
       if (path.points.length < 2) return '';
@@ -206,7 +215,7 @@ function generateSVG(
 
       const opacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
       
-      return `    <path d="${d}" stroke="${strokeColor}" stroke-width="${strokeWidth}" fill="none" opacity="${opacity.toFixed(2)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+      return `    <path d="${d}" stroke="${strokeColor}" stroke-width="${strokeWidth}" fill="none" opacity="${opacity.toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 7 .2 2 10 62 4 20" stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
     })
     .filter(p => p.length > 0)
     .join('\n');
@@ -217,6 +226,23 @@ function generateSVG(
 ${pathElements}
   </g>
 </svg>`;
+}
+
+/**
+ * Calculate looping dash offset based on time
+ * Animates continuously in one direction
+ */
+function calculateDashOffset(time: number): number {
+  const period = 5000; // 5 second cycle
+  const min = -4;
+  const max = 432;
+  const range = max - min;
+  
+  // Normalize time to 0-1 range within period
+  const t = (time % period) / period;
+  
+  // Linear progression from max to min (loops back)
+  return max - (range * t);
 }
 
 /**
