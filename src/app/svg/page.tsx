@@ -50,9 +50,9 @@ export default function SVGEdgeDetector() {
 
   useWebGLCanvas({
     canvasRef,
-    highThreshold: 0.15,
+    highThreshold: 0.35,
     isStreaming,
-    lowThreshold: 0.05,
+    lowThreshold: 0.023,
     videoRef,
   });
 

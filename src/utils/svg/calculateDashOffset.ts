@@ -3,9 +3,9 @@
  * Animates continuously in one direction
  */
 export function calculateDashOffset(time: number): number {
-  const period = 5000; // 5 second cycle
-  const min = -4;
-  const max = 432;
+  const period = 35000; // 5 second cycle
+  const min = -256;
+  const max = 256;
   const range = max - min;
   
   // Normalize time to 0-1 range within period
