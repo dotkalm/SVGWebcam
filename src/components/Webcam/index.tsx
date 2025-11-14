@@ -119,4 +119,4 @@ export default function WebcamCapture({
       )}
     </Box>
   );
-}
+};
