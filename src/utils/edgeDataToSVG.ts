@@ -199,8 +199,9 @@ function generateSVG(
     .map(path => {
       if (path.points.length < 2) return '';
 
+      // Flip Y coordinates since WebGL origin is bottom-left
       const d = path.points
-        .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`)
+        .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${(height - p.y).toFixed(2)}`)
         .join(' ');
 
       const opacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
