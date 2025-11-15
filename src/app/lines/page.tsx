@@ -13,6 +13,8 @@ import { useMediaQuery } from '@mui/material';
 import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { downloadSVG } from '@/utils';
 
+const ANIMATION_DURATION = 18000; // 8 seconds
+
 export default function LinesCirclesDetector() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,18 +24,19 @@ export default function LinesCirclesDetector() {
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });
   const [lineCount, setLineCount] = useState(0);
   const [circleCount, setCircleCount] = useState(0);
-  const previousPoints = useRef<number[]>([]);
-  const targetPoints = useRef<number[]>([]);
-  const svgContainerRef = useRef<HTMLDivElement>(null);
-  const morphAnimationRef = useRef<number | null>(null);
-  const morphStartTime = useRef<number>(0);
+  const [currentPoints, setCurrentPoints] = useState<number[]>([]);
+  const [targetPoints, setTargetPoints] = useState<number[]>([]);
+  const [currentCircles, setCurrentCircles] = useState<Array<{x: number, y: number, r: number}>>([]);
+  const [targetCircles, setTargetCircles] = useState<Array<{x: number, y: number, r: number}>>([]);
+  const animationFrameRef2 = useRef<number | null>(null);
+  const polygonRef = useRef<SVGPolygonElement>(null);
   
-  // Thresholds
-  const [edgeThreshold, setEdgeThreshold] = useState(38 / 255); // Normalize to 0-1
-  const [lineThreshold, setLineThreshold] = useState(20);
-  const [circleThreshold, setCircleThreshold] = useState(22);
-  const [minRadius, setMinRadius] = useState(30);
-  const [maxRadius, setMaxRadius] = useState(120);
+  // Hardcoded thresholds
+  const edgeThreshold = 40 / 255; // Normalize to 0-1
+  const lineThreshold = 20;
+  const circleThreshold = 46;
+  const minRadius = 10;
+  const maxRadius = 200;
   const [fps, setFps] = useState(0);
   const lastFrameTime = useRef<number>(0);
 
@@ -89,26 +92,25 @@ export default function LinesCirclesDetector() {
       const now = performance.now();
       const elapsed = now - lastFrameTime.current;
       
-      // Process at 1 FPS for smooth morphing animations
-      if (elapsed < 1000) { // Minimum 1000ms between frames (1 FPS)
+      // Process at 1.25 FPS for smooth morphing animations
+      if (elapsed < ANIMATION_DURATION) { // Match animation duration
         animationFrameRef.current = requestAnimationFrame(processFrame);
         return;
       }
 
       lastFrameTime.current = now;
 
-      // Run detection asynchronously to avoid blocking the animation frame
-      setTimeout(() => {
-        const t0 = performance.now();
-        const { lines, edges, width, height } = detector.detectAll(
-          video,
-          edgeThreshold,
-          lineThreshold,
-          circleThreshold,
-          minRadius,
-          maxRadius
-        );
-        const t1 = performance.now();
+      // Run detection synchronously for immediate state updates
+      const t0 = performance.now();
+      const { lines, circles, edges, width, height } = detector.detectAll(
+        video,
+        edgeThreshold,
+        lineThreshold,
+        circleThreshold,
+        minRadius,
+        maxRadius
+      );
+      const t1 = performance.now();
 
         // Calculate actual FPS based on processing time
         const processingTime = t1 - t0;
@@ -117,18 +119,32 @@ export default function LinesCirclesDetector() {
 
         console.log('Processing time:', processingTime.toFixed(1), 'ms');
         console.log('Lines detected:', lines.length);
-        if (lines.length > 0) {
-          console.log('Top 3 lines:', lines.slice(0, 3));
-        }
 
-        // Update target points and start morphing animation
-        updateMorphTarget(lines, width, height, svgContainerRef, previousPoints, targetPoints, morphAnimationRef, morphStartTime);
+        // Build new target points
+        const newPoints = buildPointsFromLines(lines);
+        
+        // Initialize on first frame
+        if (currentPoints.length === 0) {
+          setCurrentPoints(newPoints);
+        }
+        
+        // Set target to trigger animation
+        setTargetPoints(newPoints);
+        
+        console.log('New target set:', newPoints.slice(0, 2).map(n => n.toFixed(1)));
+        
         setLineCount(lines.length);
-        setCircleCount(0);
+        
+        // Circle detection
+        const newCircles = circles.map(c => ({ x: c.x, y: c.y, r: c.radius }));
+        if (currentCircles.length === 0) {
+          setCurrentCircles(newCircles);
+        }
+        setTargetCircles(newCircles);
+        setCircleCount(circles.length);
         
         // Update timestamp after processing completes to allow next frame
         lastFrameTime.current = performance.now();
-      }, 0);
 
       animationFrameRef.current = requestAnimationFrame(processFrame);
     };
@@ -141,12 +157,97 @@ export default function LinesCirclesDetector() {
       }
       detector.cleanup();
     };
-  }, [isStreaming, canvasDimensions, edgeThreshold, lineThreshold, circleThreshold, minRadius, maxRadius]);
+  }, [isStreaming, canvasDimensions, edgeThreshold, lineThreshold, circleThreshold, minRadius, maxRadius, currentPoints]);
+
+  // Smooth animation loop
+  useEffect(() => {
+    if (targetPoints.length === 0 || currentPoints.length === 0) return;
+    if (targetPoints.length !== currentPoints.length) return;
+
+    const startTime = performance.now();
+    const startPoints = [...currentPoints];
+    const endPoints = targetPoints;
+    const duration = ANIMATION_DURATION;
+
+    const animate = (time: number) => {
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const interpolated = startPoints.map((start, i) => {
+        const end = endPoints[i];
+        return start + (end - start) * progress;
+      });
+
+      setCurrentPoints(interpolated);
+
+      if (progress < 1) {
+        animationFrameRef2.current = requestAnimationFrame(animate);
+      } else {
+        animationFrameRef2.current = null;
+      }
+    };
+
+    if (animationFrameRef2.current) {
+      cancelAnimationFrame(animationFrameRef2.current);
+    }
+
+    animationFrameRef2.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef2.current) {
+        cancelAnimationFrame(animationFrameRef2.current);
+      }
+    };
+  }, [targetPoints, currentPoints]);
+
+  // Smooth circle animation loop
+  useEffect(() => {
+    if (targetCircles.length === 0 || currentCircles.length === 0) return;
+    if (targetCircles.length !== currentCircles.length) {
+      // Different number of circles, snap immediately
+      setCurrentCircles(targetCircles);
+      return;
+    }
+
+    const startTime = performance.now();
+    const startCircles = [...currentCircles];
+    const endCircles = targetCircles;
+    const duration = ANIMATION_DURATION;
+    let animFrameId: number | null = null;
+
+    const animate = (time: number) => {
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const interpolated = startCircles.map((start, i) => {
+        const end = endCircles[i];
+        return {
+          x: start.x + (end.x - start.x) * progress,
+          y: start.y + (end.y - start.y) * progress,
+          r: start.r + (end.r - start.r) * progress
+        };
+      });
+
+      setCurrentCircles(interpolated);
+
+      if (progress < 1) {
+        animFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    animFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animFrameId !== null) {
+        cancelAnimationFrame(animFrameId);
+      }
+    };
+  }, [targetCircles, currentCircles]);
 
   const handleDownloadSVG = () => {
-    const container = svgContainerRef.current;
-    if (!container) return;
-    const svg = container.querySelector('svg');
+    const polygon = polygonRef.current;
+    if (!polygon) return;
+    const svg = polygon.closest('svg');
     if (!svg) return;
     const svgContent = new XMLSerializer().serializeToString(svg);
     downloadSVG(svgContent, `lines-circles-${Date.now()}.svg`);
@@ -189,80 +290,7 @@ export default function LinesCirclesDetector() {
 
       {/* Controls */}
       <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>Detection Parameters</Typography>
-        
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            Edge Threshold: {Math.round(edgeThreshold * 255)} (0-255)
-          </Typography>
-          <Slider
-            value={edgeThreshold * 255}
-            onChange={(_, v) => setEdgeThreshold((v as number) / 255)}
-            min={10}
-            max={150}
-            step={1}
-            valueLabelDisplay="auto"
-          />
-        </Box>
-
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            Line Threshold: {lineThreshold}
-          </Typography>
-          <Slider
-            value={lineThreshold}
-            onChange={(_, v) => setLineThreshold(v as number)}
-            min={20}
-            max={200}
-            step={5}
-            valueLabelDisplay="auto"
-          />
-        </Box>
-
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            Circle Threshold: {circleThreshold}
-          </Typography>
-          <Slider
-            value={circleThreshold}
-            onChange={(_, v) => setCircleThreshold(v as number)}
-            min={10}
-            max={100}
-            step={1}
-            valueLabelDisplay="auto"
-          />
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Min Radius: {minRadius}
-            </Typography>
-            <Slider
-              value={minRadius}
-              onChange={(_, v) => setMinRadius(v as number)}
-              min={10}
-              max={100}
-              step={5}
-              valueLabelDisplay="auto"
-            />
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Max Radius: {maxRadius}
-            </Typography>
-            <Slider
-              value={maxRadius}
-              onChange={(_, v) => setMaxRadius(v as number)}
-              min={50}
-              max={200}
-              step={10}
-              valueLabelDisplay="auto"
-            />
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mt: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <Button
             variant="contained"
             color="success"
@@ -302,52 +330,47 @@ export default function LinesCirclesDetector() {
             mx: 'auto',
             maxWidth: '100%',
           }}
-          ref={svgContainerRef}
-        />
+        >
+          <svg
+            width={canvasDimensions.width}
+            height={canvasDimensions.height}
+            viewBox={`0 0 ${canvasDimensions.width} ${canvasDimensions.height}`}
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ width: '100%', height: '100%' }}
+          >
+            {currentPoints.length > 0 && (
+              <polygon
+                ref={polygonRef}
+                points={pointsArrayToString(currentPoints)}
+                fill="black"
+                stroke="none"
+                opacity=".9"
+              />
+            )}
+            {currentCircles.map((circle, i) => (
+              <circle
+                key={i}
+                cx={circle.x}
+                cy={circle.y}
+                r={circle.r}
+                fill="black"
+                stroke="none"
+                opacity=".5"
+              />
+            ))}
+          </svg>
+        </Box>
       </Paper>
     </Box>
   );
 }
 
 // ============================================================================
-// SMOOTH MORPHING FUNCTIONS
+// HELPER FUNCTIONS
 // ============================================================================
 
-function initializeSVG(
-  container: HTMLDivElement,
-  width: number,
-  height: number
-) {
-  container.innerHTML = `
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
-      <polygon id="morphPoly" fill="#ff6b6b" stroke="none" points=""/>
-    </svg>
-  `;
-}
-
-function updateMorphTarget(
-  lines: Array<{rho: number, theta: number, votes: number}>,
-  width: number,
-  height: number,
-  containerRef: React.RefObject<HTMLDivElement | null>,
-  previousPointsRef: React.MutableRefObject<number[]>,
-  targetPointsRef: React.MutableRefObject<number[]>,
-  animationRef: React.MutableRefObject<number | null>,
-  startTimeRef: React.MutableRefObject<number>
-) {
-  const container = containerRef.current;
-  if (!container) return;
-
-  // Initialize SVG if needed
-  if (!container.querySelector('svg')) {
-    initializeSVG(container, width, height);
-  }
-
-  const polygon = container.querySelector('#morphPoly') as SVGPolygonElement;
-  if (!polygon) return;
-
-  // Build target points array
-  const newTargetPoints: number[] = [];
+function buildPointsFromLines(lines: Array<{rho: number, theta: number, votes: number}>): number[] {
+  const points: number[] = [];
   lines.forEach((line) => {
     const { rho, theta } = line;
     const cos = Math.cos(theta);
@@ -360,49 +383,9 @@ function updateMorphTarget(
     const x2 = x0 - 1000 * (-sin);
     const y2 = y0 - 1000 * cos;
 
-    newTargetPoints.push(x1, y1, x2, y2);
+    points.push(x1, y1, x2, y2);
   });
-
-  // Initialize previous points if empty
-  if (previousPointsRef.current.length === 0) {
-    previousPointsRef.current = [...newTargetPoints];
-    polygon.setAttribute('points', pointsArrayToString(newTargetPoints));
-    return;
-  }
-
-  // Set new target and start animation
-  targetPointsRef.current = newTargetPoints;
-  startTimeRef.current = performance.now();
-
-  // Cancel existing animation
-  if (animationRef.current !== null) {
-    cancelAnimationFrame(animationRef.current);
-  }
-
-  // Start morphing animation
-  const animate = () => {
-    const elapsed = performance.now() - startTimeRef.current;
-    const duration = 1000; // 1 second
-    const progress = Math.min(elapsed / duration, 1);
-
-    // Linear interpolation
-    const currentPoints = previousPointsRef.current.map((start, i) => {
-      const end = targetPointsRef.current[i] || start;
-      return start + (end - start) * progress;
-    });
-
-    polygon.setAttribute('points', pointsArrayToString(currentPoints));
-
-    if (progress < 1) {
-      animationRef.current = requestAnimationFrame(animate);
-    } else {
-      // Animation complete - update previous points
-      previousPointsRef.current = [...targetPointsRef.current];
-      animationRef.current = null;
-    }
-  };
-
-  animationRef.current = requestAnimationFrame(animate);
+  return points;
 }
 
 function pointsArrayToString(points: number[]): string {
@@ -570,8 +553,7 @@ class GPULineCircleDetector {
     const lines = this.detectLines(edges, width, height, lineThreshold);
 
     // Step 3: Detect circles (CPU-based for now, can be GPU later)
-    // const circles = this.detectCirclesCPU(edges, width, height, minRadius, maxRadius, circleThreshold);
-    const circles: Array<{x: number, y: number, radius: number, votes: number}> = [];
+    const circles = this.detectCirclesCPU(edges, width, height, minRadius, maxRadius, circleThreshold);
 
     return { lines, circles, edges, width, height };
   }
@@ -755,7 +737,7 @@ class GPULineCircleDetector {
     gl.deleteTexture(accumTex);
     gl.deleteFramebuffer(fb);
 
-    return lines.sort((a, b) => b.votes - a.votes).slice(0, 10);
+    return lines.sort((a, b) => b.votes - a.votes).slice(0, 40);
   }
 
   private detectCirclesCPU(
@@ -848,7 +830,7 @@ class GPULineCircleDetector {
       }
     }
 
-    return filtered.slice(0, 10);
+    return filtered.slice(0, 100);
   }
 
   private createTexture(data: Uint8Array | null, width: number, height: number): WebGLTexture {
@@ -924,69 +906,4 @@ class GPULineCircleDetector {
   }
 }
 
-// ============================================================================
-// SVG GENERATION FOR LINES AND CIRCLES
-// ============================================================================
 
-function generateShapesSVG(
-  lines: Array<{rho: number, theta: number, votes: number}>,
-  circles: Array<{x: number, y: number, radius: number, votes: number}>,
-  width: number,
-  height: number,
-  previousPointsStr: string,
-  currentPointsRef: React.MutableRefObject<string>
-): string {
-  // Build points array (20 points for 10 lines)
-  const points: number[] = [];
-  
-  lines.forEach((line) => {
-    const { rho, theta } = line;
-    const cos = Math.cos(theta);
-    const sin = Math.sin(theta);
-    const x0 = cos * rho;
-    const y0 = sin * rho;
-
-    const x1 = x0 + 1000 * (-sin);
-    const y1 = y0 + 1000 * cos;
-    const x2 = x0 - 1000 * (-sin);
-    const y2 = y0 - 1000 * cos;
-
-    points.push(x1, y1, x2, y2);
-  });
-  
-  // Format as space-separated coordinate pairs
-  const pointsStr = points.map((p, i) => 
-    i % 2 === 0 ? `${p.toFixed(2)},${points[i + 1].toFixed(2)}` : ''
-  ).filter(s => s).join(' ');
-  
-  // Update current points reference for next frame
-  currentPointsRef.current = pointsStr;
-
-  const circleElements = circles.map(circle => {
-    return `    <circle cx="${circle.x}" cy="${circle.y}" r="${circle.radius}" stroke="#4ecdc4" stroke-width="3" fill="none"/>`;
-  }).join('\n');
-  
-  // Use values with keyTimes for seamless continuous animation
-  const animationElement = previousPointsStr && previousPointsStr !== pointsStr
-    ? `<animate 
-        attributeName="points" 
-        values="${previousPointsStr}; ${pointsStr}" 
-        keyTimes="0; 1"
-        dur="1s" 
-        calcMode="linear"
-        fill="freeze"
-        restart="always"/>`
-    : '';
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
-  <g id="lines">
-    <polygon id="morphPoly" points="${pointsStr}" fill="#ff6b6b" stroke="none">
-      ${animationElement}
-    </polygon>
-  </g>
-  <g id="circles">
-${circleElements}
-  </g>
-</svg>`;
-}
