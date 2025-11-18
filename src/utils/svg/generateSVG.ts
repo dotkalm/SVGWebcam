@@ -13,9 +13,11 @@ export function generateSVG(
   time?: number
 ): string {
   // Calculate oscillating dash offset based on time
-  const dashOffset = time !== undefined 
+  const dashOffset = time !== undefined
     ? calculateDashOffset(time)
     : 0;
+
+  const { innerWidth, innerHeight } = window;
 
   const pathElements = paths
     .map(path => {
@@ -27,21 +29,21 @@ export function generateSVG(
         .join(' ');
 
       const opacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
-      
+
       // Create dash array from actual pixel intensity values
       // Sample every few points to avoid too many values
       const intensities = path.intensities || [];
       const sampleRate = Math.max(1, Math.floor(intensities.length / 20));
       const dashArray = intensities.length > 0
         ? intensities
-            .filter((_, i) => i % sampleRate === 0)
-            .map(intensity => {
-              // Map intensity (0-255) to dash length (1-30)
-              return Math.max(1, Math.floor(intensity / 255 * 30));
-            })
-            .join(' ')
+          .filter((_, i) => i % sampleRate === 0)
+          .map(intensity => {
+            // Map intensity (0-255) to dash length (1-30)
+            return Math.max(1, Math.floor(intensity / 255 * 30));
+          })
+          .join(' ')
         : '5 5'; // Fallback dash pattern
-      
+
       return `    <path d="${d}" stroke="${strokeColor}" stroke-width="${strokeWidth}" fill="none" opacity="${opacity.toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${dashArray}" stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
     })
     .filter(p => p.length > 0)
