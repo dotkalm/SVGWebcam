@@ -2,20 +2,23 @@ import type { EdgePath } from '@/types/svg';
 import { calculateDashOffset } from './calculateDashOffset';
 
 /**
- * Apply scaling transformation to a 2D point
- * Uses a 2x2 scaling matrix:
- * [x'] = [sx  0 ] [x]
- * [y']   [0  sy] [y]
+ * Apply scaling and translation transformation to a 2D point
+ * Uses a 2x3 affine transformation matrix:
+ * [x'] = [sx  0  tx] [x]
+ * [y']   [0  sy ty] [y]
+ *                   [1]
  */
 function transformPoint(
   x: number,
   y: number,
   scaleX: number,
-  scaleY: number
+  scaleY: number,
+  translateX: number,
+  translateY: number
 ): { x: number; y: number } {
   return {
-    x: x * scaleX,
-    y: y * scaleY
+    x: x * scaleX + translateX,
+    y: y * scaleY + translateY
   };
 }
 
@@ -37,12 +40,38 @@ export function generateSVG(
 
   const { innerWidth, innerHeight } = window;
 
-  // Calculate scaling factors (transformation matrix diagonal elements)
-  const scaleX = innerWidth / width;
-  const scaleY = innerHeight / height;
+  // Calculate aspect ratios
+  const sourceAspectRatio = width / height;
+  const targetAspectRatio = innerWidth / innerHeight;
+
+  let scaleX: number;
+  let scaleY: number;
+  let translateX: number;
+  let translateY: number;
+
+  // Preserve aspect ratio by using uniform scaling
+  if (targetAspectRatio > sourceAspectRatio) {
+    // Window is wider than video - fit to height
+    scaleY = innerHeight / height;
+    scaleX = scaleY;
+
+    // Center horizontally
+    const scaledWidth = width * scaleX;
+    translateX = (innerWidth - scaledWidth) / 2;
+    translateY = 0;
+  } else {
+    // Window is taller than video - fit to width
+    scaleX = innerWidth / width;
+    scaleY = scaleX;
+
+    // Center vertically
+    const scaledHeight = height * scaleY;
+    translateX = 0;
+    translateY = (innerHeight - scaledHeight) / 2;
+  }
 
   // Scale stroke width proportionally
-  const scaledStrokeWidth = strokeWidth * Math.min(scaleX, scaleY);
+  const scaledStrokeWidth = strokeWidth * scaleX;
 
   const pathElements = paths
     .map(path => {
@@ -54,8 +83,8 @@ export function generateSVG(
           // Flip Y coordinate (WebGL origin is bottom-left, SVG is top-left)
           const flippedY = height - p.y;
 
-          // Apply scaling transformation
-          const transformed = transformPoint(p.x, flippedY, scaleX, scaleY);
+          // Apply scaling and translation transformation
+          const transformed = transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
 
           return `${i === 0 ? 'M' : 'L'} ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`;
         })
