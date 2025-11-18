@@ -24,7 +24,7 @@ export default function SVGEdgeDetector() {
   const [svgContent, setSvgContent] = useState<string>('');
 
   const { isStreaming } = useGetWebcam({
-    facingMode: 'environment',
+    facingMode: 'user',
     height: isPortrait ? 640 : 480,
     videoRef,
     width: isPortrait ? 480 : 640,
@@ -126,17 +126,12 @@ export default function SVGEdgeDetector() {
       </Box>
 
       {/* Live SVG Output */}
-      <Paper elevation={3} sx={{m: 2}}>
-        <Typography variant="subtitle2" color="white" gutterBottom>
-          Live SVG Edge Detection
-        </Typography>
         <Box
           sx={{
             bgcolor: '#fff',
             border: '2px solid #333',
             borderRadius: 1,
             minHeight: isPortrait ? 640 : 400,
-            aspectRatio: isPortrait ? '480/640' : '640/480',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -146,7 +141,6 @@ export default function SVGEdgeDetector() {
           }}
           dangerouslySetInnerHTML={{ __html: svgContent }}
         />
-      </Paper>
     </Box>
   );
 }

@@ -13,8 +13,20 @@ export const processFrame: TProcessFrame = (
 ) => {
   const width = video.videoWidth;
   const height = video.videoHeight;
+
+  // Flip video horizontally to fix mirror effect from front-facing camera
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = width;
+  tempCanvas.height = height;
+  const tempCtx = tempCanvas.getContext('2d')!;
+  tempCtx.save();
+  tempCtx.translate(width, 0);
+  tempCtx.scale(-1, 1);
+  tempCtx.drawImage(video, 0, 0, width, height);
+  tempCtx.restore();
+
   gl.bindTexture(gl.TEXTURE_2D, textures.input);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tempCanvas);
 
   // Pass 1: Gaussian Blur
   renderPass(gl, programs.blur, framebuffers.blur, textures.input, buffers, width, height, {
