@@ -81,7 +81,10 @@ export type TUseVideoTexture = (
 
 export type TUseWebGLCanvas = (
   options: TUseEdgeDetectionOptions
-) => void;
+) => {
+  texturesRef: React.RefObject<TWebGLTextures>;
+  framebuffersRef: React.RefObject<TWebGLFramebuffers>;
+};
 
 export type TUseGetWebcam = (options: TUseWebcamOptions) => TUseWebcamReturn;
 
