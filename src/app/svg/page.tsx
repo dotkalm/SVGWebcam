@@ -6,15 +6,14 @@ import {
   type FC,
 } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { useMediaQuery } from '@mui/material';
 import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
+import { useGetCurrentWindowSize } from '@/hooks/useGetCurrentWindowSize';
 import { readFramebufferToSVG, downloadSVG } from '@/utils';
 
 export default function SVGEdgeDetector() {
+  const { width, height } = useGetCurrentWindowSize();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
@@ -131,7 +130,8 @@ export default function SVGEdgeDetector() {
             bgcolor: '#fff',
             border: '2px solid #333',
             borderRadius: 1,
-            minHeight: isPortrait ? 640 : 400,
+            minHeight: height,
+            minWidth: width,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
