@@ -106,7 +106,16 @@ export function generateSVG(
           .join(' ')
         : '5 5'; // Fallback dash pattern
 
-      return `    <path d="${d}" stroke="${strokeColor}" stroke-width="${scaledStrokeWidth.toFixed(2)}" fill="none" opacity="${opacity.toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${dashArray}" stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
+      return `    <path 
+        d="${d}" 
+        stroke="${strokeColor}" 
+        stroke-width="${scaledStrokeWidth.toFixed(2)}" 
+        fill="none"
+        opacity="${opacity.toFixed(2)}" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        stroke-dasharray="${dashArray}" 
+        stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
     })
     .filter(p => p.length > 0)
     .join('\n');

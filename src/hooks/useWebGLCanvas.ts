@@ -69,4 +69,8 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
     };
   }, [canvasRef, videoRef, isStreaming, lowThreshold, highThreshold]);
 
+  return {
+    texturesRef,
+    framebuffersRef
+  };
 }

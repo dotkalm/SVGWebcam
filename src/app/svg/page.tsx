@@ -16,11 +16,13 @@ export default function SVGEdgeDetector() {
   const { width, height } = useGetCurrentWindowSize();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const blurCanvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const isPortrait = useMediaQuery('(orientation: portrait)');
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });
   const [svgContent, setSvgContent] = useState<string>('');
+  const [blurredBackground, setBlurredBackground] = useState<string>('');
 
   const { isStreaming } = useGetWebcam({
     facingMode: 'user',
@@ -47,7 +49,7 @@ export default function SVGEdgeDetector() {
     }
   }, [canvasRef, isStreaming]);
 
-  useWebGLCanvas({
+  const { texturesRef, framebuffersRef } = useWebGLCanvas({
     canvasRef,
     highThreshold: 0.35,
     isStreaming,
@@ -67,6 +69,23 @@ export default function SVGEdgeDetector() {
           width: canvasWidth,
           height: canvasHeight
         } = canvasRef.current!;
+
+        // Extract Gaussian blurred texture from WebGL framebuffer
+        if (blurCanvasRef.current && glRef.current && framebuffersRef?.current?.blur && texturesRef?.current?.blur) {
+          const gl = glRef.current;
+          const blurCtx = blurCanvasRef.current.getContext('2d')!;
+
+          // Bind the blur framebuffer and read its pixels
+          gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffersRef.current.blur);
+          const pixels = new Uint8Array(canvasWidth * canvasHeight * 4);
+          gl.readPixels(0, 0, canvasWidth, canvasHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+          // Create ImageData and draw to canvas
+          const imageData = new ImageData(new Uint8ClampedArray(pixels), canvasWidth, canvasHeight);
+          blurCtx.putImageData(imageData, 0, 0);
+
+          setBlurredBackground(blurCanvasRef.current.toDataURL());
+        }
 
         const svg = readFramebufferToSVG(
           glRef.current!,
@@ -130,6 +149,11 @@ export default function SVGEdgeDetector() {
           height={canvasDimensions.height}
           key={`${canvasDimensions.width}x${canvasDimensions.height}`}
         />
+        <canvas
+          ref={blurCanvasRef}
+          width={canvasDimensions.width}
+          height={canvasDimensions.height}
+        />
       </Box>
 
       {/* Live SVG Output */}
@@ -146,6 +170,8 @@ export default function SVGEdgeDetector() {
             overflow: 'hidden',
             mx: 'auto',
             maxWidth: '100%',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
           dangerouslySetInnerHTML={{ __html: svgContent }}
         />
