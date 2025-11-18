@@ -63,15 +63,15 @@ export default function SVGEdgeDetector() {
 
     const updateSVG = () => {
       try {
-        const { 
-          width: canvasWidth, 
-          height: canvasHeight 
+        const {
+          width: canvasWidth,
+          height: canvasHeight
         } = canvasRef.current!;
-        
+
         const svg = readFramebufferToSVG(
           glRef.current!,
-          width,
-          height,
+          canvasWidth,
+          canvasHeight,
           {
             threshold: 100,
             minPathLength: 5,
