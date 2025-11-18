@@ -3,7 +3,6 @@ import {
   useRef,
   useState,
   useEffect,
-  type FC,
 } from 'react';
 import Box from '@mui/material/Box';
 import { useMediaQuery } from '@mui/material';
@@ -80,11 +79,24 @@ export default function SVGEdgeDetector() {
           const pixels = new Uint8Array(canvasWidth * canvasHeight * 4);
           gl.readPixels(0, 0, canvasWidth, canvasHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-          // Create ImageData and draw to canvas
-          const imageData = new ImageData(new Uint8ClampedArray(pixels), canvasWidth, canvasHeight);
+          // Flip vertically (WebGL origin is bottom-left, Canvas 2D is top-left)
+          const flippedPixels = new Uint8ClampedArray(canvasWidth * canvasHeight * 4);
+          for (let y = 0; y < canvasHeight; y++) {
+            const sourceRow = (canvasHeight - 1 - y) * canvasWidth * 4;
+            const destRow = y * canvasWidth * 4;
+            for (let x = 0; x < canvasWidth * 4; x++) {
+              flippedPixels[destRow + x] = pixels[sourceRow + x];
+            }
+          }
+
+          // Put the flipped pixels at original video resolution
+          const imageData = new ImageData(flippedPixels, canvasWidth, canvasHeight);
           blurCtx.putImageData(imageData, 0, 0);
 
           setBlurredBackground(blurCanvasRef.current.toDataURL());
+
+          // Unbind framebuffer to read from canvas (the final thresholded output)
+          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         }
 
         const svg = readFramebufferToSVG(
@@ -130,7 +142,6 @@ export default function SVGEdgeDetector() {
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        backgroundColor: 'white',
       }}
     >
       {/* Hidden video and canvas */}
@@ -170,11 +181,36 @@ export default function SVGEdgeDetector() {
             overflow: 'hidden',
             mx: 'auto',
             maxWidth: '100%',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            position: 'relative',
           }}
-          dangerouslySetInnerHTML={{ __html: svgContent }}
-        />
+        >
+          {/* Blurred background layer */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: blurredBackground ? `url(${blurredBackground})` : 'none',
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              filter: 'blur(40px)',
+              zIndex: 0,
+            }}
+          />
+          {/* SVG content on top */}
+          <Box
+            sx={{
+              position: 'relative',
+              zIndex: 1,
+              width: '100%',
+              height: '100%',
+            }}
+            dangerouslySetInnerHTML={{ __html: svgContent }}
+          />
+        </Box>
     </Box>
   );
 }
