@@ -3,7 +3,7 @@ import type { SVGPoint } from '@/types/svg';
 /**
  * Calculate perpendicular distance from point to line
  */
-function perpDistance(point: Point, lineStart: Point, lineEnd: Point): number {
+function perpDistance(point: SVGPoint, lineStart: SVGPoint, lineEnd: SVGPoint): number {
   const dx = lineEnd.x - lineStart.x;
   const dy = lineEnd.y - lineStart.y;
   const mag = Math.sqrt(dx * dx + dy * dy);
@@ -25,7 +25,7 @@ function perpDistance(point: Point, lineStart: Point, lineEnd: Point): number {
 /**
  * Simplify path using Ramer-Douglas-Peucker algorithm
  */
-export function simplifyPath(points: Point[], epsilon: number): Point[] {
+export function simplifyPath(points: SVGPoint[], epsilon: number): SVGPoint[] {
   if (points.length <= 2) return points;
 
   let dmax = 0;

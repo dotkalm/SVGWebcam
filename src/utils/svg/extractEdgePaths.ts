@@ -33,7 +33,7 @@ export function extractEdgePaths(
 
   // Follow edge chain from starting point
   const followEdge = (startX: number, startY: number): EdgePath | null => {
-    const points: Point[] = [];
+    const points: SVGPoint[] = [];
     const intensities: number[] = [];
     let x = startX;
     let y = startY;
