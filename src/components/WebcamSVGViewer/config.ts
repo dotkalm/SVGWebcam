@@ -1,42 +1,6 @@
-export interface ViewerConfig {
-  // Blur settings
-  blurMode: 'gaussian' | 'motion' | 'bokeh';
-  aperture: number;
-  motionBlurAmount: number;
-  motionBlurAngle: number;
-  
-  // Edge detection
-  highThreshold: number;
-  lowThreshold: number;
-  
-  // SVG generation
-  backgroundThreshold: number;
-  backgroundSimplification: number;
-  outlinePathMinPathLength: number;
-  outlinePathSimplification: number;
-  
-  // Background styling
-  backgroundStrokeWidth: number;
-  backgroundOpacity: number;
-  useBackgroundFill: boolean;
-  backgroundFillColor: string;
-  useBezierBackground: boolean;
-  
-  // Outline path styling
-  outlinePathsStrokeWidth: number;
-  outlinePathsOpacity: number;
-  useOutlinePathsFill: boolean;
-  outlinePathsFillColor: string;
-  useBezierOutlinePaths: boolean;
-}
+import type { ViewerConfig, UIState } from '@/types';
 
-export interface UIState {
-  showLeftPanel: boolean;
-  showRightPanel: boolean;
-  expandEdgeDetection: boolean;
-  expandBackgroundStyling: boolean;
-  expandOutlinePathStyling: boolean;
-}
+export type { ViewerConfig, UIState };
 
 export const DEFAULT_CONFIG: ViewerConfig = {
   blurMode: 'gaussian',
@@ -49,15 +13,17 @@ export const DEFAULT_CONFIG: ViewerConfig = {
   backgroundSimplification: 3,
   outlinePathMinPathLength: 5,
   outlinePathSimplification: 4,
+  enableBackground: true,
   backgroundStrokeWidth: 0.12,
-  outlinePathsStrokeWidth: 0.3,
-  backgroundOpacity: 1,
-  outlinePathsOpacity: 0.6,
+  backgroundStrokeColor: 'rgba(0, 0, 0, 1)',
   useBackgroundFill: false,
-  useOutlinePathsFill: false,
-  backgroundFillColor: '#000000',
-  outlinePathsFillColor: '#000000',
+  backgroundFillColor: 'rgba(0, 0, 0, 0)',
   useBezierBackground: true,
+  enableOutlinePaths: true,
+  outlinePathsStrokeWidth: 0.3,
+  outlinePathsStrokeColor: 'rgba(0, 0, 0, 0.6)',
+  useOutlinePathsFill: false,
+  outlinePathsFillColor: 'rgba(0, 0, 0, 0)',
   useBezierOutlinePaths: true,
 };
 

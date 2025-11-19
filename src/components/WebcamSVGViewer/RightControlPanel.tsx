@@ -3,21 +3,7 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import type { ViewerConfig, UIState } from './config';
-import type { Preset, PresetSettings } from './presetManager';
-
-interface RightControlPanelProps {
-  config: ViewerConfig;
-  updateConfig: (updates: Partial<ViewerConfig>) => void;
-  uiState: UIState;
-  updateUIState: (updates: Partial<UIState>) => void;
-  presets: Preset[];
-  presetName: string;
-  setPresetName: (name: string) => void;
-  savePreset: () => void;
-  loadPreset: (settings: PresetSettings) => void;
-  deletePreset: (index: number) => void;
-}
+import type { ViewerConfig, UIState, Preset, PresetSettings, RightControlPanelProps } from '@/types';
 
 export function RightControlPanel(props: RightControlPanelProps) {
   const {

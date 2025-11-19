@@ -12,11 +12,7 @@ import { useVideoTexture } from '@/hooks/useVideoTexture';
 import { useWebGLRenderer } from '@/hooks/useWebGLRenderer';
 import vertexShaderSrc from '@/shaders/video.vert';
 import fragmentShaderSrc from '@/shaders/video.frag';
-
-interface WebcamCaptureProps {
-  width?: number;
-  height?: number;
-}
+import type { WebcamCaptureProps } from '@/types';
 
 export default function WebcamCapture({ 
   width = 640, 

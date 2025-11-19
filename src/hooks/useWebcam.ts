@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
-interface UseWebcamOptions {
-  width?: number;
-  height?: number;
-  facingMode?: 'user' | 'environment';
-}
+import type { UseWebcamOptions } from '@/types';
 
 export function useWebcam({ 
   width = 640, 

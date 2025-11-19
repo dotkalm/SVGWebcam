@@ -1,9 +1,5 @@
-import { useEffect, useState, RefObject } from 'react';
-
-interface UseWebGLContextOptions {
-  canvasRef: RefObject<HTMLCanvasElement | null>;
-  enabled: boolean;
-}
+import { useEffect, useState } from 'react';
+import type { UseWebGLContextOptions } from '@/types';
 
 export function useWebGLContext({ canvasRef, enabled }: UseWebGLContextOptions) {
   const [gl, setGl] = useState<WebGLRenderingContext | null>(null);

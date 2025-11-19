@@ -1,13 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
-
-interface UseWebGLRendererOptions {
-  gl: WebGLRenderingContext | WebGL2RenderingContext | null;
-  texture: WebGLTexture | null;
-  vertexShaderSource: string;
-  fragmentShaderSource: string;
-  enabled: boolean;
-}
+import type { UseWebGLRendererOptions } from '@/types';
 
 export function useWebGLRenderer({
   gl,

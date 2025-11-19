@@ -1,11 +1,6 @@
-import type { ViewerConfig } from './config';
+import type { ViewerConfig, Preset, PresetSettings } from '@/types';
 
-export type PresetSettings = ViewerConfig;
-
-export interface Preset {
-  name: string;
-  settings: PresetSettings;
-}
+export type { Preset, PresetSettings };
 
 const STORAGE_KEY = 'edgeDetectorPresets';
 

@@ -1,15 +1,5 @@
 // src/utils/captureFrameFixture.ts
-import type { TCapturedFrame } from '@/types/geometry';
-
-/**
- * Frame format for edge detection processing
- */
-export interface TEdgeFrame {
-  data: Uint8Array;
-  width: number;
-  height: number;
-  description: string;
-}
+import type { TCapturedFrame, TEdgeFrame } from '@/types';
 
 /**
  * Loads a captured frame fixture from JSON format

@@ -5,16 +5,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Switch from '@mui/material/Switch';
-import type { ViewerConfig, UIState } from './config';
-
-interface LeftControlPanelProps {
-  config: ViewerConfig;
-  updateConfig: (updates: Partial<ViewerConfig>) => void;
-  uiState: UIState;
-  updateUIState: (updates: Partial<UIState>) => void;
-  svgString: string;
-  downloadSVG: (svg: string, filename: string) => void;
-}
+import type { ViewerConfig, UIState, LeftControlPanelProps } from '@/types';
 
 export function LeftControlPanel(props: LeftControlPanelProps) {
   const {
@@ -128,13 +119,21 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
               Background Styling
             </Typography>
-            <IconButton
-              size="small"
-              onClick={() => updateUIState({ expandBackgroundStyling: !uiState.expandBackgroundStyling })}
-              sx={{ padding: '4px' }}
-            >
-              <span style={{ fontSize: '16px' }}>{uiState.expandBackgroundStyling ? '▼' : '▶'}</span>
-            </IconButton>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Switch
+                checked={config.enableBackground}
+                onChange={(e) => updateConfig({ enableBackground: e.target.checked })}
+                size="small"
+                sx={{ color: '#9c27b0' }}
+              />
+              <IconButton
+                size="small"
+                onClick={() => updateUIState({ expandBackgroundStyling: !uiState.expandBackgroundStyling })}
+                sx={{ padding: '4px' }}
+              >
+                <span style={{ fontSize: '16px' }}>{uiState.expandBackgroundStyling ? '▼' : '▶'}</span>
+              </IconButton>
+            </Box>
           </Box>
 
           <Collapse in={uiState.expandBackgroundStyling}>
@@ -184,19 +183,23 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Opacity: {config.backgroundOpacity.toFixed(2)}
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="caption" color="text.secondary">
+                Stroke Color
               </Typography>
-              <Slider
-                value={config.backgroundOpacity}
-                onChange={(_, value) => updateConfig({ backgroundOpacity: value as number })}
-                min={0}
-                max={1}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
-                sx={{ color: '#9c27b0' }}
+              <input
+                type="text"
+                value={config.backgroundStrokeColor}
+                onChange={(e) => updateConfig({ backgroundStrokeColor: e.target.value })}
+                placeholder="rgba(0,0,0,1)"
+                style={{ 
+                  padding: '4px 8px', 
+                  fontSize: '12px',
+                  width: '140px',
+                  border: '1px solid #ccc', 
+                  borderRadius: '4px',
+                  fontFamily: 'monospace'
+                }}
               />
             </Box>
 
@@ -204,23 +207,35 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               <Typography variant="caption" color="text.secondary">
                 Use Fill
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {config.useBackgroundFill && (
-                  <input
-                    type="color"
-                    value={config.backgroundFillColor}
-                    onChange={(e) => updateConfig({ backgroundFillColor: e.target.value })}
-                    style={{ cursor: 'pointer', height: '24px', width: '32px', border: 'none', borderRadius: '4px' }}
-                  />
-                )}
-                <Switch
-                  checked={config.useBackgroundFill}
-                  onChange={(e) => updateConfig({ useBackgroundFill: e.target.checked })}
-                  size="small"
-                  sx={{ color: '#9c27b0' }}
+              <Switch
+                checked={config.useBackgroundFill}
+                onChange={(e) => updateConfig({ useBackgroundFill: e.target.checked })}
+                size="small"
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+
+            {config.useBackgroundFill && (
+              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="caption" color="text.secondary">
+                  Fill Color
+                </Typography>
+                <input
+                  type="text"
+                  value={config.backgroundFillColor}
+                  onChange={(e) => updateConfig({ backgroundFillColor: e.target.value })}
+                  placeholder="rgba(0,0,0,0.5)"
+                  style={{ 
+                    padding: '4px 8px', 
+                    fontSize: '12px',
+                    width: '140px',
+                    border: '1px solid #ccc', 
+                    borderRadius: '4px',
+                    fontFamily: 'monospace'
+                  }}
                 />
               </Box>
-            </Box>
+            )}
 
             <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="caption" color="text.secondary">
@@ -240,13 +255,21 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
               Outline Path Styling
             </Typography>
-            <IconButton
-              size="small"
-              onClick={() => updateUIState({ expandOutlinePathStyling: !uiState.expandOutlinePathStyling })}
-              sx={{ padding: '4px' }}
-            >
-              <span style={{ fontSize: '16px' }}>{uiState.expandOutlinePathStyling ? '▼' : '▶'}</span>
-            </IconButton>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Switch
+                checked={config.enableOutlinePaths}
+                onChange={(e) => updateConfig({ enableOutlinePaths: e.target.checked })}
+                size="small"
+                sx={{ color: '#9c27b0' }}
+              />
+              <IconButton
+                size="small"
+                onClick={() => updateUIState({ expandOutlinePathStyling: !uiState.expandOutlinePathStyling })}
+                sx={{ padding: '4px' }}
+              >
+                <span style={{ fontSize: '16px' }}>{uiState.expandOutlinePathStyling ? '▼' : '▶'}</span>
+              </IconButton>
+            </Box>
           </Box>
 
           <Collapse in={uiState.expandOutlinePathStyling}>
@@ -296,19 +319,23 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Opacity: {config.outlinePathsOpacity.toFixed(2)}
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="caption" color="text.secondary">
+                Stroke Color
               </Typography>
-              <Slider
-                value={config.outlinePathsOpacity}
-                onChange={(_, value) => updateConfig({ outlinePathsOpacity: value as number })}
-                min={0}
-                max={1}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
-                sx={{ color: '#9c27b0' }}
+              <input
+                type="text"
+                value={config.outlinePathsStrokeColor}
+                onChange={(e) => updateConfig({ outlinePathsStrokeColor: e.target.value })}
+                placeholder="rgba(0,0,0,1)"
+                style={{ 
+                  padding: '4px 8px', 
+                  fontSize: '12px',
+                  width: '140px',
+                  border: '1px solid #ccc', 
+                  borderRadius: '4px',
+                  fontFamily: 'monospace'
+                }}
               />
             </Box>
 
@@ -316,23 +343,35 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               <Typography variant="caption" color="text.secondary">
                 Use Fill
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {config.useOutlinePathsFill && (
-                  <input
-                    type="color"
-                    value={config.outlinePathsFillColor}
-                    onChange={(e) => updateConfig({ outlinePathsFillColor: e.target.value })}
-                    style={{ cursor: 'pointer', height: '24px', width: '32px', border: 'none', borderRadius: '4px' }}
-                  />
-                )}
-                <Switch
-                  checked={config.useOutlinePathsFill}
-                  onChange={(e) => updateConfig({ useOutlinePathsFill: e.target.checked })}
-                  size="small"
-                  sx={{ color: '#9c27b0' }}
+              <Switch
+                checked={config.useOutlinePathsFill}
+                onChange={(e) => updateConfig({ useOutlinePathsFill: e.target.checked })}
+                size="small"
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+
+            {config.useOutlinePathsFill && (
+              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="caption" color="text.secondary">
+                  Fill Color
+                </Typography>
+                <input
+                  type="text"
+                  value={config.outlinePathsFillColor}
+                  onChange={(e) => updateConfig({ outlinePathsFillColor: e.target.value })}
+                  placeholder="rgba(0,0,0,0.5)"
+                  style={{ 
+                    padding: '4px 8px', 
+                    fontSize: '12px',
+                    width: '140px',
+                    border: '1px solid #ccc', 
+                    borderRadius: '4px',
+                    fontFamily: 'monospace'
+                  }}
                 />
               </Box>
-            </Box>
+            )}
 
             <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="caption" color="text.secondary">

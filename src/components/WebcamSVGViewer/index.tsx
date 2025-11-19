@@ -9,7 +9,8 @@ import { useMediaQuery } from '@mui/material';
 import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
 import { useGetCurrentWindowSize } from '@/hooks/useGetCurrentWindowSize';
-import { readFramebufferToSVG, downloadSVG } from '@/utils';
+import { useSVGGeneration } from '@/hooks/useSVGGeneration';
+import { downloadSVG } from '@/utils';
 import { 
   loadPresetsFromStorage, 
   savePresetsToStorage, 
@@ -18,8 +19,6 @@ import {
   type PresetSettings 
 } from './presetManager';
 import { 
-  extractBlurTexture, 
-  generateSVGFromFramebuffer, 
   createSVGString 
 } from './svgGenerator';
 import { LeftControlPanel } from './LeftControlPanel';
@@ -45,7 +44,6 @@ export default function WebcamSVGViewer() {
     setUIState(prev => ({ ...prev, ...updates }));
   };
   
-  const animationFrameRef = useRef<number | null>(null);
   const blurCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
@@ -123,85 +121,19 @@ export default function WebcamSVGViewer() {
     motionBlurAngle: config.motionBlurAngle,
   });
 
-  // Update SVG every frame
-  useEffect(() => {
-    if (!isStreaming || !glRef.current || !canvasRef.current) {
-      return;
-    }
-
-    const updateSVG = () => {
-      try {
-        const { width: canvasWidth, height: canvasHeight } = canvasRef.current!;
-
-        // Extract Gaussian blurred texture from WebGL framebuffer
-        if (blurCanvasRef.current && glRef.current && framebuffersRef?.current?.blur) {
-          const gl = glRef.current;
-          const blurCtx = blurCanvasRef.current.getContext('2d')!;
-          extractBlurTexture(gl, blurCtx, framebuffersRef.current.blur, canvasWidth, canvasHeight);
-        }
-
-        // Generate background SVG from blur framebuffer
-        if (glRef.current && framebuffersRef?.current?.blur) {
-          const svgCross = generateSVGFromFramebuffer(
-            glRef.current,
-            framebuffersRef.current.blur,
-            canvasWidth,
-            canvasHeight,
-            readFramebufferToSVG,
-            {
-              threshold: config.backgroundThreshold,
-              minPathLength: 3,
-              simplification: config.backgroundSimplification,
-              strokeWidth: config.backgroundStrokeWidth,
-              strokeColor: '#000000',
-              opacity: config.backgroundOpacity,
-              fill: config.useBackgroundFill ? config.backgroundFillColor : 'none',
-              connectEdges: connectEdgesBackground,
-              useBezier: config.useBezierBackground,
-              groupId: 'background'
-            }
-          );
-          setSvgBackground(svgCross);
-        }
-
-        // Generate outline paths SVG from canvas
-        if (glRef.current) {
-          const svgClean = generateSVGFromFramebuffer(
-            glRef.current,
-            null,
-            canvasWidth,
-            canvasHeight,
-            readFramebufferToSVG,
-            {
-              threshold: 10,
-              minPathLength: config.outlinePathMinPathLength,
-              simplification: config.outlinePathSimplification,
-              strokeWidth: config.outlinePathsStrokeWidth,
-              strokeColor: '#000000',
-              opacity: config.outlinePathsOpacity,
-              fill: config.useOutlinePathsFill ? config.outlinePathsFillColor : 'none',
-              connectEdges: connectEdgesOutlinePaths,
-              useBezier: config.useBezierOutlinePaths,
-              groupId: 'outlinePaths'
-            }
-          );
-          setSvgOutlinePaths(svgClean);
-        }
-      } catch (error) {
-        console.error('Error generating SVG:', error);
-      }
-
-      animationFrameRef.current = requestAnimationFrame(updateSVG);
-    };
-
-    updateSVG();
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [isStreaming, config]);
+  // Generate SVG from WebGL canvas every frame
+  useSVGGeneration({
+    isStreaming,
+    glRef,
+    canvasRef,
+    blurCanvasRef,
+    framebuffersRef,
+    config,
+    connectEdgesBackground,
+    connectEdgesOutlinePaths,
+    setSvgBackground,
+    setSvgOutlinePaths,
+  });
 
   const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths);
 

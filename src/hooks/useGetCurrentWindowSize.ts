@@ -1,10 +1,6 @@
 // useGetCurrentWindowSize.tsx
 import { useState, useEffect } from 'react';
-
-interface WindowSize {
-  width: number;
-  height: number;
-}
+import type { WindowSize } from '@/types';
 
 export const useGetCurrentWindowSize = (): WindowSize => {
   const [windowSize, setWindowSize] = useState<WindowSize>({
