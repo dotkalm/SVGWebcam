@@ -7,6 +7,8 @@ import {
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
 import { useMediaQuery } from '@mui/material';
 import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
@@ -21,21 +23,116 @@ export default function SVGEdgeDetector() {
   const [aperture, setAperture] = useState(0.15); // Controls depth of field (lower = shallower)
   const [motionBlurAmount, setMotionBlurAmount] = useState(60); // Motion blur strength
   const [motionBlurAngle, setMotionBlurAngle] = useState(0); // Motion blur direction in degrees
+  const [highThreshold, setHighThreshold] = useState(0.02);
+  const [lowThreshold, setLowThreshold] = useState(0.02);
+  const [crosshatchThreshold, setCrosshatchThreshold] = useState(140);
+  const [crosshatchSimplification, setCrosshatchSimplification] = useState(3);
+  const [cleanEdgeMinPathLength, setCleanEdgeMinPathLength] = useState(5);
+  const [cleanEdgeSimplification, setCleanEdgeSimplification] = useState(4);
+  const [crosshatchStrokeWidth, setCrosshatchStrokeWidth] = useState(0.12);
+  const [cleanEdgesStrokeWidth, setCleanEdgesStrokeWidth] = useState(0.3);
+  const [crosshatchOpacity, setCrosshatchOpacity] = useState(1);
+  const [cleanEdgesOpacity, setCleanEdgesOpacity] = useState(0.6);
+  const [useCrosshatchFill, setUseCrosshatchFill] = useState(false);
+  const [useCleanEdgesFill, setUseCleanEdgesFill] = useState(false);
+  const [crosshatchFillColor, setCrosshatchFillColor] = useState('#000000');
+  const [cleanEdgesFillColor, setCleanEdgesFillColor] = useState('#000000');
+  const [useBezierCrosshatch, setUseBezierCrosshatch] = useState(true);
+  const [useBezierCleanLines, setUseBezierCleanLines] = useState(true);
+  const [showLeftPanel, setShowLeftPanel] = useState(true);
+  const [showRightPanel, setShowRightPanel] = useState(true);
+  const [expandEdgeDetection, setExpandEdgeDetection] = useState(true);
+  const [expandSVGGeneration, setExpandSVGGeneration] = useState(true);
+  const [expandCrosshatchStyling, setExpandCrosshatchStyling] = useState(true);
+  const [expandCleanEdgeStyling, setExpandCleanEdgeStyling] = useState(true);
+  const [presets, setPresets] = useState<Array<{name: string, settings: any}>>([]);
+  const [presetName, setPresetName] = useState('');
   const animationFrameRef = useRef<number | null>(null);
   const blurCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cleanEdgesFill = 'dodgerblue';
-  const cleanEdgesOpacity = .6;
-  const cleanEdgesStrokeWidth = .3;
+
+  // Load presets from localStorage on mount
+  useEffect(() => {
+    const savedPresets = localStorage.getItem('edgeDetectorPresets');
+    if (savedPresets) {
+      try {
+        setPresets(JSON.parse(savedPresets));
+      } catch (e) {
+        console.error('Failed to load presets:', e);
+      }
+    }
+  }, []);
+
+  // Save current settings as a preset
+  const savePreset = () => {
+    if (!presetName.trim()) {
+      alert('Please enter a preset name');
+      return;
+    }
+
+    const settings = {
+      blurMode,
+      aperture,
+      motionBlurAmount,
+      motionBlurAngle,
+      highThreshold,
+      lowThreshold,
+      crosshatchThreshold,
+      crosshatchSimplification,
+      cleanEdgeMinPathLength,
+      cleanEdgeSimplification,
+      crosshatchStrokeWidth,
+      cleanEdgesStrokeWidth,
+      crosshatchOpacity,
+      cleanEdgesOpacity,
+      useCrosshatchFill,
+      useCleanEdgesFill,
+      crosshatchFillColor,
+      cleanEdgesFillColor,
+      useBezierCrosshatch,
+      useBezierCleanLines,
+    };
+
+    const newPresets = [...presets, { name: presetName, settings }];
+    setPresets(newPresets);
+    localStorage.setItem('edgeDetectorPresets', JSON.stringify(newPresets));
+    setPresetName('');
+  };
+
+  // Load a preset
+  const loadPreset = (settings: any) => {
+    setBlurMode(settings.blurMode);
+    setAperture(settings.aperture);
+    setMotionBlurAmount(settings.motionBlurAmount);
+    setMotionBlurAngle(settings.motionBlurAngle);
+    setHighThreshold(settings.highThreshold);
+    setLowThreshold(settings.lowThreshold);
+    setCrosshatchThreshold(settings.crosshatchThreshold);
+    setCrosshatchSimplification(settings.crosshatchSimplification);
+    setCleanEdgeMinPathLength(settings.cleanEdgeMinPathLength);
+    setCleanEdgeSimplification(settings.cleanEdgeSimplification);
+    setCrosshatchStrokeWidth(settings.crosshatchStrokeWidth);
+    setCleanEdgesStrokeWidth(settings.cleanEdgesStrokeWidth);
+    setCrosshatchOpacity(settings.crosshatchOpacity);
+    setCleanEdgesOpacity(settings.cleanEdgesOpacity);
+    setUseCrosshatchFill(settings.useCrosshatchFill);
+    setUseCleanEdgesFill(settings.useCleanEdgesFill);
+    setCrosshatchFillColor(settings.crosshatchFillColor);
+    setCleanEdgesFillColor(settings.cleanEdgesFillColor);
+    setUseBezierCrosshatch(settings.useBezierCrosshatch);
+    setUseBezierCleanLines(settings.useBezierCleanLines);
+  };
+
+  // Delete a preset
+  const deletePreset = (index: number) => {
+    const newPresets = presets.filter((_, i) => i !== index);
+    setPresets(newPresets);
+    localStorage.setItem('edgeDetectorPresets', JSON.stringify(newPresets));
+  };
   const connectEdgesCleanLines = false;
   const connectEdgesCrosshatch = true;
-  const crosshatchFill = 'none';
-  const crosshatchOpacity = 1;
-  const crosshatchStrokeWidth = 0.12;
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const isPortrait = useMediaQuery('(orientation: portrait)');
-  const useBezierCleanLines = true;
-  const useBezierCrosshatch = false;
   const videoRef = useRef<HTMLVideoElement>(null);
   const { width, height } = useGetCurrentWindowSize();
 
@@ -66,9 +163,9 @@ export default function SVGEdgeDetector() {
 
   const { texturesRef, framebuffersRef } = useWebGLCanvas({
     canvasRef,
-    highThreshold: 1.85,
+    highThreshold,
     isStreaming,
-    lowThreshold: 0.02,
+    lowThreshold,
     videoRef,
     useMotionBlur: blurMode,
     aperture,
@@ -122,13 +219,13 @@ export default function SVGEdgeDetector() {
             canvasWidth,
             canvasHeight,
             {
-              threshold: 190,
-              minPathLength: 6,
-              simplification: 10,
+              threshold: crosshatchThreshold,
+              minPathLength: 3,
+              simplification: crosshatchSimplification,
               strokeWidth: crosshatchStrokeWidth,
               strokeColor: '#000000',
               opacity: crosshatchOpacity,
-              fill: crosshatchFill,
+              fill: useCrosshatchFill ? crosshatchFillColor : 'none',
               connectEdges: connectEdgesCrosshatch,
               useBezier: useBezierCrosshatch,
               groupId: 'crosshatch'
@@ -145,13 +242,13 @@ export default function SVGEdgeDetector() {
             canvasWidth,
             canvasHeight,
             {
-              threshold: 100,
-              minPathLength: 5,
-              simplification: 2,
+              threshold: 10,
+              minPathLength: cleanEdgeMinPathLength,
+              simplification: cleanEdgeSimplification,
               strokeWidth: cleanEdgesStrokeWidth,
               strokeColor: '#000000',
               opacity: cleanEdgesOpacity,
-              fill: cleanEdgesFill,
+              fill: useCleanEdgesFill ? cleanEdgesFillColor : 'none',
               connectEdges: connectEdgesCleanLines,
               useBezier: useBezierCleanLines,
               groupId: 'cleanLines'
@@ -173,15 +270,30 @@ export default function SVGEdgeDetector() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isStreaming]);
+  }, [
+    isStreaming, 
+    crosshatchThreshold, 
+    crosshatchSimplification, 
+    cleanEdgeMinPathLength, 
+    cleanEdgeSimplification,
+    crosshatchStrokeWidth,
+    cleanEdgesStrokeWidth,
+    crosshatchOpacity,
+    cleanEdgesOpacity,
+    useCrosshatchFill,
+    useCleanEdgesFill,
+    crosshatchFillColor,
+    cleanEdgesFillColor,
+    useBezierCrosshatch,
+    useBezierCleanLines
+  ]);
 
-  const svgString = `
-    <?xml version="1.0" encoding="UTF-8"?>
-    <svg width="${innerWidth}" height="${innerHeight}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${innerWidth} ${innerHeight}">
-      ${svgCrosshatch}
-      ${svgCleanEdges}
-    </svg>
-  `
+  const svgString = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="${innerWidth}" height="${innerHeight}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${innerWidth} ${innerHeight}">
+${svgCrosshatch}
+${svgCleanEdges}
+</svg>`
+
   return (
     <Box
       sx={{
@@ -191,20 +303,413 @@ export default function SVGEdgeDetector() {
         height: '100vh',
       }}
     >
+      {/* Left Panel Toggle Button */}
+      {!showLeftPanel && (
+        <IconButton
+          onClick={() => setShowLeftPanel(true)}
+          sx={{
+            position: 'fixed',
+            top: 16,
+            left: 16,
+            zIndex: 1000,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
+          }}
+        >
+          <span style={{ fontSize: '20px' }}>☰</span>
+        </IconButton>
+      )}
+
+      {/* Edge Detection Thresholds */}
+      {showLeftPanel && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 16,
+            left: 16,
+            zIndex: 1000,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            padding: 3,
+            borderRadius: 2,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            minWidth: 280,
+            maxWidth: 320,
+            maxHeight: 'calc(100vh - 32px)',
+            overflowY: 'auto',
+          }}
+        >
+          {/* Hide Panel Button */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+            <IconButton
+              size="small"
+              onClick={() => setShowLeftPanel(false)}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>✕</span>
+            </IconButton>
+          </Box>
+
+          {/* Edge Detection Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+              Edge Detection
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => setExpandEdgeDetection(!expandEdgeDetection)}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{expandEdgeDetection ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+
+          <Collapse in={expandEdgeDetection}>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            High Threshold: {highThreshold.toFixed(3)}
+          </Typography>
+          <Slider
+            value={highThreshold}
+            onChange={(_, value) => setHighThreshold(value as number)}
+            min={0.001}
+            max={0.1}
+            step={0.001}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => value.toFixed(3)}
+            sx={{ color: '#1976d2' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Low Threshold: {lowThreshold.toFixed(3)}
+          </Typography>
+          <Slider
+            value={lowThreshold}
+            onChange={(_, value) => setLowThreshold(value as number)}
+            min={0.001}
+            max={0.1}
+            step={0.001}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => value.toFixed(3)}
+            sx={{ color: '#1976d2' }}
+          />
+        </Box>
+
+          </Collapse>
+
+          {/* SVG Generation Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3, mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
+              SVG Generation
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => setExpandSVGGeneration(!expandSVGGeneration)}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{expandSVGGeneration ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+
+          <Collapse in={expandSVGGeneration}>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Crosshatch Threshold: {crosshatchThreshold}
+          </Typography>
+          <Slider
+            value={crosshatchThreshold}
+            onChange={(_, value) => setCrosshatchThreshold(value as number)}
+            min={1}
+            max={255}
+            step={1}
+            valueLabelDisplay="auto"
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Crosshatch Simplification: {crosshatchSimplification}
+          </Typography>
+          <Slider
+            value={crosshatchSimplification}
+            onChange={(_, value) => setCrosshatchSimplification(value as number)}
+            min={1}
+            max={10}
+            step={0.5}
+            valueLabelDisplay="auto"
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Clean Edge Min Path Length: {cleanEdgeMinPathLength}
+          </Typography>
+          <Slider
+            value={cleanEdgeMinPathLength}
+            onChange={(_, value) => setCleanEdgeMinPathLength(value as number)}
+            min={1}
+            max={20}
+            step={1}
+            valueLabelDisplay="auto"
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Clean Edge Simplification: {cleanEdgeSimplification}
+          </Typography>
+          <Slider
+            value={cleanEdgeSimplification}
+            onChange={(_, value) => setCleanEdgeSimplification(value as number)}
+            min={1}
+            max={10}
+            step={0.5}
+            valueLabelDisplay="auto"
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+          </Collapse>
+
+          {/* Crosshatch Styling Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3, mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
+              Crosshatch Styling
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => setExpandCrosshatchStyling(!expandCrosshatchStyling)}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{expandCrosshatchStyling ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+
+          <Collapse in={expandCrosshatchStyling}>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Stroke Width: {crosshatchStrokeWidth.toFixed(2)}
+          </Typography>
+          <Slider
+            value={crosshatchStrokeWidth}
+            onChange={(_, value) => setCrosshatchStrokeWidth(value as number)}
+            min={0.01}
+            max={2}
+            step={0.01}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => value.toFixed(2)}
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Opacity: {crosshatchOpacity.toFixed(2)}
+          </Typography>
+          <Slider
+            value={crosshatchOpacity}
+            onChange={(_, value) => setCrosshatchOpacity(value as number)}
+            min={0}
+            max={1}
+            step={0.01}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => value.toFixed(2)}
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <input
+            type="checkbox"
+            checked={useCrosshatchFill}
+            onChange={(e) => setUseCrosshatchFill(e.target.checked)}
+            style={{ cursor: 'pointer' }}
+          />
+          <Typography variant="caption" color="text.secondary">
+            Use Fill
+          </Typography>
+          {useCrosshatchFill && (
+            <input
+              type="color"
+              value={crosshatchFillColor}
+              onChange={(e) => setCrosshatchFillColor(e.target.value)}
+              style={{ marginLeft: '8px', cursor: 'pointer' }}
+            />
+          )}
+        </Box>
+
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <input
+            type="checkbox"
+            checked={useBezierCrosshatch}
+            onChange={(e) => setUseBezierCrosshatch(e.target.checked)}
+            style={{ cursor: 'pointer' }}
+          />
+          <Typography variant="caption" color="text.secondary">
+            Use Bezier Curves
+          </Typography>
+        </Box>
+
+          </Collapse>
+
+          {/* Clean Edge Styling Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3, mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
+              Clean Edge Styling
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => setExpandCleanEdgeStyling(!expandCleanEdgeStyling)}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{expandCleanEdgeStyling ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+
+          <Collapse in={expandCleanEdgeStyling}>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Stroke Width: {cleanEdgesStrokeWidth.toFixed(2)}
+          </Typography>
+          <Slider
+            value={cleanEdgesStrokeWidth}
+            onChange={(_, value) => setCleanEdgesStrokeWidth(value as number)}
+            min={0.01}
+            max={2}
+            step={0.01}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => value.toFixed(2)}
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            Opacity: {cleanEdgesOpacity.toFixed(2)}
+          </Typography>
+          <Slider
+            value={cleanEdgesOpacity}
+            onChange={(_, value) => setCleanEdgesOpacity(value as number)}
+            min={0}
+            max={1}
+            step={0.01}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => value.toFixed(2)}
+            sx={{ color: '#9c27b0' }}
+          />
+        </Box>
+
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <input
+            type="checkbox"
+            checked={useCleanEdgesFill}
+            onChange={(e) => setUseCleanEdgesFill(e.target.checked)}
+            style={{ cursor: 'pointer' }}
+          />
+          <Typography variant="caption" color="text.secondary">
+            Use Fill
+          </Typography>
+          {useCleanEdgesFill && (
+            <input
+              type="color"
+              value={cleanEdgesFillColor}
+              onChange={(e) => setCleanEdgesFillColor(e.target.value)}
+              style={{ marginLeft: '8px', cursor: 'pointer' }}
+            />
+          )}
+        </Box>
+
+          <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <input
+              type="checkbox"
+              checked={useBezierCleanLines}
+              onChange={(e) => setUseBezierCleanLines(e.target.checked)}
+              style={{ cursor: 'pointer' }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              Use Bezier Curves
+            </Typography>
+          </Box>
+
+          {/* Download SVG Button */}
+          <button
+            onClick={() => downloadSVG(svgString, 'edge-detection.svg')}
+            style={{
+              width: '100%',
+              padding: '12px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              backgroundColor: '#9c27b0',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+              marginTop: '8px',
+            }}
+          >
+            Download SVG
+          </button>
+          </Collapse>
+        </Box>
+      )}
+
+      {/* Right Panel Toggle Button */}
+      {!showRightPanel && (
+        <IconButton
+          onClick={() => setShowRightPanel(true)}
+          sx={{
+            position: 'fixed',
+            top: 16,
+            right: 16,
+            zIndex: 1000,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
+          }}
+        >
+          <span style={{ fontSize: '20px' }}>☰</span>
+        </IconButton>
+      )}
+
       {/* Blur Controls */}
-      <Box
-        sx={{
-          position: 'fixed',
-          top: 16,
-          right: 16,
-          zIndex: 1000,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          alignItems: 'flex-end',
-        }}
-      >
-        <button
+      {showRightPanel && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 16,
+            right: 16,
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            alignItems: 'flex-end',
+          }}
+        >
+          {/* Hide Panel Button */}
+          <IconButton
+            size="small"
+            onClick={() => setShowRightPanel(false)}
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+              padding: '8px',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
+            }}
+          >
+            <span style={{ fontSize: '16px' }}>✕</span>
+          </IconButton>
+
+          <button
           onClick={() => {
             const modes: Array<'gaussian' | 'motion' | 'bokeh'> = ['gaussian', 'motion', 'bokeh'];
             const currentIndex = modes.indexOf(blurMode);
@@ -371,7 +876,116 @@ export default function SVGEdgeDetector() {
             </Box>
           </Box>
         )}
-      </Box>
+
+        {/* Preset Management */}
+        <Box
+          sx={{
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            padding: 3,
+            borderRadius: 2,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            minWidth: 280,
+            maxWidth: 320,
+          }}
+        >
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#673ab7', mb: 2 }}>
+            Presets
+          </Typography>
+
+          {/* Save Preset */}
+          <Box sx={{ mb: 2 }}>
+            <input
+              type="text"
+              placeholder="Preset name..."
+              value={presetName}
+              onChange={(e) => setPresetName(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && savePreset()}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                fontSize: '14px',
+                border: '2px solid #673ab7',
+                borderRadius: '4px',
+                outline: 'none',
+                marginBottom: '8px',
+              }}
+            />
+            <button
+              onClick={savePreset}
+              style={{
+                width: '100%',
+                padding: '10px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                backgroundColor: '#673ab7',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+              }}
+            >
+              Save Current Settings
+            </button>
+          </Box>
+
+          {/* Preset List */}
+          {presets.length > 0 && (
+            <Box sx={{ maxHeight: '300px', overflowY: 'auto' }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+                Saved Presets:
+              </Typography>
+              {presets.map((preset, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    mb: 1,
+                    padding: '8px',
+                    backgroundColor: 'rgba(103, 58, 183, 0.05)',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(103, 58, 183, 0.2)',
+                  }}
+                >
+                  <button
+                    onClick={() => loadPreset(preset.settings)}
+                    style={{
+                      flex: 1,
+                      padding: '6px 12px',
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      backgroundColor: '#673ab7',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      textAlign: 'left',
+                    }}
+                  >
+                    {preset.name}
+                  </button>
+                  <button
+                    onClick={() => deletePreset(index)}
+                    style={{
+                      padding: '6px 10px',
+                      fontSize: '12px',
+                      cursor: 'pointer',
+                      backgroundColor: '#f44336',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    ✕
+                  </button>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
+        </Box>
+      )}
 
       {/* Hidden video and canvas */}
       <Box sx={{ display: 'none' }}>
