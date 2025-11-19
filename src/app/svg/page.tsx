@@ -169,6 +169,13 @@ export default function SVGEdgeDetector() {
     };
   }, [isStreaming]);
 
+  const svgString = `
+    <?xml version="1.0" encoding="UTF-8"?>
+    <svg width="${innerWidth}" height="${innerHeight}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${innerWidth} ${innerHeight}">
+      ${svgCrosshatch}
+      ${svgCleanEdges}
+    </svg>
+  `
   return (
     <Box
       sx={{
@@ -235,7 +242,6 @@ export default function SVGEdgeDetector() {
             zIndex: 0,
           }}
         />
-        {/* Crosshatch SVG layer */}
         <Box
           sx={{
             position: 'absolute',
@@ -248,22 +254,7 @@ export default function SVGEdgeDetector() {
             height: '100%',
             opacity: crosshatchOpacity,
           }}
-          dangerouslySetInnerHTML={{ __html: svgCrosshatch }}
-        />
-        {/* Clean Edges SVG layer on top */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 2,
-            width: '100%',
-            height: '100%',
-            opacity: cleanEdgesOpacity,
-          }}
-          dangerouslySetInnerHTML={{ __html: svgCleanEdges }}
+          dangerouslySetInnerHTML={{ __html: svgString }}
         />
       </Box>
     </Box>
