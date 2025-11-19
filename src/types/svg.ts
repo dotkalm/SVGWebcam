@@ -18,4 +18,5 @@ export interface SVGGenerationOptions {
   strokeColor?: string;
   opacity?: number;
   fill?: string;
+  connectEdges?: boolean;
 }

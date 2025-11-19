@@ -23,7 +23,8 @@ export function edgeDataToSVG(
     strokeWidth = 1,
     strokeColor = '#000000',
     opacity,
-    fill = 'none'
+    fill = 'none',
+    connectEdges = false
   } = options;
 
   const paths = extractEdgePaths(data, width, height, threshold, minPathLength);
@@ -36,5 +37,5 @@ export function edgeDataToSVG(
   // Get current time for animation
   const time = typeof performance !== 'undefined' ? performance.now() : Date.now();
 
-  return generateSVG(simplifiedPaths, width, height, strokeWidth, strokeColor, time, opacity, fill);
+  return generateSVG(simplifiedPaths, width, height, strokeWidth, strokeColor, time, opacity, fill, connectEdges);
 }
