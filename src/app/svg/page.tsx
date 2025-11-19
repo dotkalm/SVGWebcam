@@ -20,8 +20,16 @@ export default function SVGEdgeDetector() {
   const animationFrameRef = useRef<number | null>(null);
   const isPortrait = useMediaQuery('(orientation: portrait)');
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });
-  const [svgContent, setSvgContent] = useState<string>('');
+  const [svgCrosshatch, setSvgCrosshatch] = useState<string>('');
+  const [svgCleanEdges, setSvgCleanEdges] = useState<string>('');
   const [blurredBackground, setBlurredBackground] = useState<string>('');
+  const crosshatchStrokeWidth = 0.7;
+  const cleanEdgesStrokeWidth = 0;
+  const crosshatchOpacity = .7;
+  const cleanEdgesOpacity = .7;
+  const crosshatchFill = 'none';
+  const cleanEdgesFill = 'dodgerblue';
+  const backgroundOpacity = .3;
 
   const { isStreaming } = useGetWebcam({
     facingMode: 'user',
@@ -50,9 +58,9 @@ export default function SVGEdgeDetector() {
 
   const { texturesRef, framebuffersRef } = useWebGLCanvas({
     canvasRef,
-    highThreshold: 0.35,
+    highThreshold: 1.85,
     isStreaming,
-    lowThreshold: 0.023,
+    lowThreshold: 0.02,
     videoRef,
   });
 
@@ -94,25 +102,47 @@ export default function SVGEdgeDetector() {
           blurCtx.putImageData(imageData, 0, 0);
 
           setBlurredBackground(blurCanvasRef.current.toDataURL());
-
-          // Unbind framebuffer to read from canvas (the final thresholded output)
-          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         }
 
-        const svg = readFramebufferToSVG(
-          glRef.current!,
-          canvasWidth,
-          canvasHeight,
-          {
-            threshold: 100,
-            minPathLength: 5,
-            simplification: 2,
-            strokeWidth: 1.5,
-            strokeColor: '#000000'
-          },
-        );
+        // Generate crosshatch SVG from blur framebuffer
+        if (glRef.current && framebuffersRef?.current?.blur) {
+          glRef.current.bindFramebuffer(glRef.current.FRAMEBUFFER, framebuffersRef.current.blur);
+          const svgCross = readFramebufferToSVG(
+            glRef.current!,
+            canvasWidth,
+            canvasHeight,
+            {
+              threshold: 190,
+              minPathLength: 6,
+              simplification: 10,
+              strokeWidth: crosshatchStrokeWidth,
+              strokeColor: '#000000',
+              opacity: crosshatchOpacity,
+              fill: crosshatchFill
+            },
+          );
+          setSvgCrosshatch(svgCross);
+        }
 
-        setSvgContent(svg);
+        // Generate clean edges SVG from canvas
+        if (glRef.current) {
+          glRef.current.bindFramebuffer(glRef.current.FRAMEBUFFER, null);
+          const svgClean = readFramebufferToSVG(
+            glRef.current!,
+            canvasWidth,
+            canvasHeight,
+            {
+              threshold: 100,
+              minPathLength: 5,
+              simplification: 2,
+              strokeWidth: cleanEdgesStrokeWidth,
+              strokeColor: '#000000',
+              opacity: cleanEdgesOpacity,
+              fill: cleanEdgesFill
+            },
+          );
+          setSvgCleanEdges(svgClean);
+        }
       } catch (error) {
         console.error('Error generating SVG:', error);
       }
@@ -128,12 +158,6 @@ export default function SVGEdgeDetector() {
       }
     };
   }, [isStreaming]);
-
-  const handleDownloadSVG = () => {
-    if (svgContent) {
-      downloadSVG(svgContent, `edge-detection-${Date.now()}.svg`);
-    }
-  };
 
   return (
     <Box
@@ -167,50 +191,71 @@ export default function SVGEdgeDetector() {
         />
       </Box>
 
-      {/* Live SVG Output */}
+      {/* Live SVG Output - Both Overlaid */}
+      <Box
+        sx={{
+          bgcolor: '#fff',
+          border: '2px solid #333',
+          borderRadius: 1,
+          minHeight: height,
+          minWidth: width,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          mx: 'auto',
+          maxWidth: '100%',
+          position: 'relative',
+        }}
+      >
+        {/* Blurred background layer */}
         <Box
           sx={{
-            bgcolor: '#fff',
-            border: '2px solid #333',
-            borderRadius: 1,
-            minHeight: height,
-            minWidth: width,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            overflow: 'hidden',
-            mx: 'auto',
-            maxWidth: '100%',
-            position: 'relative',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: blurredBackground ? `url(${blurredBackground})` : 'none',
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(40px)',
+            opacity: backgroundOpacity,
+            zIndex: 0,
           }}
-        >
-          {/* Blurred background layer */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: blurredBackground ? `url(${blurredBackground})` : 'none',
-              backgroundSize: 'contain',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              filter: 'blur(40px)',
-              zIndex: 0,
-            }}
-          />
-          {/* SVG content on top */}
-          <Box
-            sx={{
-              position: 'relative',
-              zIndex: 1,
-              width: '100%',
-              height: '100%',
-            }}
-            dangerouslySetInnerHTML={{ __html: svgContent }}
-          />
-        </Box>
+        />
+        {/* Crosshatch SVG layer */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1,
+            width: '100%',
+            height: '100%',
+            opacity: crosshatchOpacity,
+          }}
+          dangerouslySetInnerHTML={{ __html: svgCrosshatch }}
+        />
+        {/* Clean Edges SVG layer on top */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 2,
+            width: '100%',
+            height: '100%',
+            opacity: cleanEdgesOpacity,
+          }}
+          dangerouslySetInnerHTML={{ __html: svgCleanEdges }}
+        />
+      </Box>
     </Box>
   );
 }

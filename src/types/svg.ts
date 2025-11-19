@@ -16,4 +16,6 @@ export interface SVGGenerationOptions {
   simplification?: number;
   strokeWidth?: number;
   strokeColor?: string;
+  opacity?: number;
+  fill?: string;
 }

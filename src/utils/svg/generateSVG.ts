@@ -31,7 +31,9 @@ export function generateSVG(
   height: number,
   strokeWidth: number,
   strokeColor: string,
-  time?: number
+  time?: number,
+  globalOpacity?: number,
+  fill: string = 'none'
 ): string {
   // Calculate oscillating dash offset based on time
   const dashOffset = time !== undefined
@@ -71,7 +73,7 @@ export function generateSVG(
   }
 
   // Scale stroke width proportionally
-  const scaledStrokeWidth = strokeWidth * scaleX;
+  const scaledStrokeWidth = strokeWidth * scaleX * 2;
 
   const pathElements = paths
     .map(path => {
@@ -90,7 +92,9 @@ export function generateSVG(
         })
         .join(' ');
 
-      const opacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
+      // Calculate path opacity, applying global opacity if provided
+      const pathOpacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
+      const opacity = globalOpacity !== undefined ? globalOpacity : pathOpacity;
 
       // Create dash array from actual pixel intensity values
       // Sample every few points to avoid too many values
@@ -106,16 +110,15 @@ export function generateSVG(
           .join(' ')
         : '5 5'; // Fallback dash pattern
 
-      return `    <path 
-        d="${d}" 
-        stroke="${strokeColor}" 
-        stroke-width="${scaledStrokeWidth.toFixed(2)}" 
-        fill="none"
-        opacity="${opacity.toFixed(2)}" 
-        stroke-linecap="round" 
-        stroke-linejoin="round" 
-        stroke-dasharray="${dashArray}" 
-        stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
+      return `    <path
+        d="${d}"
+        stroke="${strokeColor}"
+        stroke-width="${scaledStrokeWidth.toFixed(2)}"
+        fill="${fill}"
+        opacity="${opacity.toFixed(2)}"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />`;
     })
     .filter(p => p.length > 0)
     .join('\n');
@@ -127,3 +130,6 @@ ${pathElements}
   </g>
 </svg>`;
 }
+
+        // stroke-dasharray="${dashArray}" 
+        // stroke-dashoffset="${dashOffset.toFixed(2)}"
