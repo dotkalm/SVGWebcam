@@ -24,7 +24,7 @@ export default function SVGEdgeDetector() {
   const [svgCleanEdges, setSvgCleanEdges] = useState<string>('');
   const [blurredBackground, setBlurredBackground] = useState<string>('');
   const crosshatchStrokeWidth = 0.7;
-  const cleanEdgesStrokeWidth = 0;
+  const cleanEdgesStrokeWidth = .4;
   const crosshatchOpacity = .7;
   const cleanEdgesOpacity = .7;
   const crosshatchFill = 'none';
@@ -60,7 +60,7 @@ export default function SVGEdgeDetector() {
     canvasRef,
     highThreshold: 1.85,
     isStreaming,
-    lowThreshold: 0.02,
+    lowThreshold: 0.05,
     videoRef,
   });
 
