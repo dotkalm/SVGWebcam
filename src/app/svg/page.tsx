@@ -289,7 +289,7 @@ export default function SVGEdgeDetector() {
   ]);
 
   const svgString = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${innerWidth}" height="${innerHeight}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${innerWidth} ${innerHeight}">
+<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
 ${svgCrosshatch}
 ${svgCleanEdges}
 </svg>`
