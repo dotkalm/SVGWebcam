@@ -1,4 +1,4 @@
-import type { Point, EdgePath } from '@/types/svg';
+import type { SVGPoint, EdgePath } from '@/types/svg';
 
 /**
  * Extract continuous edge paths from pixel data

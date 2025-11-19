@@ -1,4 +1,4 @@
-import type { Point } from '@/types/svg';
+import type { SVGPoint } from '@/types/svg';
 
 /**
  * Calculate perpendicular distance from point to line

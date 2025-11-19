@@ -1,11 +1,11 @@
-export interface Point {
+export interface SVGPoint {
   x: number;
   y: number;
   intensity?: number;
 }
 
 export interface EdgePath {
-  points: Point[];
+  points: SVGPoint[];
   intensity: number;
   intensities?: number[];
 }
