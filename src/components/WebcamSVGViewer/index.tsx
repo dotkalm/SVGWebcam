@@ -28,8 +28,8 @@ import { DEFAULT_CONFIG, DEFAULT_UI_STATE, type ViewerConfig, type UIState } fro
 
 export default function WebcamSVGViewer() {
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });
-  const [svgCleanEdges, setSvgCleanEdges] = useState<string>('');
-  const [svgCrosshatch, setSvgCrosshatch] = useState<string>('');
+  const [svgOutlinePaths, setSvgOutlinePaths] = useState<string>('');
+  const [svgBackground, setSvgBackground] = useState<string>('');
   const [config, setConfig] = useState<ViewerConfig>(DEFAULT_CONFIG);
   const [uiState, setUIState] = useState<UIState>(DEFAULT_UI_STATE);
   const [presets, setPresets] = useState<Preset[]>([]);
@@ -53,8 +53,8 @@ export default function WebcamSVGViewer() {
   
   const isPortrait = useMediaQuery('(orientation: portrait)');
   const { width, height } = useGetCurrentWindowSize();
-  const connectEdgesCleanLines = false;
-  const connectEdgesCrosshatch = true;
+  const connectEdgesOutlinePaths = false;
+  const connectEdgesBackground = true;
 
   const { isStreaming } = useGetWebcam({
     facingMode: 'user',
@@ -140,7 +140,7 @@ export default function WebcamSVGViewer() {
           extractBlurTexture(gl, blurCtx, framebuffersRef.current.blur, canvasWidth, canvasHeight);
         }
 
-        // Generate crosshatch SVG from blur framebuffer
+        // Generate background SVG from blur framebuffer
         if (glRef.current && framebuffersRef?.current?.blur) {
           const svgCross = generateSVGFromFramebuffer(
             glRef.current,
@@ -149,22 +149,22 @@ export default function WebcamSVGViewer() {
             canvasHeight,
             readFramebufferToSVG,
             {
-              threshold: config.crosshatchThreshold,
+              threshold: config.backgroundThreshold,
               minPathLength: 3,
-              simplification: config.crosshatchSimplification,
-              strokeWidth: config.crosshatchStrokeWidth,
+              simplification: config.backgroundSimplification,
+              strokeWidth: config.backgroundStrokeWidth,
               strokeColor: '#000000',
-              opacity: config.crosshatchOpacity,
-              fill: config.useCrosshatchFill ? config.crosshatchFillColor : 'none',
-              connectEdges: connectEdgesCrosshatch,
-              useBezier: config.useBezierCrosshatch,
-              groupId: 'crosshatch'
+              opacity: config.backgroundOpacity,
+              fill: config.useBackgroundFill ? config.backgroundFillColor : 'none',
+              connectEdges: connectEdgesBackground,
+              useBezier: config.useBezierBackground,
+              groupId: 'background'
             }
           );
-          setSvgCrosshatch(svgCross);
+          setSvgBackground(svgCross);
         }
 
-        // Generate clean edges SVG from canvas
+        // Generate outline paths SVG from canvas
         if (glRef.current) {
           const svgClean = generateSVGFromFramebuffer(
             glRef.current,
@@ -174,18 +174,18 @@ export default function WebcamSVGViewer() {
             readFramebufferToSVG,
             {
               threshold: 10,
-              minPathLength: config.cleanEdgeMinPathLength,
-              simplification: config.cleanEdgeSimplification,
-              strokeWidth: config.cleanEdgesStrokeWidth,
+              minPathLength: config.outlinePathMinPathLength,
+              simplification: config.outlinePathSimplification,
+              strokeWidth: config.outlinePathsStrokeWidth,
               strokeColor: '#000000',
-              opacity: config.cleanEdgesOpacity,
-              fill: config.useCleanEdgesFill ? config.cleanEdgesFillColor : 'none',
-              connectEdges: connectEdgesCleanLines,
-              useBezier: config.useBezierCleanLines,
-              groupId: 'cleanLines'
+              opacity: config.outlinePathsOpacity,
+              fill: config.useOutlinePathsFill ? config.outlinePathsFillColor : 'none',
+              connectEdges: connectEdgesOutlinePaths,
+              useBezier: config.useBezierOutlinePaths,
+              groupId: 'outlinePaths'
             }
           );
-          setSvgCleanEdges(svgClean);
+          setSvgOutlinePaths(svgClean);
         }
       } catch (error) {
         console.error('Error generating SVG:', error);
@@ -203,7 +203,7 @@ export default function WebcamSVGViewer() {
     };
   }, [isStreaming, config]);
 
-  const svgString = createSVGString(width, height, svgCrosshatch, svgCleanEdges);
+  const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths);
 
   return (
     <Box
@@ -286,7 +286,7 @@ export default function WebcamSVGViewer() {
             zIndex: 1,
             width: '100%',
             height: '100%',
-            opacity: config.crosshatchOpacity,
+            opacity: config.backgroundOpacity,
           }}
           dangerouslySetInnerHTML={{ __html: svgString }}
         />

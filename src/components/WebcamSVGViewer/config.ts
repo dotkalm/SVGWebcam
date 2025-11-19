@@ -10,33 +10,32 @@ export interface ViewerConfig {
   lowThreshold: number;
   
   // SVG generation
-  crosshatchThreshold: number;
-  crosshatchSimplification: number;
-  cleanEdgeMinPathLength: number;
-  cleanEdgeSimplification: number;
+  backgroundThreshold: number;
+  backgroundSimplification: number;
+  outlinePathMinPathLength: number;
+  outlinePathSimplification: number;
   
-  // Crosshatch styling
-  crosshatchStrokeWidth: number;
-  crosshatchOpacity: number;
-  useCrosshatchFill: boolean;
-  crosshatchFillColor: string;
-  useBezierCrosshatch: boolean;
+  // Background styling
+  backgroundStrokeWidth: number;
+  backgroundOpacity: number;
+  useBackgroundFill: boolean;
+  backgroundFillColor: string;
+  useBezierBackground: boolean;
   
-  // Clean edge styling
-  cleanEdgesStrokeWidth: number;
-  cleanEdgesOpacity: number;
-  useCleanEdgesFill: boolean;
-  cleanEdgesFillColor: string;
-  useBezierCleanLines: boolean;
+  // Outline path styling
+  outlinePathsStrokeWidth: number;
+  outlinePathsOpacity: number;
+  useOutlinePathsFill: boolean;
+  outlinePathsFillColor: string;
+  useBezierOutlinePaths: boolean;
 }
 
 export interface UIState {
   showLeftPanel: boolean;
   showRightPanel: boolean;
   expandEdgeDetection: boolean;
-  expandSVGGeneration: boolean;
-  expandCrosshatchStyling: boolean;
-  expandCleanEdgeStyling: boolean;
+  expandBackgroundStyling: boolean;
+  expandOutlinePathStyling: boolean;
 }
 
 export const DEFAULT_CONFIG: ViewerConfig = {
@@ -46,27 +45,26 @@ export const DEFAULT_CONFIG: ViewerConfig = {
   motionBlurAngle: 0,
   highThreshold: 0.02,
   lowThreshold: 0.02,
-  crosshatchThreshold: 140,
-  crosshatchSimplification: 3,
-  cleanEdgeMinPathLength: 5,
-  cleanEdgeSimplification: 4,
-  crosshatchStrokeWidth: 0.12,
-  cleanEdgesStrokeWidth: 0.3,
-  crosshatchOpacity: 1,
-  cleanEdgesOpacity: 0.6,
-  useCrosshatchFill: false,
-  useCleanEdgesFill: false,
-  crosshatchFillColor: '#000000',
-  cleanEdgesFillColor: '#000000',
-  useBezierCrosshatch: true,
-  useBezierCleanLines: true,
+  backgroundThreshold: 140,
+  backgroundSimplification: 3,
+  outlinePathMinPathLength: 5,
+  outlinePathSimplification: 4,
+  backgroundStrokeWidth: 0.12,
+  outlinePathsStrokeWidth: 0.3,
+  backgroundOpacity: 1,
+  outlinePathsOpacity: 0.6,
+  useBackgroundFill: false,
+  useOutlinePathsFill: false,
+  backgroundFillColor: '#000000',
+  outlinePathsFillColor: '#000000',
+  useBezierBackground: true,
+  useBezierOutlinePaths: true,
 };
 
 export const DEFAULT_UI_STATE: UIState = {
   showLeftPanel: true,
   showRightPanel: true,
   expandEdgeDetection: true,
-  expandSVGGeneration: true,
-  expandCrosshatchStyling: true,
-  expandCleanEdgeStyling: true,
+  expandBackgroundStyling: true,
+  expandOutlinePathStyling: true,
 };

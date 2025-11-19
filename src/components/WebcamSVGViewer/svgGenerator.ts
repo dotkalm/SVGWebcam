@@ -38,12 +38,12 @@ export const extractBlurTexture = (
 export const createSVGString = (
   width: number,
   height: number,
-  svgCrosshatch: string,
-  svgCleanEdges: string
+  svgBackground: string,
+  svgOutlinePaths: string
 ): string => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
-${svgCrosshatch}
-${svgCleanEdges}
+${svgBackground}
+${svgOutlinePaths}
 </svg>`;
 };

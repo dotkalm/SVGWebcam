@@ -4,6 +4,7 @@ import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
+import Switch from '@mui/material/Switch';
 import type { ViewerConfig, UIState } from './config';
 
 interface LeftControlPanelProps {
@@ -54,7 +55,7 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             left: 16,
             zIndex: 1000,
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            padding: 3,
+            padding: 2,
             borderRadius: 2,
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             minWidth: 280,
@@ -64,7 +65,7 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
           }}
         >
           {/* Hide Panel Button */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 0.5 }}>
             <IconButton
               size="small"
               onClick={() => updateUIState({ showLeftPanel: false })}
@@ -75,7 +76,7 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
           </Box>
 
           {/* Edge Detection Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
               Edge Detection
             </Typography>
@@ -89,8 +90,8 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
           </Box>
 
           <Collapse in={uiState.expandEdgeDetection}>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
                 High Threshold: {config.highThreshold.toFixed(3)}
               </Typography>
               <Slider
@@ -105,8 +106,8 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
                 Low Threshold: {config.lowThreshold.toFixed(3)}
               </Typography>
               <Slider
@@ -122,28 +123,28 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             </Box>
           </Collapse>
 
-          {/* SVG Generation Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3, mb: 2 }}>
+          {/* Background Styling Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-              SVG Generation
+              Background Styling
             </Typography>
             <IconButton
               size="small"
-              onClick={() => updateUIState({ expandSVGGeneration: !uiState.expandSVGGeneration })}
+              onClick={() => updateUIState({ expandBackgroundStyling: !uiState.expandBackgroundStyling })}
               sx={{ padding: '4px' }}
             >
-              <span style={{ fontSize: '16px' }}>{uiState.expandSVGGeneration ? '▼' : '▶'}</span>
+              <span style={{ fontSize: '16px' }}>{uiState.expandBackgroundStyling ? '▼' : '▶'}</span>
             </IconButton>
           </Box>
 
-          <Collapse in={uiState.expandSVGGeneration}>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Crosshatch Threshold: {config.crosshatchThreshold}
+          <Collapse in={uiState.expandBackgroundStyling}>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Background Threshold: {config.backgroundThreshold}
               </Typography>
               <Slider
-                value={config.crosshatchThreshold}
-                onChange={(_, value) => updateConfig({ crosshatchThreshold: value as number })}
+                value={config.backgroundThreshold}
+                onChange={(_, value) => updateConfig({ backgroundThreshold: value as number })}
                 min={1}
                 max={255}
                 step={1}
@@ -152,13 +153,13 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Crosshatch Simplification: {config.crosshatchSimplification}
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Background Simplification: {config.backgroundSimplification}
               </Typography>
               <Slider
-                value={config.crosshatchSimplification}
-                onChange={(_, value) => updateConfig({ crosshatchSimplification: value as number })}
+                value={config.backgroundSimplification}
+                onChange={(_, value) => updateConfig({ backgroundSimplification: value as number })}
                 min={1}
                 max={10}
                 step={0.5}
@@ -167,13 +168,95 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Clean Edge Min Path Length: {config.cleanEdgeMinPathLength}
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Stroke Width: {config.backgroundStrokeWidth.toFixed(2)}
               </Typography>
               <Slider
-                value={config.cleanEdgeMinPathLength}
-                onChange={(_, value) => updateConfig({ cleanEdgeMinPathLength: value as number })}
+                value={config.backgroundStrokeWidth}
+                onChange={(_, value) => updateConfig({ backgroundStrokeWidth: value as number })}
+                min={0.01}
+                max={2}
+                step={0.01}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => value.toFixed(2)}
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Opacity: {config.backgroundOpacity.toFixed(2)}
+              </Typography>
+              <Slider
+                value={config.backgroundOpacity}
+                onChange={(_, value) => updateConfig({ backgroundOpacity: value as number })}
+                min={0}
+                max={1}
+                step={0.01}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => value.toFixed(2)}
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="caption" color="text.secondary">
+                Use Fill
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {config.useBackgroundFill && (
+                  <input
+                    type="color"
+                    value={config.backgroundFillColor}
+                    onChange={(e) => updateConfig({ backgroundFillColor: e.target.value })}
+                    style={{ cursor: 'pointer', height: '24px', width: '32px', border: 'none', borderRadius: '4px' }}
+                  />
+                )}
+                <Switch
+                  checked={config.useBackgroundFill}
+                  onChange={(e) => updateConfig({ useBackgroundFill: e.target.checked })}
+                  size="small"
+                  sx={{ color: '#9c27b0' }}
+                />
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="caption" color="text.secondary">
+                Use Bezier Curves
+              </Typography>
+              <Switch
+                checked={config.useBezierBackground}
+                onChange={(e) => updateConfig({ useBezierBackground: e.target.checked })}
+                size="small"
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+          </Collapse>
+
+          {/* Outline Path Styling Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
+              Outline Path Styling
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => updateUIState({ expandOutlinePathStyling: !uiState.expandOutlinePathStyling })}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{uiState.expandOutlinePathStyling ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+
+          <Collapse in={uiState.expandOutlinePathStyling}>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Outline Path Min Path Length: {config.outlinePathMinPathLength}
+              </Typography>
+              <Slider
+                value={config.outlinePathMinPathLength}
+                onChange={(_, value) => updateConfig({ outlinePathMinPathLength: value as number })}
                 min={1}
                 max={20}
                 step={1}
@@ -182,13 +265,13 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Clean Edge Simplification: {config.cleanEdgeSimplification}
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Outline Path Simplification: {config.outlinePathSimplification}
               </Typography>
               <Slider
-                value={config.cleanEdgeSimplification}
-                onChange={(_, value) => updateConfig({ cleanEdgeSimplification: value as number })}
+                value={config.outlinePathSimplification}
+                onChange={(_, value) => updateConfig({ outlinePathSimplification: value as number })}
                 min={1}
                 max={10}
                 step={0.5}
@@ -196,30 +279,14 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 sx={{ color: '#9c27b0' }}
               />
             </Box>
-          </Collapse>
 
-          {/* Crosshatch Styling Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3, mb: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-              Crosshatch Styling
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={() => updateUIState({ expandCrosshatchStyling: !uiState.expandCrosshatchStyling })}
-              sx={{ padding: '4px' }}
-            >
-              <span style={{ fontSize: '16px' }}>{uiState.expandCrosshatchStyling ? '▼' : '▶'}</span>
-            </IconButton>
-          </Box>
-
-          <Collapse in={uiState.expandCrosshatchStyling}>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Stroke Width: {config.crosshatchStrokeWidth.toFixed(2)}
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Stroke Width: {config.outlinePathsStrokeWidth.toFixed(2)}
               </Typography>
               <Slider
-                value={config.crosshatchStrokeWidth}
-                onChange={(_, value) => updateConfig({ crosshatchStrokeWidth: value as number })}
+                value={config.outlinePathsStrokeWidth}
+                onChange={(_, value) => updateConfig({ outlinePathsStrokeWidth: value as number })}
                 min={0.01}
                 max={2}
                 step={0.01}
@@ -229,13 +296,13 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Opacity: {config.crosshatchOpacity.toFixed(2)}
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Opacity: {config.outlinePathsOpacity.toFixed(2)}
               </Typography>
               <Slider
-                value={config.crosshatchOpacity}
-                onChange={(_, value) => updateConfig({ crosshatchOpacity: value as number })}
+                value={config.outlinePathsOpacity}
+                onChange={(_, value) => updateConfig({ outlinePathsOpacity: value as number })}
                 min={0}
                 max={1}
                 step={0.01}
@@ -245,116 +312,38 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               />
             </Box>
 
-            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <input
-                type="checkbox"
-                checked={config.useCrosshatchFill}
-                onChange={(e) => updateConfig({ useCrosshatchFill: e.target.checked })}
-                style={{ cursor: 'pointer' }}
-              />
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="caption" color="text.secondary">
                 Use Fill
               </Typography>
-              {config.useCrosshatchFill && (
-                <input
-                  type="color"
-                  value={config.crosshatchFillColor}
-                  onChange={(e) => updateConfig({ crosshatchFillColor: e.target.value })}
-                  style={{ marginLeft: '8px', cursor: 'pointer' }}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {config.useOutlinePathsFill && (
+                  <input
+                    type="color"
+                    value={config.outlinePathsFillColor}
+                    onChange={(e) => updateConfig({ outlinePathsFillColor: e.target.value })}
+                    style={{ cursor: 'pointer', height: '24px', width: '32px', border: 'none', borderRadius: '4px' }}
+                  />
+                )}
+                <Switch
+                  checked={config.useOutlinePathsFill}
+                  onChange={(e) => updateConfig({ useOutlinePathsFill: e.target.checked })}
+                  size="small"
+                  sx={{ color: '#9c27b0' }}
                 />
-              )}
+              </Box>
             </Box>
 
-            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <input
-                type="checkbox"
-                checked={config.useBezierCrosshatch}
-                onChange={(e) => updateConfig({ useBezierCrosshatch: e.target.checked })}
-                style={{ cursor: 'pointer' }}
-              />
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="caption" color="text.secondary">
                 Use Bezier Curves
               </Typography>
-            </Box>
-          </Collapse>
-
-          {/* Clean Edge Styling Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3, mb: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-              Clean Edge Styling
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={() => updateUIState({ expandCleanEdgeStyling: !uiState.expandCleanEdgeStyling })}
-              sx={{ padding: '4px' }}
-            >
-              <span style={{ fontSize: '16px' }}>{uiState.expandCleanEdgeStyling ? '▼' : '▶'}</span>
-            </IconButton>
-          </Box>
-
-          <Collapse in={uiState.expandCleanEdgeStyling}>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Stroke Width: {config.cleanEdgesStrokeWidth.toFixed(2)}
-              </Typography>
-              <Slider
-                value={config.cleanEdgesStrokeWidth}
-                onChange={(_, value) => updateConfig({ cleanEdgesStrokeWidth: value as number })}
-                min={0.01}
-                max={2}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
+              <Switch
+                checked={config.useBezierOutlinePaths}
+                onChange={(e) => updateConfig({ useBezierOutlinePaths: e.target.checked })}
+                size="small"
                 sx={{ color: '#9c27b0' }}
               />
-            </Box>
-
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-                Opacity: {config.cleanEdgesOpacity.toFixed(2)}
-              </Typography>
-              <Slider
-                value={config.cleanEdgesOpacity}
-                onChange={(_, value) => updateConfig({ cleanEdgesOpacity: value as number })}
-                min={0}
-                max={1}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <input
-                type="checkbox"
-                checked={config.useCleanEdgesFill}
-                onChange={(e) => updateConfig({ useCleanEdgesFill: e.target.checked })}
-                style={{ cursor: 'pointer' }}
-              />
-              <Typography variant="caption" color="text.secondary">
-                Use Fill
-              </Typography>
-              {config.useCleanEdgesFill && (
-                <input
-                  type="color"
-                  value={config.cleanEdgesFillColor}
-                  onChange={(e) => updateConfig({ cleanEdgesFillColor: e.target.value })}
-                  style={{ marginLeft: '8px', cursor: 'pointer' }}
-                />
-              )}
-            </Box>
-
-            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <input
-                type="checkbox"
-                checked={config.useBezierCleanLines}
-                onChange={(e) => updateConfig({ useBezierCleanLines: e.target.checked })}
-                style={{ cursor: 'pointer' }}
-              />
-              <Typography variant="caption" color="text.secondary">
-                Use Bezier Curves
-              </Typography>
             </Box>
 
             {/* Download SVG Button */}

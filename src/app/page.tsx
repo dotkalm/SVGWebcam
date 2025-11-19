@@ -1,9 +1,6 @@
-import { EdgeDetector } from '@/components/EdgeDetector';
+'use client'
+import WebcamSVGViewer from '@/components/WebcamSVGViewer';
 
-export default function Home() {
-  return (
-    <div>
-      <EdgeDetector />
-    </div>
-  );
+export default function SVGEdgeDetector() {
+  return <WebcamSVGViewer />;
 }
