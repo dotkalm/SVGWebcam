@@ -23,15 +23,17 @@ export default function SVGEdgeDetector() {
   const [svgCrosshatch, setSvgCrosshatch] = useState<string>('');
   const [svgCleanEdges, setSvgCleanEdges] = useState<string>('');
   const [blurredBackground, setBlurredBackground] = useState<string>('');
-  const crosshatchStrokeWidth = 0.3;
-  const cleanEdgesStrokeWidth = .4;
+  const crosshatchStrokeWidth = 0.12;
+  const cleanEdgesStrokeWidth = .3;
   const crosshatchOpacity = 1;
-  const cleanEdgesOpacity = .7;
+  const cleanEdgesOpacity = .6;
   const crosshatchFill = 'none';
   const cleanEdgesFill = 'dodgerblue';
   const backgroundOpacity = 0;
   const connectEdgesCrosshatch = true;
   const connectEdgesCleanLines = false;
+  const useBezierCrosshatch = false;
+  const useBezierCleanLines = true;
 
   const { isStreaming } = useGetWebcam({
     facingMode: 'user',
@@ -62,7 +64,7 @@ export default function SVGEdgeDetector() {
     canvasRef,
     highThreshold: 1.85,
     isStreaming,
-    lowThreshold: 0.05,
+    lowThreshold: 0.02,
     videoRef,
   });
 
@@ -121,7 +123,9 @@ export default function SVGEdgeDetector() {
               strokeColor: '#000000',
               opacity: crosshatchOpacity,
               fill: crosshatchFill,
-              connectEdges: connectEdgesCrosshatch
+              connectEdges: connectEdgesCrosshatch,
+              useBezier: useBezierCrosshatch,
+              groupId: 'crosshatch'
             },
           );
           setSvgCrosshatch(svgCross);
@@ -142,7 +146,9 @@ export default function SVGEdgeDetector() {
               strokeColor: '#000000',
               opacity: cleanEdgesOpacity,
               fill: cleanEdgesFill,
-              connectEdges: connectEdgesCleanLines
+              connectEdges: connectEdgesCleanLines,
+              useBezier: useBezierCleanLines,
+              groupId: 'cleanLines'
             },
           );
           setSvgCleanEdges(svgClean);

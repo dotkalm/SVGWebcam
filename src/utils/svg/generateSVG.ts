@@ -25,6 +25,45 @@ function transformPoint(
 /**
  * Generate SVG string from edge paths
  */
+/**
+ * Generate smooth Bezier curve commands from points
+ */
+
+function getRandomDivisor(): number {
+  return 1.975 + Math.random() * 0.05; // return random number between 1.975 and 2.025
+}
+function generateBezierPath(points: Array<{x: number, y: number}>): string {
+  if (points.length < 2) return '';
+  if (points.length === 2) {
+    return `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)} L ${points[1].x.toFixed(2)} ${points[1].y.toFixed(2)}`;
+  }
+
+  const commands: string[] = [];
+  commands.push(`M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`);
+
+  for (let i = 1; i < points.length - 1; i++) {
+    const current = points[i];
+    const next = points[i + 1];
+
+    // Control point at current point
+    const cpX = current.x;
+    const cpY = current.y;
+
+    // End point at midpoint between current and next
+    const endX = (current.x + next.x) / getRandomDivisor();
+const endY = (current.y + next.y) / getRandomDivisor();
+
+    commands.push(`Q ${cpX.toFixed(2)} ${cpY.toFixed(2)}, ${endX.toFixed(2)} ${endY.toFixed(2)}`);
+  }
+
+  // Final segment to last point
+  const last = points[points.length - 1];
+  const secondLast = points[points.length - 2];
+  commands.push(`Q ${secondLast.x.toFixed(2)} ${secondLast.y.toFixed(2)}, ${last.x.toFixed(2)} ${last.y.toFixed(2)}`);
+
+  return commands.join(' ');
+}
+
 export function generateSVG(
   paths: EdgePath[],
   width: number,
@@ -34,7 +73,9 @@ export function generateSVG(
   time?: number,
   globalOpacity?: number,
   fill: string = 'none',
-  connectEdges: boolean = false
+  connectEdges: boolean = false,
+  useBezier: boolean = false,
+  groupId: string = 'edges'
 ): string {
   // Calculate oscillating dash offset based on time
   const dashOffset = time !== undefined
@@ -81,95 +122,138 @@ export function generateSVG(
   if (connectEdges && paths.length > 0) {
     // Connect paths, but only if distance is less than 1/4 of viewport
     const maxDistance = Math.max(innerWidth, innerHeight) / 4;
-    const allPoints: string[] = [];
-    let lastPoint: { x: number; y: number } | null = null;
 
-    paths.forEach((path, pathIndex) => {
-      if (path.points.length < 2) return;
+    if (useBezier) {
+      // Collect all transformed points with segments
+      const segments: Array<Array<{x: number, y: number}>> = [];
+      let currentSegment: Array<{x: number, y: number}> = [];
+      let lastPoint: { x: number; y: number } | null = null;
 
-      path.points.forEach((p, i) => {
-        // Flip Y coordinate (WebGL origin is bottom-left, SVG is top-left)
-        const flippedY = height - p.y;
+      paths.forEach((path) => {
+        if (path.points.length < 2) return;
 
-        // Apply scaling and translation transformation
-        const transformed = transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
+        path.points.forEach((p, i) => {
+          const flippedY = height - p.y;
+          const transformed = transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
 
-        if (i === 0) {
-          // First point of a new path
-          if (lastPoint === null) {
-            // Very first point overall
-            allPoints.push(`M ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
-          } else {
-            // Calculate distance from last point
+          if (i === 0 && lastPoint !== null) {
+            // Check distance between segments
             const dx = transformed.x - lastPoint.x;
             const dy = transformed.y - lastPoint.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance <= maxDistance) {
-              // Close enough - draw line to connect
-              allPoints.push(`L ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
-            } else {
-              // Too far - start new disconnected segment
-              allPoints.push(`M ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
+            if (distance > maxDistance) {
+              // Too far - start new segment
+              if (currentSegment.length > 0) {
+                segments.push(currentSegment);
+                currentSegment = [];
+              }
             }
           }
-        } else {
-          // Subsequent points within the same path - always connect
-          allPoints.push(`L ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
-        }
 
-        lastPoint = transformed;
+          currentSegment.push(transformed);
+          lastPoint = transformed;
+        });
       });
-    });
 
-    const d = allPoints.join(' ');
-    const opacity = globalOpacity !== undefined ? globalOpacity : 1;
+      if (currentSegment.length > 0) {
+        segments.push(currentSegment);
+      }
 
-    pathElements = `    <path
-      d="${d}"
-      stroke="${strokeColor}"
-      stroke-width="${scaledStrokeWidth.toFixed(2)}"
-      fill="${fill}"
-      opacity="${opacity.toFixed(2)}"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />`;
+      // Generate Bezier paths for each segment
+      const d = segments.map(seg => generateBezierPath(seg)).join(' ');
+      const opacity = globalOpacity !== undefined ? globalOpacity : 1;
+
+      pathElements = `    <path
+        d="${d}"
+        stroke="${strokeColor}"
+        stroke-width="${scaledStrokeWidth.toFixed(2)}"
+        fill="${fill}"
+        opacity="${opacity.toFixed(2)}"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />`;
+    } else {
+      // Straight lines version
+      const allPoints: string[] = [];
+      let lastPoint: { x: number; y: number } | null = null;
+
+      paths.forEach((path) => {
+        if (path.points.length < 2) return;
+
+        path.points.forEach((p, i) => {
+          const flippedY = height - p.y;
+          const transformed = transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
+
+          if (i === 0) {
+            if (lastPoint === null) {
+              allPoints.push(`M ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
+            } else {
+              const dx = transformed.x - lastPoint.x;
+              const dy = transformed.y - lastPoint.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+
+              if (distance <= maxDistance) {
+                allPoints.push(`L ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
+              } else {
+                allPoints.push(`M ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
+              }
+            }
+          } else {
+            allPoints.push(`L ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`);
+          }
+
+          lastPoint = transformed;
+        });
+      });
+
+      const d = allPoints.join(' ');
+      const opacity = globalOpacity !== undefined ? globalOpacity : 1;
+
+      pathElements = `    <path
+        d="${d}"
+        stroke="${strokeColor}"
+        stroke-width="${scaledStrokeWidth.toFixed(2)}"
+        fill="${fill}"
+        opacity="${opacity.toFixed(2)}"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />`;
+    }
   } else {
     // Keep paths separate
     pathElements = paths
       .map(path => {
         if (path.points.length < 2) return '';
 
-        // Transform each point from video space to window space
-        const d = path.points
-          .map((p, i) => {
-            // Flip Y coordinate (WebGL origin is bottom-left, SVG is top-left)
+        let d: string;
+
+        if (useBezier) {
+          // Transform all points first
+          const transformedPoints = path.points.map(p => {
             const flippedY = height - p.y;
+            return transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
+          });
+          // Generate Bezier path
+          d = generateBezierPath(transformedPoints);
+        } else {
+          // Transform each point from video space to window space
+          d = path.points
+            .map((p, i) => {
+              // Flip Y coordinate (WebGL origin is bottom-left, SVG is top-left)
+              const flippedY = height - p.y;
 
-            // Apply scaling and translation transformation
-            const transformed = transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
+              // Apply scaling and translation transformation
+              const transformed = transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
 
-            return `${i === 0 ? 'M' : 'L'} ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`;
-          })
-          .join(' ');
+              return `${i === 0 ? 'M' : 'L'} ${transformed.x.toFixed(2)} ${transformed.y.toFixed(2)}`;
+            })
+            .join(' ');
+        }
 
         // Calculate path opacity, applying global opacity if provided
         const pathOpacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
         const opacity = globalOpacity !== undefined ? globalOpacity : pathOpacity;
-
-        // Create dash array from actual pixel intensity values
-        // Sample every few points to avoid too many values
-        const intensities = path.intensities || [];
-        const sampleRate = Math.max(1, Math.floor(intensities.length / 20));
-        const dashArray = intensities.length > 0
-          ? intensities
-            .filter((_, i) => i % sampleRate === 0)
-            .map(intensity => {
-              // Map intensity (0-255) to dash length (1-30)
-              return Math.max(1, Math.floor(intensity / 255 * 30));
-            })
-            .join(' ')
-          : '5 5'; // Fallback dash pattern
 
         return `    <path
           d="${d}"
@@ -187,7 +271,7 @@ export function generateSVG(
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${innerWidth}" height="${innerHeight}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${innerWidth} ${innerHeight}">
-  <g id="edges">
+  <g id="${groupId}">
 ${pathElements}
   </g>
 </svg>`;

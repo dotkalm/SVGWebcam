@@ -19,4 +19,6 @@ export interface SVGGenerationOptions {
   opacity?: number;
   fill?: string;
   connectEdges?: boolean;
+  useBezier?: boolean;
+  groupId?: string;
 }
