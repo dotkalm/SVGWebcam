@@ -5,6 +5,8 @@ import {
   useEffect,
 } from 'react';
 import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
+import Typography from '@mui/material/Typography';
 import { useMediaQuery } from '@mui/material';
 import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
@@ -12,28 +14,30 @@ import { useGetCurrentWindowSize } from '@/hooks/useGetCurrentWindowSize';
 import { readFramebufferToSVG, downloadSVG } from '@/utils';
 
 export default function SVGEdgeDetector() {
-  const { width, height } = useGetCurrentWindowSize();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const blurCanvasRef = useRef<HTMLCanvasElement>(null);
-  const glRef = useRef<WebGLRenderingContext | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
-  const isPortrait = useMediaQuery('(orientation: portrait)');
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });
-  const [svgCrosshatch, setSvgCrosshatch] = useState<string>('');
   const [svgCleanEdges, setSvgCleanEdges] = useState<string>('');
-  const [blurredBackground, setBlurredBackground] = useState<string>('');
-  const crosshatchStrokeWidth = 0.12;
-  const cleanEdgesStrokeWidth = .3;
-  const crosshatchOpacity = 1;
-  const cleanEdgesOpacity = .6;
-  const crosshatchFill = 'none';
+  const [svgCrosshatch, setSvgCrosshatch] = useState<string>('');
+  const [blurMode, setBlurMode] = useState<'gaussian' | 'motion' | 'bokeh'>('gaussian');
+  const [aperture, setAperture] = useState(0.15); // Controls depth of field (lower = shallower)
+  const [motionBlurAmount, setMotionBlurAmount] = useState(60); // Motion blur strength
+  const [motionBlurAngle, setMotionBlurAngle] = useState(0); // Motion blur direction in degrees
+  const animationFrameRef = useRef<number | null>(null);
+  const blurCanvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const cleanEdgesFill = 'dodgerblue';
-  const backgroundOpacity = 0;
-  const connectEdgesCrosshatch = true;
+  const cleanEdgesOpacity = .6;
+  const cleanEdgesStrokeWidth = .3;
   const connectEdgesCleanLines = false;
-  const useBezierCrosshatch = false;
+  const connectEdgesCrosshatch = true;
+  const crosshatchFill = 'none';
+  const crosshatchOpacity = 1;
+  const crosshatchStrokeWidth = 0.12;
+  const glRef = useRef<WebGLRenderingContext | null>(null);
+  const isPortrait = useMediaQuery('(orientation: portrait)');
   const useBezierCleanLines = true;
+  const useBezierCrosshatch = false;
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { width, height } = useGetCurrentWindowSize();
 
   const { isStreaming } = useGetWebcam({
     facingMode: 'user',
@@ -66,6 +70,10 @@ export default function SVGEdgeDetector() {
     isStreaming,
     lowThreshold: 0.02,
     videoRef,
+    useMotionBlur: blurMode,
+    aperture,
+    motionBlurAmount,
+    motionBlurAngle,
   });
 
   // Update SVG every frame
@@ -104,8 +112,6 @@ export default function SVGEdgeDetector() {
           // Put the flipped pixels at original video resolution
           const imageData = new ImageData(flippedPixels, canvasWidth, canvasHeight);
           blurCtx.putImageData(imageData, 0, 0);
-
-          setBlurredBackground(blurCanvasRef.current.toDataURL());
         }
 
         // Generate crosshatch SVG from blur framebuffer
@@ -185,6 +191,188 @@ export default function SVGEdgeDetector() {
         height: '100vh',
       }}
     >
+      {/* Blur Controls */}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 16,
+          right: 16,
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          alignItems: 'flex-end',
+        }}
+      >
+        <button
+          onClick={() => {
+            const modes: Array<'gaussian' | 'motion' | 'bokeh'> = ['gaussian', 'motion', 'bokeh'];
+            const currentIndex = modes.indexOf(blurMode);
+            const nextIndex = (currentIndex + 1) % modes.length;
+            setBlurMode(modes[nextIndex]);
+          }}
+          style={{
+            padding: '12px 24px',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            backgroundColor: blurMode === 'gaussian' ? '#2196F3' : blurMode === 'motion' ? '#4CAF50' : '#FF9800',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          }}
+        >
+          {blurMode === 'gaussian' ? 'Gaussian Blur' : blurMode === 'motion' ? 'Motion Blur' : 'Bokeh (Shallow DOF)'}
+        </button>
+
+        {/* Motion Blur Controls */}
+        {blurMode === 'motion' && (
+          <Box
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              padding: 3,
+              borderRadius: 2,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+              minWidth: 280,
+            }}
+          >
+            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#4CAF50' }}>
+              Motion Blur Amount
+            </Typography>
+            <Slider
+              value={motionBlurAmount}
+              onChange={(_, value) => setMotionBlurAmount(value as number)}
+              min={10}
+              max={150}
+              step={5}
+              valueLabelDisplay="auto"
+              sx={{
+                color: '#4CAF50',
+                mb: 3,
+                '& .MuiSlider-thumb': {
+                  width: 20,
+                  height: 20,
+                },
+              }}
+            />
+            
+            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#4CAF50', mt: 2 }}>
+              Direction
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: 100,
+                  height: 100,
+                  borderRadius: '50%',
+                  border: '3px solid #4CAF50',
+                  backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                  cursor: 'pointer',
+                }}
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const centerX = rect.left + rect.width / 2;
+                  const centerY = rect.top + rect.height / 2;
+                  const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+                  setMotionBlurAngle((angle * 180) / Math.PI);
+                }}
+              >
+                {/* Direction indicator line */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    width: '50%',
+                    height: 3,
+                    backgroundColor: '#4CAF50',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${motionBlurAngle}deg)`,
+                    borderRadius: 1,
+                  }}
+                />
+                {/* Center dot */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    width: 8,
+                    height: 8,
+                    backgroundColor: '#4CAF50',
+                    borderRadius: '50%',
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                />
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary" display="block">
+                  {motionBlurAngle.toFixed(0)}°
+                </Typography>
+                <Slider
+                  value={motionBlurAngle}
+                  onChange={(_, value) => setMotionBlurAngle(value as number)}
+                  min={0}
+                  max={360}
+                  step={1}
+                  orientation="vertical"
+                  sx={{
+                    color: '#4CAF50',
+                    height: 100,
+                    '& .MuiSlider-thumb': {
+                      width: 16,
+                      height: 16,
+                    },
+                  }}
+                />
+              </Box>
+            </Box>
+          </Box>
+        )}
+
+        {/* Aperture Slider for Bokeh */}
+        {blurMode === 'bokeh' && (
+          <Box
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              padding: 3,
+              borderRadius: 2,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+              minWidth: 250,
+            }}
+          >
+            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#FF9800' }}>
+              Aperture (f-stop)
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
+              Lower = Shallower Depth of Field
+            </Typography>
+            <Slider
+              value={aperture}
+              onChange={(_, value) => setAperture(value as number)}
+              min={0.01}
+              max={1.0}
+              step={0.01}
+              valueLabelDisplay="auto"
+              valueLabelFormat={(value) => `f/${(1/value).toFixed(1)}`}
+              sx={{
+                color: '#FF9800',
+                '& .MuiSlider-thumb': {
+                  width: 20,
+                  height: 20,
+                },
+              }}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+              <Typography variant="caption" color="text.secondary">f/1.0</Typography>
+              <Typography variant="caption" color="text.secondary">f/100</Typography>
+            </Box>
+          </Box>
+        )}
+      </Box>
+
       {/* Hidden video and canvas */}
       <Box sx={{ display: 'none' }}>
         <video
@@ -225,23 +413,6 @@ export default function SVGEdgeDetector() {
           position: 'relative',
         }}
       >
-        {/* Blurred background layer */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: blurredBackground ? `url(${blurredBackground})` : 'none',
-            backgroundSize: 'contain',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            filter: 'blur(10px)',
-            opacity: backgroundOpacity,
-            zIndex: 0,
-          }}
-        />
         <Box
           sx={{
             position: 'absolute',

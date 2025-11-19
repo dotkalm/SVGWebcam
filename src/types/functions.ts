@@ -32,7 +32,11 @@ export type TProcessFrame = (
   textures: TWebGLTextures,
   buffers: TWebGLBuffers,
   lowThreshold: number,
-  highThreshold: number
+  highThreshold: number,
+  useMotionBlur?: 'gaussian' | 'motion' | 'bokeh' | boolean,
+  aperture?: number,
+  motionBlurAmount?: number,
+  motionBlurAngle?: number
 ) => void;
 
 export type TRenderPass = (

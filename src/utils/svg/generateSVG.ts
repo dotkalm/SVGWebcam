@@ -121,7 +121,7 @@ export function generateSVG(
 
   if (connectEdges && paths.length > 0) {
     // Connect paths, but only if distance is less than 1/4 of viewport
-    const maxDistance = Math.max(innerWidth, innerHeight) / 4;
+    const maxDistance = Math.max(innerWidth, innerHeight) / 6;
 
     if (useBezier) {
       // Collect all transformed points with segments

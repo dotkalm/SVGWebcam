@@ -9,7 +9,11 @@ export const processFrame: TProcessFrame = (
   textures,
   buffers,
   lowThreshold,
-  highThreshold
+  highThreshold,
+  useMotionBlur = 'gaussian',
+  aperture = 0.15,
+  motionBlurAmount = 60,
+  motionBlurAngle = 0
 ) => {
   const width = video.videoWidth;
   const height = video.videoHeight;
@@ -28,10 +32,31 @@ export const processFrame: TProcessFrame = (
   gl.bindTexture(gl.TEXTURE_2D, textures.input);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tempCanvas);
 
-  // Pass 1: Gaussian Blur
-  renderPass(gl, programs.blur, framebuffers.blur, textures.input, buffers, width, height, {
-    u_resolution: [width, height]
-  });
+  // Pass 1: Blur (Gaussian, Motion, or Bokeh)
+  if (useMotionBlur === 'motion') {
+    // Motion blur with adjustable direction and amount
+    const angleRad = (motionBlurAngle * Math.PI) / 180;
+    const directionX = Math.cos(angleRad) * motionBlurAmount;
+    const directionY = Math.sin(angleRad) * motionBlurAmount;
+    
+    renderPass(gl, programs.motionBlur, framebuffers.blur, textures.input, buffers, width, height, {
+      u_resolution: [width, height],
+      u_direction: [directionX, directionY]
+    });
+  } else if (useMotionBlur === 'bokeh') {
+    // Bokeh blur with adjustable depth of field
+    renderPass(gl, programs.bokehBlur, framebuffers.blur, textures.input, buffers, width, height, {
+      u_resolution: [width, height],
+      u_focusPoint: [0.5, 0.5], // Center focus
+      u_focusRange: aperture, // Depth of field controlled by aperture
+      u_maxBlur: 25.0 // Strong blur amount
+    });
+  } else {
+    // Gaussian blur
+    renderPass(gl, programs.blur, framebuffers.blur, textures.input, buffers, width, height, {
+      u_resolution: [width, height]
+    });
+  }
 
   // Pass 2: Gradient
   renderPass(gl, programs.gradient, framebuffers.gradient, textures.blur, buffers, width, height, {

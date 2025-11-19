@@ -1,5 +1,7 @@
 import vertexShaderSource from '@/shaders/source.vert';
 import gaussianBlurFragmentShader from '@/shaders/gaussian.frag';
+import motionBlurFragmentShader from '@/shaders/motionblur.frag';
+import bokehBlurFragmentShader from '@/shaders/bokeh.frag';
 import gradientFragmentShader from '@/shaders/gradient.frag';
 import nonMaxSuppressionFragmentShader from '@/shaders/nonMax.frag';
 import thresholdFragmentShader from '@/shaders/threshold.frag';
@@ -25,11 +27,15 @@ export const initWebGL: TInitWebGL = (
 
   // Create fragment shaders and programs
   const blurFragShader = createShader(gl, gl.FRAGMENT_SHADER, gaussianBlurFragmentShader);
+  const motionBlurFragShader = createShader(gl, gl.FRAGMENT_SHADER, motionBlurFragmentShader);
+  const bokehBlurFragShader = createShader(gl, gl.FRAGMENT_SHADER, bokehBlurFragmentShader);
   const gradientFragShader = createShader(gl, gl.FRAGMENT_SHADER, gradientFragmentShader);
   const nonMaxFragShader = createShader(gl, gl.FRAGMENT_SHADER, nonMaxSuppressionFragmentShader);
   const thresholdFragShader = createShader(gl, gl.FRAGMENT_SHADER, thresholdFragmentShader);
 
   if (blurFragShader) programsRef.current.blur = createProgram(gl, vertexShader, blurFragShader);
+  if (motionBlurFragShader) programsRef.current.motionBlur = createProgram(gl, vertexShader, motionBlurFragShader);
+  if (bokehBlurFragShader) programsRef.current.bokehBlur = createProgram(gl, vertexShader, bokehBlurFragShader);
   if (gradientFragShader) programsRef.current.gradient = createProgram(gl, vertexShader, gradientFragShader);
   if (nonMaxFragShader) programsRef.current.nonMax = createProgram(gl, vertexShader, nonMaxFragShader);
   if (thresholdFragShader) programsRef.current.threshold = createProgram(gl, vertexShader, thresholdFragShader);

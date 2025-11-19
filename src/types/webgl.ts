@@ -5,6 +5,8 @@ export interface TCannyEdgeDetectorProps {
 
 export interface TWebGLPrograms {
   blur?: WebGLProgram | null;
+  motionBlur?: WebGLProgram | null;
+  bokehBlur?: WebGLProgram | null;
   gradient?: WebGLProgram | null;
   nonMax?: WebGLProgram | null;
   threshold?: WebGLProgram | null;
@@ -61,6 +63,10 @@ export interface TUseEdgeDetectionOptions {
   isStreaming: boolean;
   lowThreshold: number;
   highThreshold: number;
+  useMotionBlur?: 'gaussian' | 'motion' | 'bokeh';
+  aperture?: number;
+  motionBlurAmount?: number;
+  motionBlurAngle?: number;
 }
 
 export interface TUseWebcamOptions {
