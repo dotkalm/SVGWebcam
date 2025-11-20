@@ -21,4 +21,5 @@ export interface SVGGenerationOptions {
   connectEdges?: boolean;
   useBezier?: boolean;
   groupId?: string;
+  useWiggle?: boolean;
 }

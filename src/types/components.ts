@@ -49,17 +49,23 @@ export interface ViewerConfig {
   enableBackground: boolean;
   backgroundStrokeWidth: number;
   backgroundStrokeColor: string;
+  backgroundStrokeOpacity: number;
   useBackgroundFill: boolean;
   backgroundFillColor: string;
+  backgroundFillOpacity: number;
   useBezierBackground: boolean;
+  backgroundWiggle: boolean;
   
   // Outline path styling
   enableOutlinePaths: boolean;
   outlinePathsStrokeWidth: number;
   outlinePathsStrokeColor: string;
+  outlinePathsStrokeOpacity: number;
   useOutlinePathsFill: boolean;
   outlinePathsFillColor: string;
+  outlinePathsFillOpacity: number;
   useBezierOutlinePaths: boolean;
+  outlinePathsWiggle: boolean;
 }
 
 export interface UIState {

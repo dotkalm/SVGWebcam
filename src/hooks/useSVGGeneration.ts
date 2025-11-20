@@ -4,6 +4,14 @@ import type { TWebGLFramebuffers } from '@/types/webgl';
 import { readFramebufferToSVG } from '@/utils';
 import { extractBlurTexture, generateSVGFromFramebuffer } from '@/components/WebcamSVGViewer/svgGenerator';
 
+// Helper function to convert hex color and opacity to rgba
+function hexToRgba(hex: string, opacity: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
 interface UseSVGGenerationProps {
   isStreaming: boolean;
   glRef: React.MutableRefObject<WebGLRenderingContext | null>;
@@ -60,12 +68,13 @@ export function useSVGGeneration({
               minPathLength: 3,
               simplification: config.backgroundSimplification,
               strokeWidth: config.backgroundStrokeWidth,
-              strokeColor: config.backgroundStrokeColor,
+              strokeColor: hexToRgba(config.backgroundStrokeColor, config.backgroundStrokeOpacity),
               opacity: 1,
-              fill: config.useBackgroundFill ? config.backgroundFillColor : 'none',
+              fill: config.useBackgroundFill ? hexToRgba(config.backgroundFillColor, config.backgroundFillOpacity) : 'none',
               connectEdges: connectEdgesBackground,
               useBezier: config.useBezierBackground,
-              groupId: 'background'
+              groupId: 'background',
+              useWiggle: config.backgroundWiggle
             }
           );
           setSvgBackground(svgCross);
@@ -86,12 +95,13 @@ export function useSVGGeneration({
               minPathLength: config.outlinePathMinPathLength,
               simplification: config.outlinePathSimplification,
               strokeWidth: config.outlinePathsStrokeWidth,
-              strokeColor: config.outlinePathsStrokeColor,
+              strokeColor: hexToRgba(config.outlinePathsStrokeColor, config.outlinePathsStrokeOpacity),
               opacity: 1,
-              fill: config.useOutlinePathsFill ? config.outlinePathsFillColor : 'none',
+              fill: config.useOutlinePathsFill ? hexToRgba(config.outlinePathsFillColor, config.outlinePathsFillOpacity) : 'none',
               connectEdges: connectEdgesOutlinePaths,
               useBezier: config.useBezierOutlinePaths,
-              groupId: 'outlinePaths'
+              groupId: 'outlinePaths',
+              useWiggle: config.outlinePathsWiggle
             }
           );
           setSvgOutlinePaths(svgClean);

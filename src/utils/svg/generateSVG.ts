@@ -32,7 +32,7 @@ function transformPoint(
 function getRandomDivisor(): number {
   return 1.975 + Math.random() * 0.05; // return random number between 1.975 and 2.025
 }
-function generateBezierPath(points: Array<{x: number, y: number}>): string {
+function generateBezierPath(points: Array<{x: number, y: number}>, useWiggle: boolean = false): string {
   if (points.length < 2) return '';
   if (points.length === 2) {
     return `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)} L ${points[1].x.toFixed(2)} ${points[1].y.toFixed(2)}`;
@@ -50,8 +50,9 @@ function generateBezierPath(points: Array<{x: number, y: number}>): string {
     const cpY = current.y;
 
     // End point at midpoint between current and next
-    const endX = (current.x + next.x) / getRandomDivisor();
-const endY = (current.y + next.y) / getRandomDivisor();
+    const divisor = useWiggle ? getRandomDivisor() : 2;
+    const endX = (current.x + next.x) / divisor;
+    const endY = (current.y + next.y) / divisor;
 
     commands.push(`Q ${cpX.toFixed(2)} ${cpY.toFixed(2)}, ${endX.toFixed(2)} ${endY.toFixed(2)}`);
   }
@@ -75,7 +76,8 @@ export function generateSVG(
   fill: string = 'none',
   connectEdges: boolean = false,
   useBezier: boolean = false,
-  groupId: string = 'edges'
+  groupId: string = 'edges',
+  useWiggle: boolean = false
 ): string {
   // Calculate oscillating dash offset based on time
   const dashOffset = time !== undefined
@@ -161,7 +163,7 @@ export function generateSVG(
       }
 
       // Generate Bezier paths for each segment
-      const d = segments.map(seg => generateBezierPath(seg)).join(' ');
+      const d = segments.map(seg => generateBezierPath(seg, useWiggle)).join(' ');
       const opacity = globalOpacity !== undefined ? globalOpacity : 1;
 
       pathElements = `    <path
@@ -235,7 +237,7 @@ export function generateSVG(
             return transformPoint(p.x, flippedY, scaleX, scaleY, translateX, translateY);
           });
           // Generate Bezier path
-          d = generateBezierPath(transformedPoints);
+          d = generateBezierPath(transformedPoints, useWiggle);
         } else {
           // Transform each point from video space to window space
           d = path.points

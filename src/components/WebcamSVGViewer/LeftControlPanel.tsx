@@ -188,18 +188,26 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 Stroke Color
               </Typography>
               <input
-                type="text"
+                type="color"
                 value={config.backgroundStrokeColor}
                 onChange={(e) => updateConfig({ backgroundStrokeColor: e.target.value })}
-                placeholder="rgba(0,0,0,1)"
-                style={{ 
-                  padding: '4px 8px', 
-                  fontSize: '12px',
-                  width: '140px',
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontFamily: 'monospace'
-                }}
+                style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Stroke Opacity: {config.backgroundStrokeOpacity.toFixed(2)}
+              </Typography>
+              <Slider
+                value={config.backgroundStrokeOpacity}
+                onChange={(_, value) => updateConfig({ backgroundStrokeOpacity: value as number })}
+                min={0}
+                max={1}
+                step={0.01}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => value.toFixed(2)}
+                sx={{ color: '#9c27b0' }}
               />
             </Box>
 
@@ -216,25 +224,35 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             </Box>
 
             {config.useBackgroundFill && (
-              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="caption" color="text.secondary">
-                  Fill Color
-                </Typography>
-                <input
-                  type="text"
-                  value={config.backgroundFillColor}
-                  onChange={(e) => updateConfig({ backgroundFillColor: e.target.value })}
-                  placeholder="rgba(0,0,0,0.5)"
-                  style={{ 
-                    padding: '4px 8px', 
-                    fontSize: '12px',
-                    width: '140px',
-                    border: '1px solid #ccc', 
-                    borderRadius: '4px',
-                    fontFamily: 'monospace'
-                  }}
-                />
-              </Box>
+              <>
+                <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="caption" color="text.secondary">
+                    Fill Color
+                  </Typography>
+                  <input
+                    type="color"
+                    value={config.backgroundFillColor}
+                    onChange={(e) => updateConfig({ backgroundFillColor: e.target.value })}
+                    style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+                  />
+                </Box>
+
+                <Box sx={{ mb: 1 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                    Fill Opacity: {config.backgroundFillOpacity.toFixed(2)}
+                  </Typography>
+                  <Slider
+                    value={config.backgroundFillOpacity}
+                    onChange={(_, value) => updateConfig({ backgroundFillOpacity: value as number })}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    valueLabelDisplay="auto"
+                    valueLabelFormat={(value) => value.toFixed(2)}
+                    sx={{ color: '#9c27b0' }}
+                  />
+                </Box>
+              </>
             )}
 
             <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -248,6 +266,20 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 sx={{ color: '#9c27b0' }}
               />
             </Box>
+
+            {config.useBezierBackground && (
+              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="caption" color="text.secondary">
+                  Create Wiggle
+                </Typography>
+                <Switch
+                  checked={config.backgroundWiggle}
+                  onChange={(e) => updateConfig({ backgroundWiggle: e.target.checked })}
+                  size="small"
+                  sx={{ color: '#9c27b0' }}
+                />
+              </Box>
+            )}
           </Collapse>
 
           {/* Outline Path Styling Section */}
@@ -324,18 +356,26 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 Stroke Color
               </Typography>
               <input
-                type="text"
+                type="color"
                 value={config.outlinePathsStrokeColor}
                 onChange={(e) => updateConfig({ outlinePathsStrokeColor: e.target.value })}
-                placeholder="rgba(0,0,0,1)"
-                style={{ 
-                  padding: '4px 8px', 
-                  fontSize: '12px',
-                  width: '140px',
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontFamily: 'monospace'
-                }}
+                style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Stroke Opacity: {config.outlinePathsStrokeOpacity.toFixed(2)}
+              </Typography>
+              <Slider
+                value={config.outlinePathsStrokeOpacity}
+                onChange={(_, value) => updateConfig({ outlinePathsStrokeOpacity: value as number })}
+                min={0}
+                max={1}
+                step={0.01}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => value.toFixed(2)}
+                sx={{ color: '#9c27b0' }}
               />
             </Box>
 
@@ -352,25 +392,35 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             </Box>
 
             {config.useOutlinePathsFill && (
-              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="caption" color="text.secondary">
-                  Fill Color
-                </Typography>
-                <input
-                  type="text"
-                  value={config.outlinePathsFillColor}
-                  onChange={(e) => updateConfig({ outlinePathsFillColor: e.target.value })}
-                  placeholder="rgba(0,0,0,0.5)"
-                  style={{ 
-                    padding: '4px 8px', 
-                    fontSize: '12px',
-                    width: '140px',
-                    border: '1px solid #ccc', 
-                    borderRadius: '4px',
-                    fontFamily: 'monospace'
-                  }}
-                />
-              </Box>
+              <>
+                <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="caption" color="text.secondary">
+                    Fill Color
+                  </Typography>
+                  <input
+                    type="color"
+                    value={config.outlinePathsFillColor}
+                    onChange={(e) => updateConfig({ outlinePathsFillColor: e.target.value })}
+                    style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+                  />
+                </Box>
+
+                <Box sx={{ mb: 1 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                    Fill Opacity: {config.outlinePathsFillOpacity.toFixed(2)}
+                  </Typography>
+                  <Slider
+                    value={config.outlinePathsFillOpacity}
+                    onChange={(_, value) => updateConfig({ outlinePathsFillOpacity: value as number })}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    valueLabelDisplay="auto"
+                    valueLabelFormat={(value) => value.toFixed(2)}
+                    sx={{ color: '#9c27b0' }}
+                  />
+                </Box>
+              </>
             )}
 
             <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -384,6 +434,20 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 sx={{ color: '#9c27b0' }}
               />
             </Box>
+
+            {config.useBezierOutlinePaths && (
+              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="caption" color="text.secondary">
+                  Create Wiggle
+                </Typography>
+                <Switch
+                  checked={config.outlinePathsWiggle}
+                  onChange={(e) => updateConfig({ outlinePathsWiggle: e.target.checked })}
+                  size="small"
+                  sx={{ color: '#9c27b0' }}
+                />
+              </Box>
+            )}
 
             {/* Download SVG Button */}
             <button
