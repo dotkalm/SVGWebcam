@@ -55,6 +55,8 @@ export interface ViewerConfig {
   backgroundFillOpacity: number;
   useBezierBackground: boolean;
   backgroundWiggle: boolean;
+  backgroundUseDashArray: boolean;
+  backgroundDashSize: number;
   
   // Outline path styling
   enableOutlinePaths: boolean;
@@ -66,6 +68,8 @@ export interface ViewerConfig {
   outlinePathsFillOpacity: number;
   useBezierOutlinePaths: boolean;
   outlinePathsWiggle: boolean;
+  outlinePathsUseDashArray: boolean;
+  outlinePathsDashSize: number;
 }
 
 export interface UIState {

@@ -22,6 +22,8 @@ export const DEFAULT_CONFIG: ViewerConfig = {
   backgroundFillOpacity: 0,
   useBezierBackground: true,
   backgroundWiggle: false,
+  backgroundUseDashArray: false,
+  backgroundDashSize: 8,
   enableOutlinePaths: true,
   outlinePathsStrokeWidth: 0.3,
   outlinePathsStrokeColor: '#000000',
@@ -31,6 +33,8 @@ export const DEFAULT_CONFIG: ViewerConfig = {
   outlinePathsFillOpacity: 0,
   useBezierOutlinePaths: true,
   outlinePathsWiggle: false,
+  outlinePathsUseDashArray: false,
+  outlinePathsDashSize: 8,
 };
 
 export const DEFAULT_UI_STATE: UIState = {

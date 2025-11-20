@@ -74,7 +74,9 @@ export function useSVGGeneration({
               connectEdges: connectEdgesBackground,
               useBezier: config.useBezierBackground,
               groupId: 'background',
-              useWiggle: config.backgroundWiggle
+              useWiggle: config.backgroundWiggle,
+              useDashArray: config.backgroundUseDashArray,
+              dashSize: config.backgroundDashSize
             }
           );
           setSvgBackground(svgCross);
@@ -101,7 +103,9 @@ export function useSVGGeneration({
               connectEdges: connectEdgesOutlinePaths,
               useBezier: config.useBezierOutlinePaths,
               groupId: 'outlinePaths',
-              useWiggle: config.outlinePathsWiggle
+              useWiggle: config.outlinePathsWiggle,
+              useDashArray: config.outlinePathsUseDashArray,
+              dashSize: config.outlinePathsDashSize
             }
           );
           setSvgOutlinePaths(svgClean);

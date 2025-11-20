@@ -22,4 +22,6 @@ export interface SVGGenerationOptions {
   useBezier?: boolean;
   groupId?: string;
   useWiggle?: boolean;
+  useDashArray?: boolean;
+  dashSize?: number;
 }

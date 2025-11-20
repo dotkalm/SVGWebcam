@@ -77,7 +77,9 @@ export function generateSVG(
   connectEdges: boolean = false,
   useBezier: boolean = false,
   groupId: string = 'edges',
-  useWiggle: boolean = false
+  useWiggle: boolean = false,
+  useDashArray: boolean = false,
+  dashSize: number = 8
 ): string {
   // Calculate oscillating dash offset based on time
   const dashOffset = time !== undefined
@@ -165,6 +167,7 @@ export function generateSVG(
       // Generate Bezier paths for each segment
       const d = segments.map(seg => generateBezierPath(seg, useWiggle)).join(' ');
       const opacity = globalOpacity !== undefined ? globalOpacity : 1;
+      const dashAttrs = useDashArray ? `stroke-dasharray="${dashSize}" stroke-dashoffset="${dashOffset.toFixed(2)}"` : '';
 
       pathElements = `    <path
         d="${d}"
@@ -174,6 +177,7 @@ export function generateSVG(
         opacity="${opacity.toFixed(2)}"
         stroke-linecap="round"
         stroke-linejoin="round"
+        ${dashAttrs}
       />`;
     } else {
       // Straight lines version
@@ -211,6 +215,7 @@ export function generateSVG(
 
       const d = allPoints.join(' ');
       const opacity = globalOpacity !== undefined ? globalOpacity : 1;
+      const dashAttrs = useDashArray ? `stroke-dasharray="${dashSize}" stroke-dashoffset="${dashOffset.toFixed(2)}"` : '';
 
       pathElements = `    <path
         d="${d}"
@@ -220,6 +225,7 @@ export function generateSVG(
         opacity="${opacity.toFixed(2)}"
         stroke-linecap="round"
         stroke-linejoin="round"
+        ${dashAttrs}
       />`;
     }
   } else {
@@ -256,6 +262,7 @@ export function generateSVG(
         // Calculate path opacity, applying global opacity if provided
         const pathOpacity = Math.max(0.3, path.intensity); // Minimum 30% opacity
         const opacity = globalOpacity !== undefined ? globalOpacity : pathOpacity;
+        const dashAttrs = useDashArray ? `stroke-dasharray="${dashSize}" stroke-dashoffset="${dashOffset.toFixed(2)}"` : '';
 
         return `    <path
           d="${d}"
@@ -265,6 +272,7 @@ export function generateSVG(
           opacity="${opacity.toFixed(2)}"
           stroke-linecap="round"
           stroke-linejoin="round"
+          ${dashAttrs}
         />`;
       })
       .filter(p => p.length > 0)

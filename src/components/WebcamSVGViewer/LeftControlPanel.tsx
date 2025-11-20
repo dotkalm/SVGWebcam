@@ -6,21 +6,8 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Switch from '@mui/material/Switch';
+import DragIndicator from '@mui/icons-material/DragIndicator';
 import type { ViewerConfig, UIState, LeftControlPanelProps } from '@/types';
-
-// Six-dot drag handle icon component
-function DragHandleIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style={{ opacity: 0.5 }}>
-      <circle cx="5" cy="3" r="1.5" />
-      <circle cx="11" cy="3" r="1.5" />
-      <circle cx="5" cy="8" r="1.5" />
-      <circle cx="11" cy="8" r="1.5" />
-      <circle cx="5" cy="13" r="1.5" />
-      <circle cx="11" cy="13" r="1.5" />
-    </svg>
-  );
-}
 
 export function LeftControlPanel(props: LeftControlPanelProps) {
   const {
@@ -87,11 +74,9 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
           {/* Background Styling Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'grab', '&:active': { cursor: 'grabbing' } }}>
-                <DragHandleIcon />
-              </Box>
+              <DragIndicator sx={{ cursor: 'grab', '&:active': { cursor: 'grabbing' }, color: '#000000', opacity: 1 }} />
               <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-                Background Styling
+                Background
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -255,6 +240,35 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 />
               </Box>
             )}
+
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="caption" color="text.secondary">
+                Use Dash Array
+              </Typography>
+              <Switch
+                checked={config.backgroundUseDashArray}
+                onChange={(e) => updateConfig({ backgroundUseDashArray: e.target.checked })}
+                size="small"
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+
+            {config.backgroundUseDashArray && (
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                  Dash Size: {config.backgroundDashSize}
+                </Typography>
+                <Slider
+                  value={config.backgroundDashSize}
+                  onChange={(_, value) => updateConfig({ backgroundDashSize: value as number })}
+                  min={1}
+                  max={50}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  sx={{ color: '#9c27b0' }}
+                />
+              </Box>
+            )}
           </Collapse>
         </Box>
       );
@@ -276,11 +290,9 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
           {/* Outline Path Styling Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'grab', '&:active': { cursor: 'grabbing' } }}>
-                <DragHandleIcon />
-              </Box>
+              <DragIndicator sx={{ cursor: 'grab', '&:active': { cursor: 'grabbing' }, color: '#000000', opacity: 1 }} />
               <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-                Outline Path Styling
+                Outline
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -440,6 +452,35 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                   checked={config.outlinePathsWiggle}
                   onChange={(e) => updateConfig({ outlinePathsWiggle: e.target.checked })}
                   size="small"
+                  sx={{ color: '#9c27b0' }}
+                />
+              </Box>
+            )}
+
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography variant="caption" color="text.secondary">
+                Use Dash Array
+              </Typography>
+              <Switch
+                checked={config.outlinePathsUseDashArray}
+                onChange={(e) => updateConfig({ outlinePathsUseDashArray: e.target.checked })}
+                size="small"
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+
+            {config.outlinePathsUseDashArray && (
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                  Dash Size: {config.outlinePathsDashSize}
+                </Typography>
+                <Slider
+                  value={config.outlinePathsDashSize}
+                  onChange={(_, value) => updateConfig({ outlinePathsDashSize: value as number })}
+                  min={1}
+                  max={50}
+                  step={1}
+                  valueLabelDisplay="auto"
                   sx={{ color: '#9c27b0' }}
                 />
               </Box>
