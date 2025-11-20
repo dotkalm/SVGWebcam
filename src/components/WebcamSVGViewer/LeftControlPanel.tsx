@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Switch from '@mui/material/Switch';
 import DragIndicator from '@mui/icons-material/DragIndicator';
-import type { ViewerConfig, UIState, LeftControlPanelProps } from '@/types';
+import type { LeftControlPanelProps } from '@/types';
 
 export function LeftControlPanel(props: LeftControlPanelProps) {
   const {
