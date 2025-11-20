@@ -3,8 +3,8 @@ import './fonts.css';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: "edge detector",
-  description: "lets detect edges",
+  title: "SVG based Webcam",
+  description: "An SVG based webcam build with WebGL Shaders",
 };
 
 export default function RootLayout({
