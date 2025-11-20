@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import type { ViewerConfig, UIState, Preset, PresetSettings, RightControlPanelProps } from '@/types';
+import type { RightControlPanelProps } from '@/types';
 
 export function RightControlPanel(props: RightControlPanelProps) {
   const {

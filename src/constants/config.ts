@@ -1,7 +1,5 @@
 import type { ViewerConfig, UIState } from '@/types';
 
-export type { ViewerConfig, UIState };
-
 export const DEFAULT_CONFIG: ViewerConfig = {
   cameraZoom: 1,
   facingMode: 'user',

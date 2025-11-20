@@ -1,8 +1,3 @@
-export interface TCannyEdgeDetectorProps {
-  lowThreshold?: number;
-  highThreshold?: number;
-}
-
 export interface TWebGLPrograms {
   blur?: WebGLProgram | null;
   motionBlur?: WebGLProgram | null;

@@ -1,29 +1,11 @@
 import { useEffect, useRef } from 'react';
-import type { ViewerConfig } from '@/components/WebcamSVGViewer/config';
-import type { TWebGLFramebuffers } from '@/types/webgl';
-import { readFramebufferToSVG } from '@/utils';
-import { extractBlurTexture, generateSVGFromFramebuffer } from '@/components/WebcamSVGViewer/svgGenerator';
-
-// Helper function to convert hex color and opacity to rgba
-function hexToRgba(hex: string, opacity: number): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-}
-
-interface UseSVGGenerationProps {
-  isStreaming: boolean;
-  glRef: React.MutableRefObject<WebGLRenderingContext | null>;
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
-  blurCanvasRef: React.RefObject<HTMLCanvasElement | null>;
-  framebuffersRef: React.RefObject<TWebGLFramebuffers> | undefined;
-  config: ViewerConfig;
-  connectEdgesBackground: boolean;
-  connectEdgesOutlinePaths: boolean;
-  setSvgBackground: (svg: string) => void;
-  setSvgOutlinePaths: (svg: string) => void;
-}
+import type { UseSVGGenerationProps  } from '@/types';
+import { 
+  extractBlurTexture, 
+  generateSVGFromFramebuffer, 
+  hexToRgba, 
+  readFramebufferToSVG,
+} from '@/utils';
 
 export function useSVGGeneration({
   isStreaming,
@@ -127,14 +109,14 @@ export function useSVGGeneration({
       }
     };
   }, [
-    isStreaming,
-    glRef,
-    canvasRef,
     blurCanvasRef,
-    framebuffersRef,
+    canvasRef,
     config,
     connectEdgesBackground,
     connectEdgesOutlinePaths,
+    framebuffersRef,
+    glRef,
+    isStreaming,
     setSvgBackground,
     setSvgOutlinePaths,
   ]);

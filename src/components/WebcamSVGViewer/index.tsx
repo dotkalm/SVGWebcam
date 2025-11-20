@@ -6,24 +6,29 @@ import {
 } from 'react';
 import Box from '@mui/material/Box';
 import { useMediaQuery } from '@mui/material';
-import { useGetWebcam } from '@/hooks/useGetWebcam';
-import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
 import { useGetCurrentWindowSize } from '@/hooks/useGetCurrentWindowSize';
+import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useSVGGeneration } from '@/hooks/useSVGGeneration';
-import { downloadSVG } from '@/utils';
+import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
+import type {
+  Preset,
+  PresetSettings,
+  UIState,
+  ViewerConfig, 
+} from '@/types';
 import { 
+  createPreset,
+  createSVGString,
+  downloadSVG,
   loadPresetsFromStorage, 
   savePresetsToStorage, 
-  createPreset,
-  type Preset,
-  type PresetSettings 
-} from './presetManager';
+} from '@/utils';
+import { LeftControlPanel } from './components/LeftPanel';
+import { RightControlPanel } from './components/RightPanel';
 import { 
-  createSVGString 
-} from './svgGenerator';
-import { LeftControlPanel } from './LeftControlPanel';
-import { RightControlPanel } from './RightControlPanel';
-import { DEFAULT_CONFIG, DEFAULT_UI_STATE, type ViewerConfig, type UIState } from './config';
+  DEFAULT_CONFIG, 
+  DEFAULT_UI_STATE, 
+} from '@/constants';
 
 export default function WebcamSVGViewer() {
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });

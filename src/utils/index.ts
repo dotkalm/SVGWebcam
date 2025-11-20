@@ -1,3 +1,5 @@
+export * from './svgGenerator'
+export * from './presetManager'
 export * from './cleanupWebGL';
 export * from './createFrameBuffer';
 export * from './createProgram';
@@ -7,3 +9,4 @@ export * from './initWebGL';
 export * from './processFrame';
 export * from './renderPass';
 export * from './svg';
+export * from './hexToRGBA';
