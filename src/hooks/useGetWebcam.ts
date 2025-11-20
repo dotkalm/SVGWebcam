@@ -31,9 +31,9 @@ export const useGetWebcam: TUseGetWebcam = ({
 
         // Apply zoom if supported
         const videoTrack = stream.getVideoTracks()[0];
-        const capabilities = videoTrack.getCapabilities();
+        const capabilities = videoTrack.getCapabilities() as any;
         
-        if (capabilities.zoom) {
+        if (capabilities.zoom && zoom !== 1) {
           try {
             await videoTrack.applyConstraints({
               advanced: [{ zoom } as any]
