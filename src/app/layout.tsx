@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import './fonts.css';
 import './globals.css';
+import LayoutWrapper from '../theme/LayoutWrapper';
 
 export const metadata: Metadata = {
   title: "SVG based Webcam",
@@ -23,9 +24,12 @@ export default function RootLayout({
           overscrollBehaviorY: 'none',
           overscrollBehavior: 'none',
           overflowY: 'auto',
+          fontFamily: "'Circular Std', sans-serif",
         }}
       >
-        {children}
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );
