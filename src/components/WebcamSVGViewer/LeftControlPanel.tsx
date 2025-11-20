@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
@@ -6,6 +7,20 @@ import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Switch from '@mui/material/Switch';
 import type { ViewerConfig, UIState, LeftControlPanelProps } from '@/types';
+
+// Six-dot drag handle icon component
+function DragHandleIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style={{ opacity: 0.5 }}>
+      <circle cx="5" cy="3" r="1.5" />
+      <circle cx="11" cy="3" r="1.5" />
+      <circle cx="5" cy="8" r="1.5" />
+      <circle cx="11" cy="8" r="1.5" />
+      <circle cx="5" cy="13" r="1.5" />
+      <circle cx="11" cy="13" r="1.5" />
+    </svg>
+  );
+}
 
 export function LeftControlPanel(props: LeftControlPanelProps) {
   const {
@@ -17,108 +32,68 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
     downloadSVG,
   } = props;
 
-  return (
-    <>
-      {/* Left Panel Toggle Button */}
-      {!uiState.showLeftPanel && (
-        <IconButton
-          onClick={() => updateUIState({ showLeftPanel: true })}
-          sx={{
-            position: 'fixed',
-            top: 16,
-            left: 16,
-            zIndex: 1000,
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
-          }}
-        >
-          <span style={{ fontSize: '20px' }}>☰</span>
-        </IconButton>
-      )}
+  const [draggedSection, setDraggedSection] = useState<'background' | 'outlinePaths' | null>(null);
 
-      {/* Left Control Panel */}
-      {uiState.showLeftPanel && (
+  const handleDragStart = (section: 'background' | 'outlinePaths') => (e: React.DragEvent) => {
+    setDraggedSection(section);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (targetSection: 'background' | 'outlinePaths') => (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!draggedSection || draggedSection === targetSection) {
+      setDraggedSection(null);
+      return;
+    }
+
+    const newOrder = [...uiState.layerOrder];
+    const draggedIndex = newOrder.indexOf(draggedSection);
+    const targetIndex = newOrder.indexOf(targetSection);
+
+    // Swap the sections
+    newOrder[draggedIndex] = targetSection;
+    newOrder[targetIndex] = draggedSection;
+
+    updateUIState({ layerOrder: newOrder });
+    setDraggedSection(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedSection(null);
+  };
+
+  // Create sections in the order specified by layerOrder
+  const renderSection = (sectionType: 'background' | 'outlinePaths') => {
+    if (sectionType === 'background') {
+      return (
         <Box
+          key="background"
+          draggable
+          onDragStart={handleDragStart('background')}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop('background')}
+          onDragEnd={handleDragEnd}
           sx={{
-            position: 'fixed',
-            top: 16,
-            left: 16,
-            zIndex: 1000,
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-            padding: 2,
-            borderRadius: 2,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-            minWidth: 280,
-            maxWidth: 320,
-            maxHeight: 'calc(100vh - 32px)',
-            overflowY: 'auto',
+            cursor: 'move',
+            opacity: draggedSection === 'background' ? 0.5 : 1,
+            transition: 'opacity 0.2s',
           }}
         >
-          {/* Hide Panel Button */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 0.5 }}>
-            <IconButton
-              size="small"
-              onClick={() => updateUIState({ showLeftPanel: false })}
-              sx={{ padding: '4px' }}
-            >
-              <span style={{ fontSize: '16px' }}>✕</span>
-            </IconButton>
-          </Box>
-
-          {/* Edge Detection Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-              Edge Detection
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={() => updateUIState({ expandEdgeDetection: !uiState.expandEdgeDetection })}
-              sx={{ padding: '4px' }}
-            >
-              <span style={{ fontSize: '16px' }}>{uiState.expandEdgeDetection ? '▼' : '▶'}</span>
-            </IconButton>
-          </Box>
-
-          <Collapse in={uiState.expandEdgeDetection}>
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                High Threshold: {config.highThreshold.toFixed(3)}
-              </Typography>
-              <Slider
-                value={config.highThreshold}
-                onChange={(_, value) => updateConfig({ highThreshold: value as number })}
-                min={0.001}
-                max={0.1}
-                step={0.001}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(3)}
-                sx={{ color: '#1976d2' }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Low Threshold: {config.lowThreshold.toFixed(3)}
-              </Typography>
-              <Slider
-                value={config.lowThreshold}
-                onChange={(_, value) => updateConfig({ lowThreshold: value as number })}
-                min={0.001}
-                max={0.1}
-                step={0.001}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(3)}
-                sx={{ color: '#1976d2' }}
-              />
-            </Box>
-          </Collapse>
-
           {/* Background Styling Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-              Background Styling
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'grab', '&:active': { cursor: 'grabbing' } }}>
+                <DragHandleIcon />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
+                Background Styling
+              </Typography>
+            </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Switch
                 checked={config.enableBackground}
@@ -281,12 +256,33 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               </Box>
             )}
           </Collapse>
-
+        </Box>
+      );
+    } else {
+      return (
+        <Box
+          key="outlinePaths"
+          draggable
+          onDragStart={handleDragStart('outlinePaths')}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop('outlinePaths')}
+          onDragEnd={handleDragEnd}
+          sx={{
+            cursor: 'move',
+            opacity: draggedSection === 'outlinePaths' ? 0.5 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
           {/* Outline Path Styling Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-              Outline Path Styling
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'grab', '&:active': { cursor: 'grabbing' } }}>
+                <DragHandleIcon />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
+                Outline Path Styling
+              </Typography>
+            </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Switch
                 checked={config.enableOutlinePaths}
@@ -469,6 +465,110 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               Download SVG
             </button>
           </Collapse>
+        </Box>
+      );
+    }
+  };
+
+  return (
+    <>
+      {/* Left Panel Toggle Button */}
+      {!uiState.showLeftPanel && (
+        <IconButton
+          onClick={() => updateUIState({ showLeftPanel: true })}
+          sx={{
+            position: 'fixed',
+            top: 16,
+            left: 16,
+            zIndex: 1000,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
+          }}
+        >
+          <span style={{ fontSize: '20px' }}>☰</span>
+        </IconButton>
+      )}
+
+      {/* Left Control Panel */}
+      {uiState.showLeftPanel && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 16,
+            left: 16,
+            zIndex: 1000,
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            padding: 2,
+            borderRadius: 2,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            minWidth: 280,
+            maxWidth: 320,
+            maxHeight: 'calc(100vh - 32px)',
+            overflowY: 'auto',
+          }}
+        >
+          {/* Hide Panel Button */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 0.5 }}>
+            <IconButton
+              size="small"
+              onClick={() => updateUIState({ showLeftPanel: false })}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>✕</span>
+            </IconButton>
+          </Box>
+
+          {/* Edge Detection Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+              Edge Detection
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => updateUIState({ expandEdgeDetection: !uiState.expandEdgeDetection })}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{uiState.expandEdgeDetection ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+
+          <Collapse in={uiState.expandEdgeDetection}>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                High Threshold: {config.highThreshold.toFixed(3)}
+              </Typography>
+              <Slider
+                value={config.highThreshold}
+                onChange={(_, value) => updateConfig({ highThreshold: value as number })}
+                min={0.001}
+                max={0.1}
+                step={0.001}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => value.toFixed(3)}
+                sx={{ color: '#1976d2' }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Low Threshold: {config.lowThreshold.toFixed(3)}
+              </Typography>
+              <Slider
+                value={config.lowThreshold}
+                onChange={(_, value) => updateConfig({ lowThreshold: value as number })}
+                min={0.001}
+                max={0.1}
+                step={0.001}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => value.toFixed(3)}
+                sx={{ color: '#1976d2' }}
+              />
+            </Box>
+          </Collapse>
+
+          {/* Render draggable styling sections in layer order */}
+          {uiState.layerOrder.map(sectionType => renderSection(sectionType))}
         </Box>
       )}
     </>

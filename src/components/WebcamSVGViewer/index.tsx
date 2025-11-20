@@ -135,7 +135,7 @@ export default function WebcamSVGViewer() {
     setSvgOutlinePaths,
   });
 
-  const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths);
+  const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths, uiState.layerOrder);
 
   return (
     <Box
@@ -218,7 +218,6 @@ export default function WebcamSVGViewer() {
             zIndex: 1,
             width: '100%',
             height: '100%',
-            opacity: config.backgroundOpacity,
           }}
           dangerouslySetInnerHTML={{ __html: svgString }}
         />

@@ -39,11 +39,18 @@ export const createSVGString = (
   width: number,
   height: number,
   svgBackground: string,
-  svgOutlinePaths: string
+  svgOutlinePaths: string,
+  layerOrder: ('background' | 'outlinePaths')[] = ['background', 'outlinePaths']
 ): string => {
+  const layers: Record<string, string> = {
+    background: svgBackground,
+    outlinePaths: svgOutlinePaths,
+  };
+  
+  const orderedLayers = layerOrder.map(layerKey => layers[layerKey]).join('\n');
+  
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
-${svgBackground}
-${svgOutlinePaths}
+${orderedLayers}
 </svg>`;
 };

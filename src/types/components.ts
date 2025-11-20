@@ -74,6 +74,7 @@ export interface UIState {
   expandEdgeDetection: boolean;
   expandBackgroundStyling: boolean;
   expandOutlinePathStyling: boolean;
+  layerOrder: ('background' | 'outlinePaths')[];
 }
 
 // Preset types

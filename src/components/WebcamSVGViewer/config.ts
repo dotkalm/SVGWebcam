@@ -39,4 +39,5 @@ export const DEFAULT_UI_STATE: UIState = {
   expandEdgeDetection: true,
   expandBackgroundStyling: true,
   expandOutlinePathStyling: true,
+  layerOrder: ['background', 'outlinePaths'],
 };
