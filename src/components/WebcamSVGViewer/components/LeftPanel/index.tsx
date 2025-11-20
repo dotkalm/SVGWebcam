@@ -510,7 +510,7 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
           <Collapse in={uiState.expandCameraSettings}>
             <Box sx={{ mb: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Camera Zoom: {config.cameraZoom.toFixed(1)}x
+                Camera Zoom: {config.cameraZoom?.toFixed(1)}x
               </Typography>
               <Slider
                 value={config.cameraZoom}
