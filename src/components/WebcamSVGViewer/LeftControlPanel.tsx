@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Switch from '@mui/material/Switch';
 import DragIndicator from '@mui/icons-material/DragIndicator';
+import CameraSwitch from '@mui/icons-material/Cameraswitch';
 import type { LeftControlPanelProps } from '@/types';
 
 export function LeftControlPanel(props: LeftControlPanelProps) {
@@ -491,6 +492,53 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
               <span style={{ fontSize: '16px' }}>✕</span>
             </IconButton>
           </Box>
+
+          {/* Camera Settings Section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#ff6f00' }}>
+              Camera
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => updateUIState({ expandCameraSettings: !uiState.expandCameraSettings })}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{uiState.expandCameraSettings ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+
+          <Collapse in={uiState.expandCameraSettings}>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Camera Zoom: {config.cameraZoom.toFixed(1)}x
+              </Typography>
+              <Slider
+                value={config.cameraZoom}
+                onChange={(_, value) => updateConfig({ cameraZoom: value as number })}
+                min={1}
+                max={5}
+                step={0.1}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => `${value.toFixed(1)}x`}
+                sx={{ color: '#ff6f00' }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CameraSwitch sx={{ color: '#ff6f00' }} />
+                <Typography variant="caption" color="text.secondary">
+                  {config.facingMode === 'user' ? 'Front Camera' : 'Back Camera'}
+                </Typography>
+              </Box>
+              <Switch
+                checked={config.facingMode === 'environment'}
+                onChange={(e) => updateConfig({ facingMode: e.target.checked ? 'environment' : 'user' })}
+                size="small"
+                sx={{ color: '#ff6f00' }}
+              />
+            </Box>
+          </Collapse>
 
           {/* Edge Detection Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>

@@ -7,7 +7,8 @@ export const useGetWebcam: TUseGetWebcam = ({
   videoRef,
   width = 640,
   height = 480,
-  facingMode = 'user'
+  facingMode = 'user',
+  zoom = 1
 }) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +28,20 @@ export const useGetWebcam: TUseGetWebcam = ({
         if (isCancelled || !videoRef.current) return;
 
         videoRef.current.srcObject = stream;
+
+        // Apply zoom if supported
+        const videoTrack = stream.getVideoTracks()[0];
+        const capabilities = videoTrack.getCapabilities();
+        
+        if (capabilities.zoom) {
+          try {
+            await videoTrack.applyConstraints({
+              advanced: [{ zoom } as any]
+            });
+          } catch (zoomError) {
+            console.warn('Zoom not supported or failed to apply:', zoomError);
+          }
+        }
 
         try {
           await videoRef.current.play();
@@ -57,7 +72,7 @@ export const useGetWebcam: TUseGetWebcam = ({
       }
       setIsStreaming(false);
     };
-  }, [width, height, facingMode]);
+  }, [width, height, facingMode, zoom]);
 
   return {
     isStreaming,

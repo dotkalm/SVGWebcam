@@ -29,6 +29,10 @@ export interface RightControlPanelProps {
 
 // Config types
 export interface ViewerConfig {
+  // Camera settings
+  cameraZoom: number;
+  facingMode: 'user' | 'environment';
+  
   // Blur settings
   blurMode: 'gaussian' | 'motion' | 'bokeh';
   aperture: number;
@@ -75,6 +79,7 @@ export interface ViewerConfig {
 export interface UIState {
   showLeftPanel: boolean;
   showRightPanel: boolean;
+  expandCameraSettings: boolean;
   expandEdgeDetection: boolean;
   expandBackgroundStyling: boolean;
   expandOutlinePathStyling: boolean;

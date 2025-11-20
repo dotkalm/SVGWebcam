@@ -73,6 +73,7 @@ export interface TUseWebcamOptions {
   width?: number;
   height?: number;
   facingMode?: 'user' | 'environment';
+  zoom?: number;
   videoRef: React.RefObject<HTMLVideoElement | null>;
 }
 

@@ -3,6 +3,8 @@ import type { ViewerConfig, UIState } from '@/types';
 export type { ViewerConfig, UIState };
 
 export const DEFAULT_CONFIG: ViewerConfig = {
+  cameraZoom: 1,
+  facingMode: 'user',
   blurMode: 'gaussian',
   aperture: 0.15,
   motionBlurAmount: 60,
@@ -40,6 +42,7 @@ export const DEFAULT_CONFIG: ViewerConfig = {
 export const DEFAULT_UI_STATE: UIState = {
   showLeftPanel: true,
   showRightPanel: true,
+  expandCameraSettings: true,
   expandEdgeDetection: true,
   expandBackgroundStyling: true,
   expandOutlinePathStyling: true,

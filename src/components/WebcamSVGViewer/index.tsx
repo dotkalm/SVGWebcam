@@ -55,10 +55,11 @@ export default function WebcamSVGViewer() {
   const connectEdgesBackground = true;
 
   const { isStreaming } = useGetWebcam({
-    facingMode: 'user',
+    facingMode: config.facingMode,
     height: isPortrait ? 640 : 480,
     videoRef,
     width: isPortrait ? 480 : 640,
+    zoom: config.cameraZoom,
   });
 
   // Load presets from localStorage on mount
