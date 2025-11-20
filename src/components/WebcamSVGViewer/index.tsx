@@ -115,7 +115,7 @@ export default function WebcamSVGViewer() {
     }
   }, [canvasRef, isStreaming]);
 
-  const { texturesRef, framebuffersRef } = useWebGLCanvas({
+  const { framebuffersRef } = useWebGLCanvas({
     canvasRef,
     highThreshold: config.highThreshold,
     isStreaming,
