@@ -54,56 +54,94 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
     setDraggedSection(null);
   };
 
-  // Create sections in the order specified by layerOrder
-  const renderSection = (sectionType: 'background' | 'outlinePaths') => {
-    if (sectionType === 'background') {
-      return (
-        <Box
-          key="background"
-          draggable
-          onDragStart={handleDragStart('background')}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop('background')}
-          onDragEnd={handleDragEnd}
-          sx={{
-            cursor: 'move',
-            opacity: draggedSection === 'background' ? 0.5 : 1,
-            transition: 'opacity 0.2s',
-          }}
-        >
-          {/* Background Styling Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <DragIndicator sx={{ cursor: 'grab', '&:active': { cursor: 'grabbing' }, color: '#000000', opacity: 1 }} />
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-                Background
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Switch
-                checked={config.enableBackground}
-                onChange={(e) => updateConfig({ enableBackground: e.target.checked })}
-                size="small"
-                sx={{ color: '#9c27b0' }}
-              />
-              <IconButton
-                size="small"
-                onClick={() => updateUIState({ expandBackgroundStyling: !uiState.expandBackgroundStyling })}
-                sx={{ padding: '4px' }}
-              >
-                <span style={{ fontSize: '16px' }}>{uiState.expandBackgroundStyling ? '▼' : '▶'}</span>
-              </IconButton>
-            </Box>
+  // Reusable section renderer
+  const renderStylingSection = (
+    sectionType: 'background' | 'outlinePaths',
+    title: string,
+    config: {
+      enabled: boolean;
+      expanded: boolean;
+      threshold?: number;
+      minPathLength?: number;
+      simplification: number;
+      strokeWidth: number;
+      strokeColor: string;
+      strokeOpacity: number;
+      useFill: boolean;
+      fillColor: string;
+      fillOpacity: number;
+      useBezier: boolean;
+      wiggle: boolean;
+      useDashArray: boolean;
+      dashSize: number;
+    },
+    handlers: {
+      onToggleEnable: (enabled: boolean) => void;
+      onToggleExpand: () => void;
+      onUpdateThreshold?: (value: number) => void;
+      onUpdateMinPathLength?: (value: number) => void;
+      onUpdateSimplification: (value: number) => void;
+      onUpdateStrokeWidth: (value: number) => void;
+      onUpdateStrokeColor: (value: string) => void;
+      onUpdateStrokeOpacity: (value: number) => void;
+      onToggleFill: (enabled: boolean) => void;
+      onUpdateFillColor: (value: string) => void;
+      onUpdateFillOpacity: (value: number) => void;
+      onToggleBezier: (enabled: boolean) => void;
+      onToggleWiggle: (enabled: boolean) => void;
+      onToggleDashArray: (enabled: boolean) => void;
+      onUpdateDashSize: (value: number) => void;
+    }
+  ) => {
+    return (
+      <Box
+        key={sectionType}
+        draggable
+        onDragStart={handleDragStart(sectionType)}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop(sectionType)}
+        onDragEnd={handleDragEnd}
+        sx={{
+          cursor: 'move',
+          opacity: draggedSection === sectionType ? 0.5 : 1,
+          transition: 'opacity 0.2s',
+        }}
+      >
+        {/* Section Header */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <DragIndicator sx={{ cursor: 'grab', '&:active': { cursor: 'grabbing' }, color: '#000000', opacity: 1 }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
+              {title}
+            </Typography>
           </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Switch
+              checked={config.enabled}
+              onChange={(e) => handlers.onToggleEnable(e.target.checked)}
+              size="small"
+              sx={{ color: '#9c27b0' }}
+            />
+            <IconButton
+              size="small"
+              onClick={handlers.onToggleExpand}
+              sx={{ padding: '4px' }}
+            >
+              <span style={{ fontSize: '16px' }}>{config.expanded ? '▼' : '▶'}</span>
+            </IconButton>
+          </Box>
+        </Box>
 
-          <Collapse in={uiState.expandBackgroundStyling}>
+        <Collapse in={config.expanded}>
+          {/* Threshold (Background only) */}
+          {config.threshold !== undefined && handlers.onUpdateThreshold && (
             <Box sx={{ mb: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Background Threshold: {config.backgroundThreshold}
+                Threshold: {config.threshold}
               </Typography>
               <Slider
-                value={config.backgroundThreshold}
-                onChange={(_, value) => updateConfig({ backgroundThreshold: value as number })}
+                value={config.threshold}
+                onChange={(_, value) => handlers.onUpdateThreshold!(value as number)}
                 min={1}
                 max={255}
                 step={1}
@@ -111,215 +149,17 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 sx={{ color: '#9c27b0' }}
               />
             </Box>
+          )}
 
+          {/* Min Path Length (Outline only) */}
+          {config.minPathLength !== undefined && handlers.onUpdateMinPathLength && (
             <Box sx={{ mb: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Background Simplification: {config.backgroundSimplification}
+                Min Path Length: {config.minPathLength}
               </Typography>
               <Slider
-                value={config.backgroundSimplification}
-                onChange={(_, value) => updateConfig({ backgroundSimplification: value as number })}
-                min={1}
-                max={10}
-                step={0.5}
-                valueLabelDisplay="auto"
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Stroke Width: {config.backgroundStrokeWidth.toFixed(2)}
-              </Typography>
-              <Slider
-                value={config.backgroundStrokeWidth}
-                onChange={(_, value) => updateConfig({ backgroundStrokeWidth: value as number })}
-                min={0.01}
-                max={2}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">
-                Stroke Color
-              </Typography>
-              <input
-                type="color"
-                value={config.backgroundStrokeColor}
-                onChange={(e) => updateConfig({ backgroundStrokeColor: e.target.value })}
-                style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Stroke Opacity: {config.backgroundStrokeOpacity.toFixed(2)}
-              </Typography>
-              <Slider
-                value={config.backgroundStrokeOpacity}
-                onChange={(_, value) => updateConfig({ backgroundStrokeOpacity: value as number })}
-                min={0}
-                max={1}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">
-                Use Fill
-              </Typography>
-              <Switch
-                checked={config.useBackgroundFill}
-                onChange={(e) => updateConfig({ useBackgroundFill: e.target.checked })}
-                size="small"
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            {config.useBackgroundFill && (
-              <>
-                <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Typography variant="caption" color="text.secondary">
-                    Fill Color
-                  </Typography>
-                  <input
-                    type="color"
-                    value={config.backgroundFillColor}
-                    onChange={(e) => updateConfig({ backgroundFillColor: e.target.value })}
-                    style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
-                  />
-                </Box>
-
-                <Box sx={{ mb: 1 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                    Fill Opacity: {config.backgroundFillOpacity.toFixed(2)}
-                  </Typography>
-                  <Slider
-                    value={config.backgroundFillOpacity}
-                    onChange={(_, value) => updateConfig({ backgroundFillOpacity: value as number })}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    valueLabelDisplay="auto"
-                    valueLabelFormat={(value) => value.toFixed(2)}
-                    sx={{ color: '#9c27b0' }}
-                  />
-                </Box>
-              </>
-            )}
-
-            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">
-                Use Bezier Curves
-              </Typography>
-              <Switch
-                checked={config.useBezierBackground}
-                onChange={(e) => updateConfig({ useBezierBackground: e.target.checked })}
-                size="small"
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            {config.useBezierBackground && (
-              <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="caption" color="text.secondary">
-                  Create Wiggle
-                </Typography>
-                <Switch
-                  checked={config.backgroundWiggle}
-                  onChange={(e) => updateConfig({ backgroundWiggle: e.target.checked })}
-                  size="small"
-                  sx={{ color: '#9c27b0' }}
-                />
-              </Box>
-            )}
-
-            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">
-                Use Dash Array
-              </Typography>
-              <Switch
-                checked={config.backgroundUseDashArray}
-                onChange={(e) => updateConfig({ backgroundUseDashArray: e.target.checked })}
-                size="small"
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            {config.backgroundUseDashArray && (
-              <Box sx={{ mb: 1 }}>
-                <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                  Dash Size: {config.backgroundDashSize}
-                </Typography>
-                <Slider
-                  value={config.backgroundDashSize}
-                  onChange={(_, value) => updateConfig({ backgroundDashSize: value as number })}
-                  min={1}
-                  max={50}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  sx={{ color: '#9c27b0' }}
-                />
-              </Box>
-            )}
-          </Collapse>
-        </Box>
-      );
-    } else {
-      return (
-        <Box
-          key="outlinePaths"
-          draggable
-          onDragStart={handleDragStart('outlinePaths')}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop('outlinePaths')}
-          onDragEnd={handleDragEnd}
-          sx={{
-            cursor: 'move',
-            opacity: draggedSection === 'outlinePaths' ? 0.5 : 1,
-            transition: 'opacity 0.2s',
-          }}
-        >
-          {/* Outline Path Styling Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1, mb: 0.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <DragIndicator sx={{ cursor: 'grab', '&:active': { cursor: 'grabbing' }, color: '#000000', opacity: 1 }} />
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#9c27b0' }}>
-                Outline
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Switch
-                checked={config.enableOutlinePaths}
-                onChange={(e) => updateConfig({ enableOutlinePaths: e.target.checked })}
-                size="small"
-                sx={{ color: '#9c27b0' }}
-              />
-              <IconButton
-                size="small"
-                onClick={() => updateUIState({ expandOutlinePathStyling: !uiState.expandOutlinePathStyling })}
-                sx={{ padding: '4px' }}
-              >
-                <span style={{ fontSize: '16px' }}>{uiState.expandOutlinePathStyling ? '▼' : '▶'}</span>
-              </IconButton>
-            </Box>
-          </Box>
-
-          <Collapse in={uiState.expandOutlinePathStyling}>
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Outline Path Min Path Length: {config.outlinePathMinPathLength}
-              </Typography>
-              <Slider
-                value={config.outlinePathMinPathLength}
-                onChange={(_, value) => updateConfig({ outlinePathMinPathLength: value as number })}
+                value={config.minPathLength}
+                onChange={(_, value) => handlers.onUpdateMinPathLength!(value as number)}
                 min={1}
                 max={20}
                 step={1}
@@ -327,166 +167,178 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
                 sx={{ color: '#9c27b0' }}
               />
             </Box>
+          )}
 
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Outline Path Simplification: {config.outlinePathSimplification}
-              </Typography>
-              <Slider
-                value={config.outlinePathSimplification}
-                onChange={(_, value) => updateConfig({ outlinePathSimplification: value as number })}
-                min={1}
-                max={10}
-                step={0.5}
-                valueLabelDisplay="auto"
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
+          {/* Simplification */}
+          <Box sx={{ mb: 1 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+              Simplification: {config.simplification}
+            </Typography>
+            <Slider
+              value={config.simplification}
+              onChange={(_, value) => handlers.onUpdateSimplification(value as number)}
+              min={1}
+              max={10}
+              step={0.5}
+              valueLabelDisplay="auto"
+              sx={{ color: '#9c27b0' }}
+            />
+          </Box>
 
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Stroke Width: {config.outlinePathsStrokeWidth.toFixed(2)}
-              </Typography>
-              <Slider
-                value={config.outlinePathsStrokeWidth}
-                onChange={(_, value) => updateConfig({ outlinePathsStrokeWidth: value as number })}
-                min={0.01}
-                max={2}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
+          {/* Stroke Width */}
+          <Box sx={{ mb: 1 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+              Stroke Width: {config.strokeWidth.toFixed(2)}
+            </Typography>
+            <Slider
+              value={config.strokeWidth}
+              onChange={(_, value) => handlers.onUpdateStrokeWidth(value as number)}
+              min={0.01}
+              max={2}
+              step={0.01}
+              valueLabelDisplay="auto"
+              valueLabelFormat={(value) => value.toFixed(2)}
+              sx={{ color: '#9c27b0' }}
+            />
+          </Box>
 
-            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">
-                Stroke Color
-              </Typography>
-              <input
-                type="color"
-                value={config.outlinePathsStrokeColor}
-                onChange={(e) => updateConfig({ outlinePathsStrokeColor: e.target.value })}
-                style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
-              />
-            </Box>
+          {/* Stroke Color */}
+          <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="caption" color="text.secondary">
+              Stroke Color
+            </Typography>
+            <input
+              type="color"
+              value={config.strokeColor}
+              onChange={(e) => handlers.onUpdateStrokeColor(e.target.value)}
+              style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+            />
+          </Box>
 
-            <Box sx={{ mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                Stroke Opacity: {config.outlinePathsStrokeOpacity.toFixed(2)}
-              </Typography>
-              <Slider
-                value={config.outlinePathsStrokeOpacity}
-                onChange={(_, value) => updateConfig({ outlinePathsStrokeOpacity: value as number })}
-                min={0}
-                max={1}
-                step={0.01}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => value.toFixed(2)}
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
+          {/* Stroke Opacity */}
+          <Box sx={{ mb: 1 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+              Stroke Opacity: {config.strokeOpacity.toFixed(2)}
+            </Typography>
+            <Slider
+              value={config.strokeOpacity}
+              onChange={(_, value) => handlers.onUpdateStrokeOpacity(value as number)}
+              min={0}
+              max={1}
+              step={0.01}
+              valueLabelDisplay="auto"
+              valueLabelFormat={(value) => value.toFixed(2)}
+              sx={{ color: '#9c27b0' }}
+            />
+          </Box>
 
-            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">
-                Use Fill
-              </Typography>
-              <Switch
-                checked={config.useOutlinePathsFill}
-                onChange={(e) => updateConfig({ useOutlinePathsFill: e.target.checked })}
-                size="small"
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
+          {/* Use Fill */}
+          <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="caption" color="text.secondary">
+              Use Fill
+            </Typography>
+            <Switch
+              checked={config.useFill}
+              onChange={(e) => handlers.onToggleFill(e.target.checked)}
+              size="small"
+              sx={{ color: '#9c27b0' }}
+            />
+          </Box>
 
-            {config.useOutlinePathsFill && (
-              <>
-                <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Typography variant="caption" color="text.secondary">
-                    Fill Color
-                  </Typography>
-                  <input
-                    type="color"
-                    value={config.outlinePathsFillColor}
-                    onChange={(e) => updateConfig({ outlinePathsFillColor: e.target.value })}
-                    style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
-                  />
-                </Box>
-
-                <Box sx={{ mb: 1 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                    Fill Opacity: {config.outlinePathsFillOpacity.toFixed(2)}
-                  </Typography>
-                  <Slider
-                    value={config.outlinePathsFillOpacity}
-                    onChange={(_, value) => updateConfig({ outlinePathsFillOpacity: value as number })}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    valueLabelDisplay="auto"
-                    valueLabelFormat={(value) => value.toFixed(2)}
-                    sx={{ color: '#9c27b0' }}
-                  />
-                </Box>
-              </>
-            )}
-
-            <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="caption" color="text.secondary">
-                Use Bezier Curves
-              </Typography>
-              <Switch
-                checked={config.useBezierOutlinePaths}
-                onChange={(e) => updateConfig({ useBezierOutlinePaths: e.target.checked })}
-                size="small"
-                sx={{ color: '#9c27b0' }}
-              />
-            </Box>
-
-            {config.useBezierOutlinePaths && (
+          {/* Fill Color & Opacity */}
+          {config.useFill && (
+            <>
               <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Typography variant="caption" color="text.secondary">
-                  Create Wiggle
+                  Fill Color
                 </Typography>
-                <Switch
-                  checked={config.outlinePathsWiggle}
-                  onChange={(e) => updateConfig({ outlinePathsWiggle: e.target.checked })}
-                  size="small"
+                <input
+                  type="color"
+                  value={config.fillColor}
+                  onChange={(e) => handlers.onUpdateFillColor(e.target.value)}
+                  style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+                />
+              </Box>
+
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                  Fill Opacity: {config.fillOpacity.toFixed(2)}
+                </Typography>
+                <Slider
+                  value={config.fillOpacity}
+                  onChange={(_, value) => handlers.onUpdateFillOpacity(value as number)}
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(value) => value.toFixed(2)}
                   sx={{ color: '#9c27b0' }}
                 />
               </Box>
-            )}
+            </>
+          )}
 
+          {/* Use Bezier Curves */}
+          <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="caption" color="text.secondary">
+              Use Bezier Curves
+            </Typography>
+            <Switch
+              checked={config.useBezier}
+              onChange={(e) => handlers.onToggleBezier(e.target.checked)}
+              size="small"
+              sx={{ color: '#9c27b0' }}
+            />
+          </Box>
+
+          {/* Create Wiggle */}
+          {config.useBezier && (
             <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="caption" color="text.secondary">
-                Use Dash Array
+                Create Wiggle
               </Typography>
               <Switch
-                checked={config.outlinePathsUseDashArray}
-                onChange={(e) => updateConfig({ outlinePathsUseDashArray: e.target.checked })}
+                checked={config.wiggle}
+                onChange={(e) => handlers.onToggleWiggle(e.target.checked)}
                 size="small"
                 sx={{ color: '#9c27b0' }}
               />
             </Box>
+          )}
 
-            {config.outlinePathsUseDashArray && (
-              <Box sx={{ mb: 1 }}>
-                <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
-                  Dash Size: {config.outlinePathsDashSize}
-                </Typography>
-                <Slider
-                  value={config.outlinePathsDashSize}
-                  onChange={(_, value) => updateConfig({ outlinePathsDashSize: value as number })}
-                  min={1}
-                  max={50}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  sx={{ color: '#9c27b0' }}
-                />
-              </Box>
-            )}
+          {/* Use Dash Array */}
+          <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="caption" color="text.secondary">
+              Use Dash Array
+            </Typography>
+            <Switch
+              checked={config.useDashArray}
+              onChange={(e) => handlers.onToggleDashArray(e.target.checked)}
+              size="small"
+              sx={{ color: '#9c27b0' }}
+            />
+          </Box>
 
-            {/* Download SVG Button */}
+          {/* Dash Size */}
+          {config.useDashArray && (
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+                Dash Size: {config.dashSize}
+              </Typography>
+              <Slider
+                value={config.dashSize}
+                onChange={(_, value) => handlers.onUpdateDashSize(value as number)}
+                min={1}
+                max={50}
+                step={1}
+                valueLabelDisplay="auto"
+                sx={{ color: '#9c27b0' }}
+              />
+            </Box>
+          )}
+
+          {/* Download SVG Button (Outline only) */}
+          {sectionType === 'outlinePaths' && (
             <button
               onClick={() => downloadSVG(svgString, 'edge-detection.svg')}
               style={{
@@ -505,12 +357,92 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             >
               Download SVG
             </button>
-          </Collapse>
-        </Box>
+          )}
+        </Collapse>
+      </Box>
+    );
+  };
+
+  // Create sections in the order specified by layerOrder
+  const renderSection = (sectionType: 'background' | 'outlinePaths') => {
+    if (sectionType === 'background') {
+      return renderStylingSection(
+        'background',
+        'Background',
+        {
+          enabled: config.enableBackground,
+          expanded: uiState.expandBackgroundStyling,
+          threshold: config.backgroundThreshold,
+          simplification: config.backgroundSimplification,
+          strokeWidth: config.backgroundStrokeWidth,
+          strokeColor: config.backgroundStrokeColor,
+          strokeOpacity: config.backgroundStrokeOpacity,
+          useFill: config.useBackgroundFill,
+          fillColor: config.backgroundFillColor,
+          fillOpacity: config.backgroundFillOpacity,
+          useBezier: config.useBezierBackground,
+          wiggle: config.backgroundWiggle,
+          useDashArray: config.backgroundUseDashArray,
+          dashSize: config.backgroundDashSize,
+        },
+        {
+          onToggleEnable: (enabled) => updateConfig({ enableBackground: enabled }),
+          onToggleExpand: () => updateUIState({ expandBackgroundStyling: !uiState.expandBackgroundStyling }),
+          onUpdateThreshold: (value) => updateConfig({ backgroundThreshold: value }),
+          onUpdateSimplification: (value) => updateConfig({ backgroundSimplification: value }),
+          onUpdateStrokeWidth: (value) => updateConfig({ backgroundStrokeWidth: value }),
+          onUpdateStrokeColor: (value) => updateConfig({ backgroundStrokeColor: value }),
+          onUpdateStrokeOpacity: (value) => updateConfig({ backgroundStrokeOpacity: value }),
+          onToggleFill: (enabled) => updateConfig({ useBackgroundFill: enabled }),
+          onUpdateFillColor: (value) => updateConfig({ backgroundFillColor: value }),
+          onUpdateFillOpacity: (value) => updateConfig({ backgroundFillOpacity: value }),
+          onToggleBezier: (enabled) => updateConfig({ useBezierBackground: enabled }),
+          onToggleWiggle: (enabled) => updateConfig({ backgroundWiggle: enabled }),
+          onToggleDashArray: (enabled) => updateConfig({ backgroundUseDashArray: enabled }),
+          onUpdateDashSize: (value) => updateConfig({ backgroundDashSize: value }),
+        }
+      );
+    } else {
+      return renderStylingSection(
+        'outlinePaths',
+        'Outline',
+        {
+          enabled: config.enableOutlinePaths,
+          expanded: uiState.expandOutlinePathStyling,
+          minPathLength: config.outlinePathMinPathLength,
+          simplification: config.outlinePathSimplification,
+          strokeWidth: config.outlinePathsStrokeWidth,
+          strokeColor: config.outlinePathsStrokeColor,
+          strokeOpacity: config.outlinePathsStrokeOpacity,
+          useFill: config.useOutlinePathsFill,
+          fillColor: config.outlinePathsFillColor,
+          fillOpacity: config.outlinePathsFillOpacity,
+          useBezier: config.useBezierOutlinePaths,
+          wiggle: config.outlinePathsWiggle,
+          useDashArray: config.outlinePathsUseDashArray,
+          dashSize: config.outlinePathsDashSize,
+        },
+        {
+          onToggleEnable: (enabled) => updateConfig({ enableOutlinePaths: enabled }),
+          onToggleExpand: () => updateUIState({ expandOutlinePathStyling: !uiState.expandOutlinePathStyling }),
+          onUpdateMinPathLength: (value) => updateConfig({ outlinePathMinPathLength: value }),
+          onUpdateSimplification: (value) => updateConfig({ outlinePathSimplification: value }),
+          onUpdateStrokeWidth: (value) => updateConfig({ outlinePathsStrokeWidth: value }),
+          onUpdateStrokeColor: (value) => updateConfig({ outlinePathsStrokeColor: value }),
+          onUpdateStrokeOpacity: (value) => updateConfig({ outlinePathsStrokeOpacity: value }),
+          onToggleFill: (enabled) => updateConfig({ useOutlinePathsFill: enabled }),
+          onUpdateFillColor: (value) => updateConfig({ outlinePathsFillColor: value }),
+          onUpdateFillOpacity: (value) => updateConfig({ outlinePathsFillOpacity: value }),
+          onToggleBezier: (enabled) => updateConfig({ useBezierOutlinePaths: enabled }),
+          onToggleWiggle: (enabled) => updateConfig({ outlinePathsWiggle: enabled }),
+          onToggleDashArray: (enabled) => updateConfig({ outlinePathsUseDashArray: enabled }),
+          onUpdateDashSize: (value) => updateConfig({ outlinePathsDashSize: value }),
+        }
       );
     }
   };
 
+  // Old implementation - DELETE
   return (
     <>
       {/* Left Panel Toggle Button */}
