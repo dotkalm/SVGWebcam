@@ -1,16 +1,16 @@
-import vertexShaderSource from '@/shaders/source.vert';
-import gaussianBlurFragmentShader from '@/shaders/blurs/gaussian.frag';
-import motionBlurFragmentShader from '@/shaders/blurs/motionblur.frag';
 import bokehBlurFragmentShader from '@/shaders/blurs/bokeh.frag';
+import gaussianBlurFragmentShader from '@/shaders/blurs/gaussian.frag';
 import gradientFragmentShader from '@/shaders/gradient.frag';
+import motionBlurFragmentShader from '@/shaders/blurs/motionblur.frag';
 import nonMaxSuppressionFragmentShader from '@/shaders/nonMax.frag';
 import thresholdFragmentShader from '@/shaders/threshold.frag';
+import vertexShaderSource from '@/shaders/source.vert';
 
 import {
-  createShader,
-  createProgram,
-  createTexture,
   createFramebuffer,
+  createProgram,
+  createShader,
+  createTexture,
 } from '@/utils';
 import type { TInitWebGL } from '@/types';
 
