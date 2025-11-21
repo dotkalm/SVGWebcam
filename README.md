@@ -14,8 +14,9 @@ Where the magic happens
 
 ### The background layer takes a shortcut and only applies the selected blur
 
-the `useWebGLCanvas` runs the shaders and returns the outputs in frame buffers as a ref
-the `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` where the edge data and user options are used to create svg markup.
+The `useWebGLCanvas` runs the shaders and returns the outputs in frame buffers as a ref.
+
+The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` where the edge data and user options are used to create svg markup.
 
 ## swap order of layers using drag handles
 <img width="292" height="254" alt="Screenshot 2025-11-20 at 2 17 46 PM" src="https://github.com/user-attachments/assets/25a7f96d-a3fb-496e-8b71-1af52b589bca" />
