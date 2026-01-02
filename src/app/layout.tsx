@@ -19,11 +19,8 @@ export default function RootLayout({
         style={{
           margin: 0,
           padding: 0,
-          minHeight: '100vh',
-          backgroundColor: 'darkblue',
           overscrollBehaviorY: 'none',
           overscrollBehavior: 'none',
-          overflowY: 'auto',
           fontFamily: "'Circular Std', sans-serif",
         }}
       >

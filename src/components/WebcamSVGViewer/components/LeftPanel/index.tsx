@@ -443,7 +443,6 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
     }
   };
 
-  // Old implementation - DELETE
   return (
     <>
       {/* Left Panel Toggle Button */}

@@ -25,12 +25,14 @@ import {
 } from '@/utils';
 import { LeftControlPanel } from './components/LeftPanel';
 import { RightControlPanel } from './components/RightPanel';
+import MobileControls from './components/MobileControls';
 import { 
   DEFAULT_CONFIG, 
   DEFAULT_UI_STATE, 
 } from '@/constants';
 
 export default function WebcamSVGViewer() {
+  const isPortrait = useMediaQuery('(orientation: portrait)');
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });
   const [svgOutlinePaths, setSvgOutlinePaths] = useState<string>('');
   const [svgBackground, setSvgBackground] = useState<string>('');
@@ -54,7 +56,6 @@ export default function WebcamSVGViewer() {
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   
-  const isPortrait = useMediaQuery('(orientation: portrait)');
   const { width, height } = useGetCurrentWindowSize();
   const connectEdgesOutlinePaths = false;
   const connectEdgesBackground = true;
@@ -67,12 +68,10 @@ export default function WebcamSVGViewer() {
     zoom: config.cameraZoom,
   });
 
-  // Load presets from localStorage on mount
   useEffect(() => {
     setPresets(loadPresetsFromStorage());
   }, []);
 
-  // Save current settings as a preset
   const savePreset = () => {
     if (!presetName.trim()) {
       alert('Please enter a preset name');
@@ -85,19 +84,16 @@ export default function WebcamSVGViewer() {
     setPresetName('');
   };
 
-  // Load a preset
   const loadPreset = (settings: PresetSettings) => {
     setConfig(settings);
   };
 
-  // Delete a preset
   const deletePreset = (index: number) => {
     const newPresets = presets.filter((_, i) => i !== index);
     setPresets(newPresets);
     savePresetsToStorage(newPresets);
   };
 
-  // Update canvas dimensions when orientation changes
   useEffect(() => {
     const newDimensions = isPortrait 
       ? { width: 480, height: 640 }
@@ -105,7 +101,6 @@ export default function WebcamSVGViewer() {
     setCanvasDimensions(newDimensions);
   }, [isPortrait]);
 
-  // Store GL context reference
   useEffect(() => {
     if (canvasRef.current && isStreaming) {
       const gl = canvasRef.current.getContext('webgl2');
@@ -127,7 +122,6 @@ export default function WebcamSVGViewer() {
     motionBlurAngle: config.motionBlurAngle,
   });
 
-  // Generate SVG from WebGL canvas every frame
   useSVGGeneration({
     isStreaming,
     glRef,
@@ -146,33 +140,46 @@ export default function WebcamSVGViewer() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        height: '100vh',
       }}
     >
-      <LeftControlPanel
-        config={config}
-        updateConfig={updateConfig}
-        uiState={uiState}
-        updateUIState={updateUIState}
-        svgString={svgString}
-        downloadSVG={downloadSVG}
-      />
+      {
+        !isPortrait ? (
+          <>
+            <LeftControlPanel
+              config={config}
+              updateConfig={updateConfig}
+              uiState={uiState}
+              updateUIState={updateUIState}
+              svgString={svgString}
+              downloadSVG={downloadSVG}
+            />
 
-      <RightControlPanel
-        config={config}
-        updateConfig={updateConfig}
-        uiState={uiState}
-        updateUIState={updateUIState}
-        presets={presets}
-        presetName={presetName}
-        setPresetName={setPresetName}
-        savePreset={savePreset}
-        loadPreset={loadPreset}
-        deletePreset={deletePreset}
-      />
+            <RightControlPanel
+              config={config}
+              updateConfig={updateConfig}
+              uiState={uiState}
+              updateUIState={updateUIState}
+              presets={presets}
+              presetName={presetName}
+              setPresetName={setPresetName}
+              savePreset={savePreset}
+              loadPreset={loadPreset}
+              deletePreset={deletePreset}
+            />
+          </>
+        ) : (
+          <MobileControls
+              config={config}
+              updateConfig={updateConfig}
+              uiState={uiState}
+              updateUIState={updateUIState}
+              svgString={svgString}
+              downloadSVG={downloadSVG}
+          />
+        )
+      }
 
       {/* Hidden video and canvas */}
       <Box sx={{ display: 'none' }}>
@@ -201,7 +208,6 @@ export default function WebcamSVGViewer() {
       <Box
         sx={{
           bgcolor: '#fff',
-          border: '2px solid #333',
           borderRadius: 1,
           minHeight: height,
           minWidth: width,
@@ -212,6 +218,7 @@ export default function WebcamSVGViewer() {
           mx: 'auto',
           maxWidth: '100%',
           position: 'relative',
+          transform: 'translateY(-2dvh)',
         }}
       >
         <Box

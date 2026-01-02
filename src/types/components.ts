@@ -14,6 +14,8 @@ export interface LeftControlPanelProps {
   downloadSVG: (svg: string, filename: string) => void;
 }
 
+export type TSliderProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig'>;
+
 export interface RightControlPanelProps {
   config: ViewerConfig;
   updateConfig: (updates: Partial<ViewerConfig>) => void;

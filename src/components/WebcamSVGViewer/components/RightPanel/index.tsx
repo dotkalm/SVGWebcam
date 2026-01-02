@@ -99,6 +99,8 @@ export function RightControlPanel(props: RightControlPanelProps) {
                 borderRadius: 2,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                 minWidth: 280,
+                height: 250,
+                overflow: 'scroll',
               }}
             >
               <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#4CAF50' }}>
