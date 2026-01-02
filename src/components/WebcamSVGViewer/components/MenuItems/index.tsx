@@ -4,8 +4,8 @@ import Typography from '@mui/material/Typography';
 
 export default function Menu() {
     const menuItems = [
-    'Edge Detection',
-    'Background',
+    'Edges',
+    'BG',
     'Outline',
     'Blur',
     'Presets',
@@ -16,8 +16,16 @@ export default function Menu() {
         sx={{
             position:'absolute',
             zIndex:10002,
-            top:'12dvh',
-            right:'1.8em',
+            width: '100%',
+            paddingLeft: '15dvw',
+            paddingRight: '1dvw',
+            gap: '1dvw',
+            display:'flex',
+            flexDirection:'row',
+            alignContent:'center',
+            alignItems:'center',
+            justifyContent:'right',
+            height: '6.5dvh',
         }}
         >
             {
@@ -27,17 +35,20 @@ export default function Menu() {
                         sx={{
                             display: 'block',
                             bgcolor: '#ff6f00',
+                            height: '4dvh',
                         }}
                     >
                         <Typography
                             key={item}
+                            sx={{
+                                fontSize: '.8em',
+                            }}
                         >
                             {item}
                         </Typography>
                     </Button>
                 ))
             }
-            <Typography>Mobile Controls</Typography>
         </Box>
 
     )

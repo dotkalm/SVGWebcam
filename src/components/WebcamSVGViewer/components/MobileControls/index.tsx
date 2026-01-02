@@ -19,9 +19,9 @@ export default function MobileControls(props: LeftControlPanelProps) {
             <IconButton
                 sx={{
                     left: '14px',
-                    top: '5dvh',
+                    top: '0dvh',
                     position: 'absolute',
-                    zIndex: 10001,
+                    zIndex: 10005,
                 }}
                 onClick={() => {
                     updateConfig({
@@ -30,27 +30,6 @@ export default function MobileControls(props: LeftControlPanelProps) {
                 }}
             >
                 <CameraSwitch
-                    width={140}
-                    sx={{
-                        color: '#454545ff',
-                        fontSize: '5dvh',
-
-                    }} />
-            </IconButton>
-            <IconButton
-                sx={{
-                    right: '14px',
-                    top: '5dvh',
-                    position: 'absolute',
-                    zIndex: 10001,
-                }}
-                onClick={() => {
-                    updateConfig({
-                        facingMode: facingMode === 'user' ? 'environment' : 'user',
-                    });
-                }}
-            >
-                <Menu
                     width={140}
                     sx={{
                         color: '#454545ff',
@@ -69,46 +48,10 @@ export default function MobileControls(props: LeftControlPanelProps) {
                     zIndex: 10000,
                 }}
             >
-                {activeTab !== 'zoom' && (
-                <IconButton
-                    sx={{
-                        left: '10px',
-                        bottom: '2dvh',
-                        position: 'absolute',
-                    }}
-                >
-                    <ArrowCircleLeft
-                        sx={{
-                            color: 'darkgray',
-                            fontSize: '6dvh',
-                        }}
-                        width={140}
-                    />
-                </IconButton>)
-                }
                 {activeTab === 'zoom' && <Zoom
                     config={props.config}
                     updateConfig={props.updateConfig}
                 />}
-                {activeTab !== 'zoom' && (
-                    <IconButton
-                        sx={{
-                            right: '10px',
-                            bottom: '2dvh',
-                            position: 'absolute',
-                        }}
-                    >
-                        <ArrowCircleRight
-                            sx={{
-                                color: 'darkgray',
-                                fontSize: '6dvh',
-                                position: 'absolute',
-                                right: '10px',
-                                bottom: '2dvh',
-                            }}
-                        />
-                    </IconButton>)
-                }
             </Box>
         </>
     );
