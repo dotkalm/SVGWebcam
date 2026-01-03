@@ -32,7 +32,8 @@ import {
 } from '@/constants';
 
 export default function WebcamSVGViewer() {
-  const isPortrait = useMediaQuery('(orientation: portrait)');
+  const isPortrait = useMediaQuery('(orientation: portrait)', { noSsr: true });
+  const [isClient, setIsClient] = useState(false);
   const [canvasDimensions, setCanvasDimensions] = useState({ width: 640, height: 480 });
   const [svgOutlinePaths, setSvgOutlinePaths] = useState<string>('');
   const [svgBackground, setSvgBackground] = useState<string>('');
@@ -69,6 +70,7 @@ export default function WebcamSVGViewer() {
   });
 
   useEffect(() => {
+    setIsClient(true);
     setPresets(loadPresetsFromStorage());
   }, []);
 
@@ -137,6 +139,12 @@ export default function WebcamSVGViewer() {
 
   const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths, uiState.layerOrder);
 
+  // Don't render until client-side to prevent flash
+  if (!isClient) {
+    return null;
+  }
+
+  console.log({isPortrait});
   return (
     <Box
       sx={{

@@ -3,6 +3,10 @@ import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import type { TConfigProps } from '@/types';
+import { 
+    sliderContainer,
+    sliderStyles,
+} from '@/styles/styles';
 
 export default function Edges({ config, updateConfig }: TConfigProps) {
     const theme = useTheme();
@@ -27,7 +31,7 @@ export default function Edges({ config, updateConfig }: TConfigProps) {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'flex-end',
-                            paddingRight: '4dvw',
+                            px: '4dvw',
                         }}
                     >
                         <Box
@@ -38,55 +42,33 @@ export default function Edges({ config, updateConfig }: TConfigProps) {
                                 alignContent: 'flex-end',
                                 alignItems: 'center',
                                 justifyContent: 'space-around',
+                                gap: 2,
                             }}
                         >
-                            <Box
-                                sx={{
-                                    width: '70%',
-                                    height: '4dvh',
-                                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                                    borderRadius: '50px',
-                                    borderColor: theme.palette.colors.border,
-                                    borderWidth: '.1em',
-                                    borderStyle: 'solid',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
+                            <Box sx={sliderContainer(theme)}>
                                 <Slider
-                                    size='small'
-                                    value={config.cameraZoom}
-                                    onChange={(_, value) => updateConfig({ cameraZoom: value as number })}
-                                    min={1}
-                                    max={5}
-                                    step={0.1}
-                                    valueLabelDisplay="auto"
-                                    valueLabelFormat={(value) => `${value.toFixed(1)}x`}
-                                    sx={{
-                                        width: '80%',
-                                        fontSize: '1dvh',
-                                        '& .MuiSlider-rail': {
-                                            backgroundColor: '#fff', // white background for the rail
-                                            opacity: 1,
-                                            height: '.4em'
-                                        },
-                                        '& .MuiSlider-track': {
-                                        },
-                                        '& .MuiSlider-thumb': {
-                                            backgroundColor: theme.palette.colors.activeBackground,
-                                            border: `1px solid ${theme.palette.colors.activeBorder}`,
-                                            '&:hover, &.Mui-focusVisible': {
-                                                boxShadow: '0 0 0 8px rgba(71, 71, 71, 0)',
-                                            },
-                                            height: '2em',
-                                            width: '2em'
-                                        },
+                                    max={0.1}
+                                    min={0.001}
+                                    onChange={(_, value) => {
+                                        if (index === 0) {
+                                            return updateConfig({ highThreshold: value as number })
+                                        }
+                                        return updateConfig({ lowThreshold: value as number })
                                     }}
+                                    size='small'
+                                    step={0.001}
+                                    sx={sliderStyles(theme)}
+                                    value={index === 0 ? config.highThreshold : config.lowThreshold}
+                                    valueLabelDisplay="auto"
+                                    valueLabelFormat={(value) => `${value.toFixed(3)}x`}
                                 />
                             </Box>
                             <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
                                 {label}
+                            </Typography>
+                            <br/>
+                            <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
+                                {index === 0 ? config.highThreshold.toFixed(3) : config.lowThreshold.toFixed(3)}
                             </Typography>
                         </Box>
                     </Box>

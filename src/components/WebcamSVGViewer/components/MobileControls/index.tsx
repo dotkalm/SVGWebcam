@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import CameraSwitch from '@mui/icons-material/Cameraswitch';
 import IconButton  from '@mui/material/IconButton';
@@ -9,7 +8,6 @@ import Controls from './components/Controls';
 
 
 export default function MobileControls(props: LeftControlPanelProps) {
-    const [ activeTab, setActiveTab ] = useState('zoom');
     const { config, updateConfig } = props;
     const { facingMode } = config;
     return (
