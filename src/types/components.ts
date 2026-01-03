@@ -80,6 +80,7 @@ export interface ViewerConfig {
 
   // menu items
   activeMenuItem?: MenuItem;
+  activeSubMenuItem?: SubMenuItem;
 }
 
 export interface UIState {
@@ -106,4 +107,11 @@ export enum MenuItem {
   OUTLINE = 'Outline',
   BLUR = 'Blur',
   PRESETS = 'Presets',
+}
+
+export enum SubMenuItem {
+  FIDELITY = 'Fidelity',
+  STROKE = 'Stroke',
+  FILL = 'Fill',
+  LINE_STYLE = 'Line Style',
 }

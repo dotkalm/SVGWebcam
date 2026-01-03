@@ -23,7 +23,7 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                     position: 'absolute',
                     top: '7dvh',
                     width: '98dvw',
-                    height: '18dvh',
+                    height: '16dvh',
                     borderRadius: '10px',
                 }}
             >
