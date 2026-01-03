@@ -1,12 +1,14 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
-import type { TSliderProps } from '@/types';
+import { useTheme } from '@mui/material/styles';
+import type { TConfigProps } from '@/types';
 
 export default function Zoom({
     config,
     updateConfig,
-}: TSliderProps) {
+}: TConfigProps) {
+    const theme = useTheme();
     return (
         <Box
             sx={{
@@ -23,7 +25,7 @@ export default function Zoom({
                     height: '5dvh',
                     backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     borderRadius: '50px',
-                    borderColor: '#313131ff',
+                    borderColor: theme.palette.colors.border,
                     borderWidth: '.1em',
                     borderStyle: 'solid',
                     p: 2,
@@ -54,8 +56,8 @@ export default function Zoom({
                             backgroundColor: '#ff6f00',
                         },
                         '& .MuiSlider-thumb': {
-                            backgroundColor: '#a6a6a6ff', // white thumb
-                            border: '1px solid #5b5b5bff', // black outline on thumb
+                            backgroundColor: theme.palette.colors.activeBackground,
+                            border: `1px solid ${theme.palette.colors.activeBorder}`,
                             '&:hover, &.Mui-focusVisible': {
                                 boxShadow: '0 0 0 8px rgba(71, 71, 71, 0)',
                             },

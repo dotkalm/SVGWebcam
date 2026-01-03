@@ -15,6 +15,7 @@ export interface LeftControlPanelProps {
 }
 
 export type TSliderProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig'>;
+export type TConfigProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig'>;
 
 export interface RightControlPanelProps {
   config: ViewerConfig;
@@ -76,6 +77,9 @@ export interface ViewerConfig {
   outlinePathsWiggle: boolean;
   outlinePathsUseDashArray: boolean;
   outlinePathsDashSize: number;
+
+  // menu items
+  activeMenuItem?: MenuItem;
 }
 
 export interface UIState {
@@ -94,4 +98,12 @@ export type PresetSettings = ViewerConfig;
 export interface Preset {
   name: string;
   settings: PresetSettings;
+}
+
+export enum MenuItem {
+  EDGE_DETECTION = 'Edges',
+  BACKGROUND_STYLING = 'BG',
+  OUTLINE = 'Outline',
+  BLUR = 'Blur',
+  PRESETS = 'Presets',
 }

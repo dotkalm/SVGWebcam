@@ -35,9 +35,13 @@ export default function MobileControls(props: LeftControlPanelProps) {
                         color: '#454545ff',
                         fontSize: '5dvh',
 
-                    }} />
+                    }}
+                />
             </IconButton>
-            <MenuItems />
+            <MenuItems 
+                config={config}
+                updateConfig={updateConfig}
+            />
             <Box
                 sx={{
                     height: '8dvh',
@@ -48,10 +52,10 @@ export default function MobileControls(props: LeftControlPanelProps) {
                     zIndex: 10000,
                 }}
             >
-                {activeTab === 'zoom' && <Zoom
+                <Zoom
                     config={props.config}
                     updateConfig={props.updateConfig}
-                />}
+                />
             </Box>
         </>
     );
