@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import ArrowCircleLeft from '@mui/icons-material/ArrowCircleLeftOutlined';
-import ArrowCircleRight from '@mui/icons-material/ArrowCircleRightOutlined';
 import Box from '@mui/material/Box';
 import CameraSwitch from '@mui/icons-material/Cameraswitch';
-import Menu from '@mui/icons-material/Menu';
 import IconButton  from '@mui/material/IconButton';
 import type { LeftControlPanelProps } from '@/types';
 import Zoom from './components/Zoom';
 import MenuItems from '@/components/WebcamSVGViewer/components/MenuItems';
+import Controls from './components/Controls';
 
 
 export default function MobileControls(props: LeftControlPanelProps) {
@@ -39,6 +37,10 @@ export default function MobileControls(props: LeftControlPanelProps) {
                 />
             </IconButton>
             <MenuItems 
+                config={config}
+                updateConfig={updateConfig}
+            />
+            <Controls
                 config={config}
                 updateConfig={updateConfig}
             />
