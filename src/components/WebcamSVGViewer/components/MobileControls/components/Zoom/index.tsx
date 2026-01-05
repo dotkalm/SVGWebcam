@@ -38,7 +38,7 @@ export default function Zoom({
                     size='small'
                     value={config.cameraZoom}
                     onChange={(_, value) => updateConfig({ cameraZoom: value as number })}
-                    min={1}
+                    min={-0.5}
                     max={5}
                     step={0.1}
                     valueLabelDisplay="auto"

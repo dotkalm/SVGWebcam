@@ -28,6 +28,7 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                     flexDirection: 'column',
                     alignItems: 'flex-start',
                     justifyContent: 'flex-start',
+                    height: '16dvh',
                 }}
             >
                 {activeMenuItem === MenuItem.EDGE_DETECTION && (

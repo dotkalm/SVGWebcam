@@ -19,7 +19,7 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
                 gap: 1,
             }}
         >

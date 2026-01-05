@@ -16,11 +16,13 @@ export default function TwoSliders({ configs }: TTwoSlidersProps) {
         <Box
             sx={{
                 width: '98dvw',
-                height: '75%',
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
+                gap: 1,
+
             }}
         >
             {Object.keys(configs).map((label: string, index: number) => {
