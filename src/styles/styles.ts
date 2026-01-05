@@ -16,8 +16,8 @@ export const sliderStyles = (theme: Theme) => ({
         '&:hover, &.Mui-focusVisible': {
             boxShadow: '0 0 0 8px rgba(71, 71, 71, 0)',
         },
-        height: '2em',
-        width: '2em'
+        height: '1.5em',
+        width: '1.5em'
     },
 });
 export const sliderContainer = (theme: Theme) => ({
@@ -28,7 +28,8 @@ export const sliderContainer = (theme: Theme) => ({
     borderStyle: 'solid',
     borderWidth: '.1em',
     display: 'flex',
-    height: '4dvh',
+    height: '3dvh',
     justifyContent: 'center',
-    width: '70%',
+    width: '50%',
+    minWidth: '50%',
 })

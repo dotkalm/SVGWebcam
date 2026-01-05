@@ -1,35 +1,105 @@
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { type TConfigProps, MenuItem } from '@/types';
-import Edges from '../Edges';
+import { type TConfigProps, MenuItem, SubMenuItem } from '@/types';
+import TwoSliders from '../TwoSliders';
+import Stroke from '../Stroke';
 import Submenu from '../SubMenu';
 
 export default function Controls({ config, updateConfig }: TConfigProps) {
     const theme = useTheme();
-    const { activeMenuItem } = config;
+    const { activeMenuItem, activeSubMenuItem } = config;
 
     if (!activeMenuItem) {
         return null;
     }
+    console.log({ activeMenuItem, activeSubMenuItem });
 
     return (
         <>
             <Box
                 sx={{
                     margin: '1dvw',
-                    border: `2px solid ${theme.palette.colors.border}`,
                     zIndex: 100010,
                     position: 'absolute',
                     top: '7dvh',
                     width: '98dvw',
-                    height: '16dvh',
                     borderRadius: '10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    justifyContent: 'flex-start',
                 }}
             >
                 {activeMenuItem === MenuItem.EDGE_DETECTION && (
-                    <Edges config={config} updateConfig={updateConfig} />
+                    <TwoSliders
+                        configs={{
+                            'High Threshold': {
+                                value: config.highThreshold,
+                                min: 0.001,
+                                max: 0.1,
+                                step: 0.001,
+                                changeHandler: (_, value) => updateConfig({ highThreshold: value as number }),
+                            },
+                            'Low Threshold': {
+                                value: config.lowThreshold,
+                                min: 0.001,
+                                max: 0.1,
+                                step: 0.001,
+                                changeHandler: (_, value) => updateConfig({ lowThreshold: value as number }),
+                            },
+                        }}
+                    />
                 )}
+                {((activeMenuItem === MenuItem.BACKGROUND_STYLING)
+                    && (!activeSubMenuItem || activeSubMenuItem === SubMenuItem.FIDELITY))
+                    && (
+                        <TwoSliders
+                            configs={{
+                                'Threshold': {
+                                    value: config.backgroundThreshold,
+                                    min: 1,
+                                    max: 255,
+                                    step: 1,
+                                    changeHandler: (_, value) => updateConfig({ backgroundThreshold: value as number }),
+                                },
+                                'Simplification': {
+                                    value: config.backgroundSimplification,
+                                    min: 1,
+                                    max: 10,
+                                    step: 0.5,
+                                    changeHandler: (_, value) => updateConfig({ backgroundSimplification: value as number }),
+                                },
+                            }}
+                        />
+                    )
+                }
+                {(activeMenuItem === MenuItem.BACKGROUND_STYLING
+                    && activeSubMenuItem === SubMenuItem.STROKE)
+                    && (
+                        <Stroke
+                            configs={{
+                                'Stroke Width': {
+                                    value: config.backgroundStrokeWidth,
+                                    min: 1,
+                                    max: 255,
+                                    step: 1,
+                                    changeHandler: (_, value) => updateConfig({ backgroundStrokeWidth: value as number }),
+                                },
+                                'Stroke Opacity': {
+                                    value: config.backgroundStrokeOpacity,
+                                    min: 1,
+                                    max: 10,
+                                    step: 0.5,
+                                    changeHandler: (_, value) => updateConfig({ backgroundStrokeOpacity: value as number }),
+                                },
+                            }}
+                            strokeColor={{
+                                value: config.backgroundStrokeColor,
+                                changeHandler: (e) => updateConfig({ backgroundStrokeColor: e.target.value}),
+                            }}
+                        />
+                    )
+                }
             </Box>
             <Submenu {...{ config, updateConfig }} />
         </>

@@ -139,7 +139,6 @@ export default function WebcamSVGViewer() {
 
   const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths, uiState.layerOrder);
 
-  console.log({isPortrait});
   return (
     <Box
       sx={{

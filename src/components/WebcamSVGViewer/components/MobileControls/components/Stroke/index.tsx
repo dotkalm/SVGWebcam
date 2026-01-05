@@ -2,26 +2,35 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import type { TConfigProps } from '@/types';
+import type { TStrokeProps } from '@/types';
 import { 
     sliderContainer,
     sliderStyles,
 } from '@/styles/styles';
 
-export default function Edges({ config, updateConfig }: TConfigProps) {
+
+export default function Stroke({ configs, strokeColor }: TStrokeProps) {
     const theme = useTheme();
     return (
         <Box
             sx={{
+                width: '98dvw',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 2,
+                gap: 1,
             }}
         >
-            {['High Threshold', 'Low Threshold'].map((label, index) => {
+            {Object.keys(configs).map((label: string, index: number) => {
+                const {
+                    changeHandler,
+                    max,
+                    min,
+                    step,
+                    value,
+                } = configs[label];
                 return (
                     <Box
                         key={label}
@@ -47,18 +56,13 @@ export default function Edges({ config, updateConfig }: TConfigProps) {
                         >
                             <Box sx={sliderContainer(theme)}>
                                 <Slider
-                                    max={0.1}
-                                    min={0.001}
-                                    onChange={(_, value) => {
-                                        if (index === 0) {
-                                            return updateConfig({ highThreshold: value as number })
-                                        }
-                                        return updateConfig({ lowThreshold: value as number })
-                                    }}
+                                    max={max}
+                                    min={min}
+                                    onChange={changeHandler}
                                     size='small'
-                                    step={0.001}
+                                    step={step}
                                     sx={sliderStyles(theme)}
-                                    value={index === 0 ? config.highThreshold : config.lowThreshold}
+                                    value={value}
                                     valueLabelDisplay="auto"
                                     valueLabelFormat={(value) => `${value.toFixed(3)}x`}
                                 />
@@ -66,14 +70,45 @@ export default function Edges({ config, updateConfig }: TConfigProps) {
                             <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
                                 {label}
                             </Typography>
-                            <br/>
+                            <br />
                             <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
-                                {index === 0 ? config.highThreshold.toFixed(3) : config.lowThreshold.toFixed(3)}
+                                {value.toFixed(3)}
                             </Typography>
                         </Box>
                     </Box>
                 );
             })}
+            <Box 
+                sx={{
+                    alignItems: 'flex-end',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    mb: 1,
+                    px: '4dvw',
+                    width: '100%',
+                }}
+            >
+            <Box 
+                sx={{
+                    width: '100%',
+                    mb: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                    gap: 2,
+                }}
+            >
+                <Typography variant="caption" color="text.secondary">
+                    Stroke Color
+                </Typography>
+                <input
+                    type="color"
+                    value={strokeColor.value}
+                    onChange={strokeColor.changeHandler}
+                    style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+                />
+            </Box>
+            </Box>
         </Box>
     );
 }

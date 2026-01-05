@@ -115,3 +115,22 @@ export enum SubMenuItem {
   FILL = 'Fill',
   LINE_STYLE = 'Line Style',
 }
+
+export type TConfigKey  = Record<string, {
+    changeHandler: (event: Event, value: number) => void;
+    max: number;
+    min: number;
+    step: number;
+    value: number;
+}>;
+
+export type TTwoSlidersProps = {
+  configs: TConfigKey;
+}
+export type TStrokeProps = {
+  configs: TConfigKey;
+  strokeColor: {
+    value: string;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+}
