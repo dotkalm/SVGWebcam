@@ -1,18 +1,17 @@
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
 import { type TConfigProps, MenuItem, SubMenuItem } from '@/types';
 import TwoSliders from '../TwoSliders';
 import Stroke from '../Stroke';
+import Fill from '../Fill';
 import Submenu from '../SubMenu';
+import { ChangeEvent } from 'react';
 
 export default function Controls({ config, updateConfig }: TConfigProps) {
-    const theme = useTheme();
     const { activeMenuItem, activeSubMenuItem } = config;
 
     if (!activeMenuItem) {
         return null;
     }
-    console.log({ activeMenuItem, activeSubMenuItem });
 
     return (
         <>
@@ -97,6 +96,30 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                             strokeColor={{
                                 value: config.backgroundStrokeColor,
                                 changeHandler: (e) => updateConfig({ backgroundStrokeColor: e.target.value}),
+                            }}
+                        />
+                    )
+                }
+                {(activeMenuItem === MenuItem.BACKGROUND_STYLING
+                    && activeSubMenuItem === SubMenuItem.FILL)
+                    && (
+                        <Fill
+                            configs={{
+                                'Fill Opacity': {
+                                    value: config.backgroundFillOpacity,
+                                    min: 1,
+                                    max: 10,
+                                    step: 0.5,
+                                    changeHandler: (_, value) => updateConfig({ backgroundFillOpacity: value as number }),
+                                },
+                            }}
+                            fillColor={{
+                                value: config.backgroundFillColor,
+                                changeHandler: (e) => updateConfig({ backgroundFillColor: e.target.value}),
+                            }}
+                            fillEnabled={{
+                                value: config.useBackgroundFill,
+                                changeHandler: () => updateConfig({ useBackgroundFill: !config.useBackgroundFill }),
                             }}
                         />
                     )

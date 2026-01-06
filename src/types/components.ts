@@ -134,3 +134,15 @@ export type TStrokeProps = {
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   };
 }
+
+export type TFillProps = {
+  configs: TConfigKey;
+  fillEnabled: {
+    value: boolean;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+  fillColor: {
+    value: string;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+}
