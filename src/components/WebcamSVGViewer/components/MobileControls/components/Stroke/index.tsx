@@ -16,7 +16,7 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
     const theme = useTheme();
     const strokeOpacity = configs['Stroke Opacity'].value;
     const strokeEnabled = strokeOpacity > 0;
-    const label = !strokeEnabled ? 'Show' : 'Hide';
+    const label = !strokeEnabled ? 'Show Stroke' : 'Hide Stroke';
     return (
         <Box
             sx={{
@@ -86,13 +86,27 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
             })}
             <Box
                 sx={{
-                display: 'flex',              
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    width: '100%',
+                    px: '4dvw',
                 }}
             >
-                <Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        flexDirection: 'row',
+                        paddingLeft: '1dvw',
+                        width: '100%',
+                        '& .MuiFormControlLabel-label': {
+                            fontSize: '.8em !important',
+                        }
+                    }}
+                >
                     <FormControlLabel
                         control={
                             <StyledSwitch
@@ -112,32 +126,35 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                 </Box>
                 <Box
                     sx={{
-                        alignItems: 'flex-end',
+                        alignItems: 'center',
                         display: 'flex',
                         justifyContent: 'flex-end',
-                        mb: 1,
-                        px: '4dvw',
                         width: '100%',
                     }}
                 >
                     <Box
                         sx={{
                             width: '100%',
-                            mb: 1,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'flex-end',
                             gap: 2,
                         }}
                     >
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography 
+                            variant="caption" 
+                            color="text.secondary"
+                            sx={{
+                                fontSize: '.8em',
+                            }}
+                        >
                             Stroke Color
                         </Typography>
                         <input
                             type="color"
                             value={strokeColor.value}
                             onChange={strokeColor.changeHandler}
-                            style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+                            style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '8px', background: 'none' }}
                         />
                     </Box>
                 </Box>
@@ -150,23 +167,24 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
   '& .MuiSwitch-switchBase': {
     // Unchecked state (default)
     '& .MuiSwitch-thumb': {
-      backgroundColor: 'green !important',
-      border: '2px solid orange !important',
+      backgroundColor: `${theme.palette.colors.background} !important`,
+      border: `1px solid ${theme.palette.colors.border} !important`,
     },
     '& + .MuiSwitch-track': {
-      backgroundColor: 'gold !important',
-      border: '2px solid purple !important',
+      backgroundColor: `${theme.palette.colors.activeBackground} !important`,
+      border: `1px solid ${theme.palette.colors.border} !important`,
       opacity: '1 !important',
     },
     // Checked state
     '&.Mui-checked': {
       '& .MuiSwitch-thumb': {
-        backgroundColor: 'blue !important',
-        border: '2px solid red !important',
+        backgroundColor: `${theme.palette.colors.activeBackground} !important`,
+        border: `1px solid ${theme.palette.colors.activeBorder} !important`,
+      opacity: '1 !important',
       },
       '& + .MuiSwitch-track': {
-        backgroundColor: 'silver !important',
-        border: '2px solid black !important',
+        backgroundColor: `${theme.palette.colors.activeText} !important`,
+        border: `1px solid ${theme.palette.colors.activeBorder} !important`,
         opacity: '1 !important',
       },
     },
