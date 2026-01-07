@@ -4,7 +4,6 @@ import TwoSliders from '../TwoSliders';
 import Stroke from '../Stroke';
 import Fill from '../Fill';
 import Submenu from '../SubMenu';
-import { ChangeEvent } from 'react';
 
 export default function Controls({ config, updateConfig }: TConfigProps) {
     const { activeMenuItem, activeSubMenuItem } = config;
@@ -30,6 +29,7 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                     height: '16dvh',
                 }}
             >
+            <Submenu {...{ config, updateConfig }} />
                 {activeMenuItem === MenuItem.EDGE_DETECTION && (
                     <TwoSliders
                         configs={{
@@ -101,15 +101,15 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                     )
                 }
                 {(activeMenuItem === MenuItem.BACKGROUND_STYLING
-                    && activeSubMenuItem === SubMenuItem.FILL)
+                    && activeSubMenuItem === SubMenuItem.STYLE)
                     && (
                         <Fill
                             configs={{
                                 'Fill Opacity': {
                                     value: config.backgroundFillOpacity,
-                                    min: 1,
-                                    max: 10,
-                                    step: 0.5,
+                                    min: 0,
+                                    max: 1,
+                                    step: 0.01,
                                     changeHandler: (_, value) => updateConfig({ backgroundFillOpacity: value as number }),
                                 },
                             }}
@@ -121,11 +121,29 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                                 value: config.useBackgroundFill,
                                 changeHandler: () => updateConfig({ useBackgroundFill: !config.useBackgroundFill }),
                             }}
+                            useBezierBackground={{
+                                value: config.useBezierBackground,
+                                changeHandler: () => updateConfig({ useBezierBackground: !config.useBezierBackground }),
+                            }}
+                            createWiggle={{
+                                value: config.backgroundWiggle,
+                                changeHandler: () => updateConfig({ backgroundWiggle: !config.backgroundWiggle }),
+                            }}
+                            createDashArray={{
+                                value: config.backgroundUseDashArray,
+                                changeHandler: () => updateConfig({ backgroundUseDashArray: !config.backgroundUseDashArray }),
+                            }}
+                            dashArray={{
+                                value: config.backgroundDashSize,
+                                min: 1,
+                                max: 50,
+                                step: 1,
+                                changeHandler: (_, value) => updateConfig({ backgroundDashSize: value as number }),
+                            }}
                         />
                     )
                 }
             </Box>
-            <Submenu {...{ config, updateConfig }} />
         </>
     );
 }

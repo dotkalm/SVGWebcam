@@ -1,21 +1,31 @@
 import Box from '@mui/material/Box';
-import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { alpha, styled } from '@mui/material/styles';
 import type { TFillProps } from '@/types';
 import { 
     sliderContainer,
     sliderStyles,
 } from '@/styles/styles';
+import { StyledSwitch } from '../Switch';
+import { Widgets } from '@mui/icons-material';
 
 
-export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
+export default function Fill({ 
+    configs, 
+    fillColor, 
+    fillEnabled,
+    useBezierBackground,
+    dashArray,
+    createWiggle,
+    createDashArray,
+ }: TFillProps) {
     const theme = useTheme();
-    const enabled = fillEnabled.value;
-    const label = !enabled ? 'Show Fill' : 'Hide Fill';
+    const fillLabel = !fillEnabled.value ? 'Show Fill' : 'Hide Fill';
+    const bezierLabel = useBezierBackground.value ? 'Bezier Curves' : 'Straight Lines';
+    const wiggleLabel = createWiggle.value ? 'Wiggle' : 'Static';
+    const dashArrayLabel = createDashArray.value ? 'Dashes' : 'Solid';
     return (
         <Box
             sx={{
@@ -25,7 +35,6 @@ export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                gap: 1,
             }}
         >
             {Object.keys(configs).map((label: string) => {
@@ -100,7 +109,7 @@ export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
                         justifyContent: 'flex-start',
                         flexDirection: 'row',
                         paddingLeft: '1dvw',
-                        width: '100%',
+                        width: '50%',
                         '& .MuiFormControlLabel-label': {
                             fontSize: '.8em !important',
                         }
@@ -109,12 +118,12 @@ export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
                     <FormControlLabel
                         control={
                             <StyledSwitch
-                                checked={enabled}
-                                slotProps={{ input: { 'aria-label': label } }}
-                                onChange={fillEnabled.changeHandler}
+                                checked={useBezierBackground.value}
+                                slotProps={{ input: { 'aria-label': bezierLabel } }}
+                                onChange={useBezierBackground.changeHandler}
                             />
                         }
-                        label={label}                    
+                        label={bezierLabel}
                     />
                 </Box>
                 <Box
@@ -122,9 +131,33 @@ export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
                         alignItems: 'center',
                         display: 'flex',
                         justifyContent: 'flex-end',
-                        width: '100%',
+                        width: '80%',
                     }}
                 >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            flexDirection: 'row',
+                            paddingLeft: '1dvw',
+                            width: '100%',
+                            '& .MuiFormControlLabel-label': {
+                                fontSize: '.8em !important',
+                            }
+                        }}
+                    >
+                        <FormControlLabel
+                            control={
+                                <StyledSwitch
+                                    checked={fillEnabled.value}
+                                    slotProps={{ input: { 'aria-label': fillLabel } }}
+                                    onChange={fillEnabled.changeHandler}
+                                />
+                            }
+                            label={fillLabel}
+                        />
+                    </Box>
                     <Box
                         sx={{
                             width: '100%',
@@ -134,14 +167,14 @@ export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
                             gap: 2,
                         }}
                     >
-                        <Typography 
-                            variant="caption" 
+                        <Typography
+                            variant="caption"
                             color="text.secondary"
                             sx={{
                                 fontSize: '.8em',
                             }}
                         >
-                            Stroke Color
+                            Fill Color
                         </Typography>
                         <input
                             type="color"
@@ -152,34 +185,135 @@ export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
                     </Box>
                 </Box>
             </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    width: '100%',
+                    height: '5dvh',
+                    px: '4dvw',
+                    gap: 4,
+                }}
+            >
+                <Box
+                    sx={{
+                        width: '60%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        justifyContent: 'space-around',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            width: '100%',
+                            '& .MuiFormControlLabel-label': {
+                                fontSize: '.8em !important',
+                                padding: 0,
+                            }
+                        }}
+                    >
+                        <FormControlLabel
+                            control={
+                                <StyledSwitch
+                                    checked={createWiggle.value}
+                                    slotProps={{ input: { 'aria-label': wiggleLabel } }}
+                                    onChange={createWiggle.changeHandler}
+                                />
+                            }
+                            label={wiggleLabel}
+                        />
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            width: '100%',
+                            '& .MuiFormControlLabel-label': {
+                                fontSize: '.8em !important',
+                                padding: 0,
+                            }
+                        }}
+                    >
+                        <FormControlLabel
+                            control={
+                                <StyledSwitch
+                                    checked={createDashArray.value}
+                                    slotProps={{ input: { 'aria-label': dashArrayLabel } }}
+                                    onChange={createDashArray.changeHandler}
+                                />
+                            }
+                            label={dashArrayLabel}
+                            labelPlacement='start'
+                        />
+                    </Box>
+                </Box>
+                <Box
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignContent: 'flex-end',
+                        alignItems: 'flex-end',
+                        justifyContent: 'space-around',
+                            height: '5dvh',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            width: '100%',
+                            height: '5dvh',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                    <Box
+                        sx={{
+                            ...sliderContainer(theme),
+                            width: '100%',
+                        }}
+                    >
+                        <Slider
+                            max={dashArray.max}
+                            min={dashArray.min}
+                            onChange={dashArray.changeHandler}
+                            size='small'
+                            step={dashArray.step}
+                            sx={{
+                                ...sliderStyles(theme)
+                            }}
+                            value={dashArray.value}
+                            valueLabelDisplay="auto"
+                            valueLabelFormat={(value) => `${value.toFixed(3)}x`}
+                        />
+                    </Box>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            alignContent: 'center',
+                            width: '100%',
+                            height: '5dvh',
+                        }}
+                    >
+                        <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
+                            Dash Length
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
         </Box>
     );
 };
-
-const StyledSwitch = styled(Switch)(({ theme }) => ({
-  '& .MuiSwitch-switchBase': {
-    // Unchecked state (default)
-    '& .MuiSwitch-thumb': {
-      backgroundColor: `${theme.palette.colors.background} !important`,
-      border: `1px solid ${theme.palette.colors.border} !important`,
-    },
-    '& + .MuiSwitch-track': {
-      backgroundColor: `${theme.palette.colors.activeBackground} !important`,
-      border: `1px solid ${theme.palette.colors.border} !important`,
-      opacity: '1 !important',
-    },
-    // Checked state
-    '&.Mui-checked': {
-      '& .MuiSwitch-thumb': {
-        backgroundColor: `${theme.palette.colors.activeBackground} !important`,
-        border: `1px solid ${theme.palette.colors.activeBorder} !important`,
-      opacity: '1 !important',
-      },
-      '& + .MuiSwitch-track': {
-        backgroundColor: `${theme.palette.colors.activeText} !important`,
-        border: `1px solid ${theme.palette.colors.activeBorder} !important`,
-        opacity: '1 !important',
-      },
-    },
-  },
-}));

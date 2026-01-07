@@ -30,15 +30,13 @@ export default function Submenu({ config, updateConfig }: TConfigProps) {
             sx={{
                 alignItems: 'center',
                 display: 'flex',
-                height: '1dvh',
+                height: '4dvh',
                 gap: '1dvw',
-                justifyContent: 'space-evenly',
+                justifyContent: 'flex-end',
                 alignContent: 'center',
-                margin: '1dvw',
-                position: 'absolute',
-                top: '25.5dvh',
                 width: '98dvw',
                 zIndex: 100010,
+                paddingBottom: '2dvh',
             }}
         >
             {
@@ -48,8 +46,9 @@ export default function Submenu({ config, updateConfig }: TConfigProps) {
                         <Button
                             key={item}
                             sx={{
-                                borderRadius: '10px',
-                                width: '100%',
+                                borderRadius: '5px',
+                                height: '3.5dvh',
+                                width: '16dvw',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',

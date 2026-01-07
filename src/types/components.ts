@@ -112,8 +112,7 @@ export enum MenuItem {
 export enum SubMenuItem {
   FIDELITY = 'Fidelity',
   STROKE = 'Stroke',
-  FILL = 'Fill',
-  LINE_STYLE = 'Line Style',
+  STYLE = 'Style',
 }
 
 export type TConfigKey  = Record<string, {
@@ -145,4 +144,23 @@ export type TFillProps = {
     value: string;
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   };
+  useBezierBackground: {
+    value: boolean;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+  createWiggle: {
+    value: boolean;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+  createDashArray: {
+    value: boolean;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+  dashArray: {
+    changeHandler: (event: Event, value: number) => void;
+    max: number;
+    min: number;
+    step: number;
+    value: number;
+  }
 }

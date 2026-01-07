@@ -1,21 +1,21 @@
 import Box from '@mui/material/Box';
+import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import type { TStrokeProps } from '@/types';
+import { alpha, styled } from '@mui/material/styles';
+import type { TFillProps } from '@/types';
 import { 
     sliderContainer,
     sliderStyles,
 } from '@/styles/styles';
-import { StyledSwitch } from '../Switch';
 
 
-export default function Stroke({ configs, strokeColor }: TStrokeProps) {
+export default function Fill({ configs, fillColor, fillEnabled }: TFillProps) {
     const theme = useTheme();
-    const strokeOpacity = configs['Stroke Opacity'].value;
-    const strokeEnabled = strokeOpacity > 0;
-    const label = !strokeEnabled ? 'Show Stroke' : 'Hide Stroke';
+    const enabled = fillEnabled.value;
+    const label = !enabled ? 'Show Fill' : 'Hide Fill';
     return (
         <Box
             sx={{
@@ -109,15 +109,9 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                     <FormControlLabel
                         control={
                             <StyledSwitch
-                                checked={strokeEnabled}
+                                checked={enabled}
                                 slotProps={{ input: { 'aria-label': label } }}
-                                onChange={(e) => {
-                                    if (strokeEnabled) {
-                                        configs['Stroke Opacity'].changeHandler(e as unknown as Event, 0);
-                                    } else {
-                                        configs['Stroke Opacity'].changeHandler(e as unknown as Event, 100);
-                                    }
-                                }}
+                                onChange={fillEnabled.changeHandler}
                             />
                         }
                         label={label}                    
@@ -151,8 +145,8 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                         </Typography>
                         <input
                             type="color"
-                            value={strokeColor.value}
-                            onChange={strokeColor.changeHandler}
+                            value={fillColor.value}
+                            onChange={fillColor.changeHandler}
                             style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '8px', background: 'none' }}
                         />
                     </Box>
@@ -161,3 +155,31 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
         </Box>
     );
 };
+
+const StyledSwitch = styled(Switch)(({ theme }) => ({
+  '& .MuiSwitch-switchBase': {
+    // Unchecked state (default)
+    '& .MuiSwitch-thumb': {
+      backgroundColor: `${theme.palette.colors.background} !important`,
+      border: `1px solid ${theme.palette.colors.border} !important`,
+    },
+    '& + .MuiSwitch-track': {
+      backgroundColor: `${theme.palette.colors.activeBackground} !important`,
+      border: `1px solid ${theme.palette.colors.border} !important`,
+      opacity: '1 !important',
+    },
+    // Checked state
+    '&.Mui-checked': {
+      '& .MuiSwitch-thumb': {
+        backgroundColor: `${theme.palette.colors.activeBackground} !important`,
+        border: `1px solid ${theme.palette.colors.activeBorder} !important`,
+      opacity: '1 !important',
+      },
+      '& + .MuiSwitch-track': {
+        backgroundColor: `${theme.palette.colors.activeText} !important`,
+        border: `1px solid ${theme.palette.colors.activeBorder} !important`,
+        opacity: '1 !important',
+      },
+    },
+  },
+}));
