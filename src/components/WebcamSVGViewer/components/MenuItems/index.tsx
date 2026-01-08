@@ -51,11 +51,11 @@ export default function Menu({ config, updateConfig }: TConfigProps) {
                         <Button
                             key={item}
                             sx={{
-                                display: 'block',
                                 bgcolor: isActive ? activeBackground : 'transparent',
                                 border: isActive ? `2px solid ${activeBorder}` : `2px solid ${border}`,
                                 color: isActive ? activeText : primary,
                                 height: '4dvh',
+                                display: 'flex',
                             }}
                             onClick={() => {
                                 updateConfig({
