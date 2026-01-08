@@ -81,7 +81,7 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                                 'Stroke Width': {
                                     value: config.backgroundStrokeWidth,
                                     min: 0.01,
-                                    max: 10,
+                                    max: 4,
                                     step: 0.01,
                                     changeHandler: (_, value) => updateConfig({ backgroundStrokeWidth: value as number }),
                                 },
@@ -139,6 +139,99 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                                 max: 50,
                                 step: 1,
                                 changeHandler: (_, value) => updateConfig({ backgroundDashSize: value as number }),
+                            }}
+                        />
+                    )
+                }
+                {((activeMenuItem === MenuItem.OUTLINE)
+                    && (!activeSubMenuItem || activeSubMenuItem === SubMenuItem.FIDELITY))
+                    && (
+                        <TwoSliders
+                            configs={{
+                                'Min Path Length': {
+                                    value: config.outlinePathMinPathLength,
+                                    min: 1,
+                                    max: 20,
+                                    step: 1,
+                                    changeHandler: (_, value) => updateConfig({ outlinePathMinPathLength: value as number }),
+                                },
+                                'Simplification': {
+                                    value: config.outlinePathSimplification,
+                                    min: 1,
+                                    max: 10,
+                                    step: 0.5,
+                                    changeHandler: (_, value) => updateConfig({ outlinePathSimplification: value as number }),
+                                },
+                            }}
+                        />
+                    )
+                }
+                {(activeMenuItem === MenuItem.OUTLINE
+                    && activeSubMenuItem === SubMenuItem.STROKE)
+                    && (
+                        <Stroke
+                            configs={{
+                                'Stroke Width': {
+                                    value: config.outlinePathsStrokeWidth,
+                                    min: 0.01,
+                                    max: 3,
+                                    step: 0.01,
+                                    changeHandler: (_, value) => updateConfig({ outlinePathsStrokeWidth: value as number }),
+                                },
+                                'Stroke Opacity': {
+                                    value: config.outlinePathsStrokeWidth,
+                                    min: 0,
+                                    max: 1,
+                                    step: 0.01,
+                                    changeHandler: (_, value) => updateConfig({ outlinePathsStrokeWidth: value as number }),
+                                },
+                            }}
+                            strokeColor={{
+                                value: config.outlinePathsStrokeColor,
+                                changeHandler: (e) => updateConfig({ outlinePathsStrokeColor: e.target.value}),
+                            }}
+                        />
+                    )
+                }
+                {(activeMenuItem === MenuItem.OUTLINE
+                    && activeSubMenuItem === SubMenuItem.STYLE)
+                    && (
+                        <Fill
+                            configs={{
+                                'Fill Opacity': {
+                                    value: config.outlinePathsFillOpacity,
+                                    min: 0,
+                                    max: 1,
+                                    step: 0.01,
+                                    changeHandler: (_, value) => updateConfig({ outlinePathsFillOpacity: value as number }),
+                                },
+                            }}
+                            fillColor={{
+                                value: config.outlinePathsFillColor,
+                                changeHandler: (e) => updateConfig({ outlinePathsFillColor: e.target.value}),
+                            }}
+                            fillEnabled={{
+                                value: config.useOutlinePathsFill,
+                                changeHandler: () => updateConfig({ useOutlinePathsFill: !config.useOutlinePathsFill }),
+                            }}
+                            useBezierBackground={{
+                                value: config.useBezierOutlinePaths,
+                                changeHandler: () => updateConfig({ useBezierOutlinePaths: !config.useBezierOutlinePaths }),
+                            }}
+                            createWiggle={{
+                                value: config.outlinePathsWiggle,
+                                changeHandler: () => updateConfig({ outlinePathsWiggle: !config.outlinePathsWiggle }),
+                            }}
+                            createDashArray={{
+                                value: config.outlinePathsUseDashArray,
+                                changeHandler: () => updateConfig({ outlinePathsUseDashArray: !config.outlinePathsUseDashArray }),
+                            }}
+                            dashArray={{
+                                value: config.outlinePathsDashSize,
+                                min: 1,
+                                max: 50,
+                                step: 1,
+                                changeHandler: (_, value) => updateConfig({ outlinePathsDashSize: value as number }),
                             }}
                         />
                     )
