@@ -9,7 +9,7 @@ import {
     sliderStyles,
 } from '@/styles/styles';
 import { StyledSwitch } from '../Switch';
-import { Widgets } from '@mui/icons-material';
+import BottomRow from './components/BottomRow';
 
 
 export default function Fill({ 
@@ -22,10 +22,8 @@ export default function Fill({
     createDashArray,
  }: TFillProps) {
     const theme = useTheme();
-    const fillLabel = !fillEnabled.value ? 'Show Fill' : 'Hide Fill';
+    const fillLabel = !fillEnabled.value ? 'Fill Off' : 'Fill On';
     const bezierLabel = useBezierBackground.value ? 'Bezier Curves' : 'Straight Lines';
-    const wiggleLabel = createWiggle.value ? 'Wiggle' : 'Static';
-    const dashArrayLabel = createDashArray.value ? 'Dashes' : 'Solid';
     return (
         <Box
             sx={{
@@ -185,135 +183,11 @@ export default function Fill({
                     </Box>
                 </Box>
             </Box>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                    width: '100%',
-                    height: '5dvh',
-                    px: '4dvw',
-                    gap: 4,
-                }}
-            >
-                <Box
-                    sx={{
-                        width: '60%',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        justifyContent: 'space-around',
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-                            width: '100%',
-                            '& .MuiFormControlLabel-label': {
-                                fontSize: '.8em !important',
-                                padding: 0,
-                            }
-                        }}
-                    >
-                        <FormControlLabel
-                            control={
-                                <StyledSwitch
-                                    checked={createWiggle.value}
-                                    slotProps={{ input: { 'aria-label': wiggleLabel } }}
-                                    onChange={createWiggle.changeHandler}
-                                />
-                            }
-                            label={wiggleLabel}
-                        />
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-                            width: '100%',
-                            '& .MuiFormControlLabel-label': {
-                                fontSize: '.8em !important',
-                                padding: 0,
-                            }
-                        }}
-                    >
-                        <FormControlLabel
-                            control={
-                                <StyledSwitch
-                                    checked={createDashArray.value}
-                                    slotProps={{ input: { 'aria-label': dashArrayLabel } }}
-                                    onChange={createDashArray.changeHandler}
-                                />
-                            }
-                            label={dashArrayLabel}
-                            labelPlacement='start'
-                        />
-                    </Box>
-                </Box>
-                <Box
-                    sx={{
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignContent: 'flex-end',
-                        alignItems: 'flex-end',
-                        justifyContent: 'space-around',
-                            height: '5dvh',
-                    }}
-                >
-                    <Box
-                        sx={{
-                            width: '100%',
-                            height: '5dvh',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                    <Box
-                        sx={{
-                            ...sliderContainer(theme),
-                            width: '100%',
-                        }}
-                    >
-                        <Slider
-                            max={dashArray.max}
-                            min={dashArray.min}
-                            onChange={dashArray.changeHandler}
-                            size='small'
-                            step={dashArray.step}
-                            sx={{
-                                ...sliderStyles(theme)
-                            }}
-                            value={dashArray.value}
-                            valueLabelDisplay="auto"
-                            valueLabelFormat={(value) => `${value.toFixed(3)}x`}
-                        />
-                    </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            alignContent: 'center',
-                            width: '100%',
-                            height: '5dvh',
-                        }}
-                    >
-                        <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
-                            Dash Length
-                        </Typography>
-                    </Box>
-                </Box>
-            </Box>
+            <BottomRow
+                dashArray={dashArray}
+                createWiggle={createWiggle}
+                createDashArray={createDashArray}
+            />
         </Box>
     );
 };

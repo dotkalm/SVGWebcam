@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { type TConfigProps, MenuItem } from '@/types';
+import { type TConfigProps, MenuItem, SubMenuItem } from '@/types';
 
 export default function Menu({ config, updateConfig }: TConfigProps) {
     const menuItems = [
@@ -60,6 +60,7 @@ export default function Menu({ config, updateConfig }: TConfigProps) {
                             onClick={() => {
                                 updateConfig({
                                     activeMenuItem: item,
+                                    activeSubMenuItem: SubMenuItem.FIDELITY,
                                 })
                             }}
                         >

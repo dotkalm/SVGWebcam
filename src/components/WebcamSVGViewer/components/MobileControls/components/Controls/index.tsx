@@ -80,16 +80,16 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                             configs={{
                                 'Stroke Width': {
                                     value: config.backgroundStrokeWidth,
-                                    min: 1,
-                                    max: 255,
-                                    step: 1,
+                                    min: 0.01,
+                                    max: 10,
+                                    step: 0.01,
                                     changeHandler: (_, value) => updateConfig({ backgroundStrokeWidth: value as number }),
                                 },
                                 'Stroke Opacity': {
                                     value: config.backgroundStrokeOpacity,
-                                    min: 1,
-                                    max: 10,
-                                    step: 0.5,
+                                    min: 0,
+                                    max: 1,
+                                    step: 0.01,
                                     changeHandler: (_, value) => updateConfig({ backgroundStrokeOpacity: value as number }),
                                 },
                             }}
