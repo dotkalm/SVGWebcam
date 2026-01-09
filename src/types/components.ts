@@ -81,6 +81,7 @@ export interface ViewerConfig {
   // menu items
   activeMenuItem?: MenuItem;
   activeSubMenuItem?: SubMenuItem;
+  activeSubMenuItemBlur?: SubMenuItemBlur;
 }
 
 export interface UIState {
@@ -107,6 +108,12 @@ export enum MenuItem {
   OUTLINE = 'Outline',
   BLUR = 'Blur',
   PRESETS = 'Presets',
+}
+
+export enum SubMenuItemBlur {
+  GAUSSIAN = 'Gaussian',
+  MOTION = 'Motion',
+  BOKEH = 'Bokeh',
 }
 
 export enum SubMenuItem {

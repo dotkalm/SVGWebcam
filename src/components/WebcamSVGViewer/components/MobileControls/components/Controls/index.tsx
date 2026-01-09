@@ -4,6 +4,7 @@ import TwoSliders from '../TwoSliders';
 import Stroke from '../Stroke';
 import Fill from '../Fill';
 import Submenu from '../SubMenu';
+import Blur from '../Blur';
 
 export default function Controls({ config, updateConfig }: TConfigProps) {
     const { activeMenuItem, activeSubMenuItem } = config;
@@ -29,7 +30,7 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                     height: '16dvh',
                 }}
             >
-            <Submenu {...{ config, updateConfig }} />
+                <Submenu {...{ config, updateConfig }} />
                 {activeMenuItem === MenuItem.EDGE_DETECTION && (
                     <TwoSliders
                         configs={{

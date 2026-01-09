@@ -2,18 +2,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { type TConfigProps, SubMenuItem, MenuItem, SubMenuItemBlur } from '@/types';
+import { type TConfigProps, SubMenuItem, MenuItem } from '@/types';
 
 export default function Submenu({ config, updateConfig }: TConfigProps) {
     const theme = useTheme();
     const { activeMenuItem, activeSubMenuItem } = config;
 
-    if (activeMenuItem !== MenuItem.BACKGROUND_STYLING && activeMenuItem !== MenuItem.OUTLINE && activeMenuItem !== MenuItem.BLUR) {
+    if (activeMenuItem !== MenuItem.BACKGROUND_STYLING && activeMenuItem !== MenuItem.OUTLINE) {
         return null;
     }
-
-    const submenuItemsArray: SubMenuItem[] | SubMenuItemBlur[] = activeMenuItem !== MenuItem.BLUR ? Object.values(SubMenuItem) : Object.values(SubMenuItemBlur);
-
     const {
         palette: {
             text: {
@@ -43,7 +40,7 @@ export default function Submenu({ config, updateConfig }: TConfigProps) {
             }}
         >
             {
-                submenuItemsArray.map((item: SubMenuItem | SubMenuItemBlur, index: number) => {
+                Object.values(SubMenuItem).map((item: SubMenuItem, index: number) => {
                     const isActive = item === activeSubMenuItem || (index === 0 && !activeSubMenuItem);
                     return (
                         <Button
@@ -60,15 +57,9 @@ export default function Submenu({ config, updateConfig }: TConfigProps) {
                                 color: isActive ? activeText : primary,
                             }}
                             onClick={() => {
-                                if(activeMenuItem !== MenuItem.BLUR) {
-                                    updateConfig({
-                                        activeSubMenuItem: item as SubMenuItem,
-                                    });
-                                }else{
-                                    updateConfig({
-                                        activeSubMenuItemBlur: item as SubMenuItemBlur,
-                                    });
-                                }
+                                updateConfig({
+                                    activeSubMenuItem: item,
+                                })
                             }}
                         >
                             <Typography

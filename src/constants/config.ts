@@ -1,6 +1,7 @@
-import type { ViewerConfig, UIState } from '@/types';
+import { type ViewerConfig, type UIState, SubMenuItemBlur, } from '@/types';
 
 export const DEFAULT_CONFIG: ViewerConfig = {
+  activeSubMenuItemBlur: SubMenuItemBlur.GAUSSIAN,
   aperture: 0.15,
   backgroundDashSize: 8,
   backgroundFillColor: '#000000',
