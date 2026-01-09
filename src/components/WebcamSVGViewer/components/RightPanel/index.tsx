@@ -90,6 +90,40 @@ export function RightControlPanel(props: RightControlPanelProps) {
             {config.blurMode === 'gaussian' ? 'Gaussian Blur' : config.blurMode === 'motion' ? 'Motion Blur' : 'Bokeh (Shallow DOF)'}
           </button>
 
+          {/* Gaussian Blur Controls */}
+          {config.blurMode === 'gaussian' && (
+            <Box
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                padding: 3,
+                borderRadius: 2,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                minWidth: 280,
+                height: 250,
+                overflow: 'scroll',
+              }}
+            >
+              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#2196F3' }}>
+                Gaussian Blur Amount
+              </Typography>
+              <Slider
+                value={config.gaussianBlurAmount}
+                onChange={(_, value) => updateConfig({ gaussianBlurAmount: value as number })}
+                min={10}
+                max={150}
+                step={5}
+                valueLabelDisplay="auto"
+                sx={{
+                  color: '#2196F3',
+                  mb: 3,
+                  '& .MuiSlider-thumb': {
+                    width: 20,
+                    height: 20,
+                  },
+                }}
+              />
+            </Box>
+          )}
           {/* Motion Blur Controls */}
           {config.blurMode === 'motion' && (
             <Box

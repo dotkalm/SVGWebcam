@@ -122,6 +122,7 @@ export default function WebcamSVGViewer() {
     aperture: config.aperture,
     motionBlurAmount: config.motionBlurAmount,
     motionBlurAngle: config.motionBlurAngle,
+    gaussianBlurAmount: config.gaussianBlurAmount,
   });
 
   useSVGGeneration({

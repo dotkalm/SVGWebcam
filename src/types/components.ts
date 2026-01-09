@@ -41,6 +41,7 @@ export interface ViewerConfig {
   aperture: number;
   motionBlurAmount: number;
   motionBlurAngle: number;
+  gaussianBlurAmount: number;
   
   // Edge detection
   highThreshold: number;

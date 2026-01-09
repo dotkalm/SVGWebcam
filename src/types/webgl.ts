@@ -62,6 +62,7 @@ export interface TUseEdgeDetectionOptions {
   aperture?: number;
   motionBlurAmount?: number;
   motionBlurAngle?: number;
+  gaussianBlurAmount?: number;
 }
 
 export interface TUseWebcamOptions {

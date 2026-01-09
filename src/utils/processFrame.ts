@@ -13,7 +13,8 @@ export const processFrame: TProcessFrame = (
   useMotionBlur = 'gaussian',
   aperture = 0.15,
   motionBlurAmount = 60,
-  motionBlurAngle = 0
+  motionBlurAngle = 0,
+  gaussianBlurAmount = 1.0
 ) => {
   const width = video.videoWidth;
   const height = video.videoHeight;
@@ -52,9 +53,10 @@ export const processFrame: TProcessFrame = (
       u_maxBlur: 25.0 // Strong blur amount
     });
   } else {
-    // Gaussian blur
+    // Gaussian blur with adjustable radius
     renderPass(gl, programs.blur, framebuffers.blur, textures.input, buffers, width, height, {
-      u_resolution: [width, height]
+      u_resolution: [width, height],
+      u_blurRadius: gaussianBlurAmount
     });
   }
 

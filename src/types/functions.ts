@@ -36,7 +36,8 @@ export type TProcessFrame = (
   useMotionBlur?: 'gaussian' | 'motion' | 'bokeh' | boolean,
   aperture?: number,
   motionBlurAmount?: number,
-  motionBlurAngle?: number
+  motionBlurAngle?: number,
+  gaussianBlurAmount?: number
 ) => void;
 
 export type TRenderPass = (
