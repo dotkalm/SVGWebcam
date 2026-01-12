@@ -8,8 +8,8 @@ import {
 export const DEFAULT_CONFIG: ViewerConfig = {
   activeMenuItem: MenuItem.EDGE_DETECTION,
   blurOff: false,
-  gaussianBlurAmount: 80,
-  aperture: 0.15,
+  gaussianBlurAmount: 1,
+  aperture: .6,
   backgroundDashSize: 8,
   backgroundFillColor: '#000000',
   backgroundFillOpacity: 0,

@@ -242,12 +242,12 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                                 'Gaussian Blur Amount': {
                                     value: config.gaussianBlurAmount,
                                     min: 0,
-                                    max: 150,
-                                    step: 1,
+                                    max: 10,
+                                    step: .1,
                                     changeHandler: (_, value) => updateConfig({ gaussianBlurAmount: value as number }),
                                 },
                             }}
-                            blurMode={SubMenuItemBlur.GAUSSIAN}
+                            blurMode={config.blurMode}
                             useBlur={{
                                 value: !config.blurOff,
                                 changeHandler: () => updateConfig({ blurOff: !config.blurOff }),
@@ -261,11 +261,11 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                         <Blur
                             configs={{
                                 'Motion Blur Amount': {
-                                    value: config.gaussianBlurAmount,
+                                    value: config.motionBlurAmount,
                                     min: 0,
                                     max: 150,
                                     step: 1,
-                                    changeHandler: (_, value) => updateConfig({ gaussianBlurAmount: value as number }),
+                                    changeHandler: (_, value) => updateConfig({ motionBlurAmount: value as number }),
                                 },
                             }}
                             blurMode={config.blurMode}
@@ -276,6 +276,27 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                             motionBlurAngle={{
                                 value: config.motionBlurAngle,
                                 changeHandler: (value) => updateConfig({ motionBlurAngle: value }),
+                            }}
+                        />
+                    )
+                }
+                {(activeMenuItem === MenuItem.BLUR
+                    && blurMode === SubMenuItemBlur.BOKEH)
+                    && (
+                        <Blur
+                            configs={{
+                                'Aperture Size': {
+                                    value: config.aperture,
+                                    min: 0.01,
+                                    max: 1.0,
+                                    step: .01,
+                                    changeHandler: (_, value) => updateConfig({ aperture: value as number }),
+                                },
+                            }}
+                            blurMode={config.blurMode}
+                            useBlur={{
+                                value: !config.blurOff,
+                                changeHandler: () => updateConfig({ blurOff: !config.blurOff }),
                             }}
                         />
                     )

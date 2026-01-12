@@ -18,13 +18,15 @@ import type {
 export const useWebGLCanvas: TUseWebGLCanvas = ({
   canvasRef,
   highThreshold,
-  useMotionBlur = 'gaussian',
+  blurMode: useMotionBlur = SubMenuItemBlur.GAUSSIAN,
   isStreaming,
   lowThreshold,
   videoRef,
-  aperture = 0.15,
+  aperture = 1,
   motionBlurAmount = 60,
   motionBlurAngle = 0,
+  gaussianBlurAmount = 1.0,
+  useBlur = true,
 }) => {
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programsRef = useRef<TWebGLPrograms>({});
@@ -62,8 +64,10 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
           highThreshold,
           useMotionBlur,
           aperture,
-          motionBlurAmount,
-          motionBlurAngle
+          useBlur ? motionBlurAmount : 0,
+          motionBlurAngle,
+          useBlur ? gaussianBlurAmount : 0,
+          useBlur
         );
       }
       animationId = requestAnimationFrame(render);
@@ -75,7 +79,7 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
       cleanupWebGL(gl, programsRef.current, framebuffersRef.current, texturesRef.current);
       glRef.current = null;
     };
-  }, [canvasRef, videoRef, isStreaming, lowThreshold, highThreshold, useMotionBlur, aperture, motionBlurAmount, motionBlurAngle]);
+  }, [canvasRef, videoRef, isStreaming, lowThreshold, highThreshold, useMotionBlur, aperture, motionBlurAmount, motionBlurAngle, gaussianBlurAmount, useBlur]);
 
   return {
     texturesRef,
