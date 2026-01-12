@@ -34,11 +34,12 @@ export type TProcessFrame = (
   buffers: TWebGLBuffers,
   lowThreshold: number,
   highThreshold: number,
-  useMotionBlur?: SubMenuItemBlur | boolean,
+  blurMode?: SubMenuItemBlur,
   aperture?: number,
   motionBlurAmount?: number,
   motionBlurAngle?: number,
-  gaussianBlurAmount?: number
+  gaussianBlurAmount?: number,
+  useBlur?: boolean,
 ) => void;
 
 export type TRenderPass = (

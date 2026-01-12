@@ -10,11 +10,12 @@ export const processFrame: TProcessFrame = (
   buffers,
   lowThreshold,
   highThreshold,
-  useMotionBlur = SubMenuItemBlur.GAUSSIAN,
+  blurMode = SubMenuItemBlur.GAUSSIAN,
   aperture = 0.15,
   motionBlurAmount = 60,
   motionBlurAngle = 0,
-  gaussianBlurAmount = 1.0
+  gaussianBlurAmount = 1.0,
+  useBlur,
 ) => {
   const width = video.videoWidth;
   const height = video.videoHeight;
@@ -34,7 +35,7 @@ export const processFrame: TProcessFrame = (
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tempCanvas);
 
   // Pass 1: Blur (Gaussian, Motion, or Bokeh)
-  if (useMotionBlur === SubMenuItemBlur.MOTION) {
+  if (blurMode === SubMenuItemBlur.MOTION) {
     // Motion blur with adjustable direction and amount
     const angleRad = (motionBlurAngle * Math.PI) / 180;
     const directionX = Math.cos(angleRad) * motionBlurAmount;
@@ -44,7 +45,7 @@ export const processFrame: TProcessFrame = (
       u_resolution: [width, height],
       u_direction: [directionX, directionY]
     });
-  } else if (useMotionBlur === SubMenuItemBlur.BOKEH) {
+  } else if (blurMode === SubMenuItemBlur.BOKEH) {
     // Bokeh blur with adjustable depth of field
     renderPass(gl, programs.bokehBlur, framebuffers.blur, textures.input, buffers, width, height, {
       u_resolution: [width, height],
@@ -54,9 +55,10 @@ export const processFrame: TProcessFrame = (
     });
   } else {
     // Gaussian blur with adjustable radius
+    console.log('Applying Gaussian blur with radius:', gaussianBlurAmount);
     renderPass(gl, programs.blur, framebuffers.blur, textures.input, buffers, width, height, {
       u_resolution: [width, height],
-      u_blurRadius: gaussianBlurAmount
+      u_blurRadius: !useBlur ? 0 : gaussianBlurAmount
     });
   }
 

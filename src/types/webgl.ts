@@ -60,11 +60,12 @@ export interface TUseEdgeDetectionOptions {
   isStreaming: boolean;
   lowThreshold: number;
   highThreshold: number;
-  useMotionBlur?: SubMenuItemBlur;
+  blurMode?: SubMenuItemBlur;
   aperture?: number;
   motionBlurAmount?: number;
   motionBlurAngle?: number;
   gaussianBlurAmount?: number;
+  useBlur: boolean;
 }
 
 export interface TUseWebcamOptions {

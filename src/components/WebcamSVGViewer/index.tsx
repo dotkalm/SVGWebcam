@@ -114,16 +114,17 @@ export default function WebcamSVGViewer() {
   }, [canvasRef, isStreaming]);
 
   const { framebuffersRef } = useWebGLCanvas({
+    aperture: config.aperture,
+    blurMode: config.blurMode,
     canvasRef,
+    gaussianBlurAmount: config.gaussianBlurAmount,
     highThreshold: config.highThreshold,
     isStreaming,
     lowThreshold: config.lowThreshold,
-    videoRef,
-    useMotionBlur: config.blurMode,
-    aperture: config.aperture,
     motionBlurAmount: config.motionBlurAmount,
     motionBlurAngle: config.motionBlurAngle,
-    gaussianBlurAmount: config.gaussianBlurAmount,
+    useBlur: !config.blurOff,
+    videoRef,
   });
 
   useSVGGeneration({

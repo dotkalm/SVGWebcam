@@ -261,11 +261,11 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                         <Blur
                             configs={{
                                 'Motion Blur Amount': {
-                                    value: config.gaussianBlurAmount,
+                                    value: config.motionBlurAmount,
                                     min: 0,
                                     max: 150,
                                     step: 1,
-                                    changeHandler: (_, value) => updateConfig({ gaussianBlurAmount: value as number }),
+                                    changeHandler: (_, value) => updateConfig({ motionBlurAmount: value as number }),
                                 },
                             }}
                             blurMode={config.blurMode}
