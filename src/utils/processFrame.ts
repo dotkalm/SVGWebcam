@@ -11,10 +11,11 @@ export const processFrame: TProcessFrame = (
   lowThreshold,
   highThreshold,
   useMotionBlur = SubMenuItemBlur.GAUSSIAN,
-  aperture = 0.15,
+  aperture = 1,
   motionBlurAmount = 60,
   motionBlurAngle = 0,
-  gaussianBlurAmount = 1.0
+  gaussianBlurAmount = 1.0,
+  useBlur = true,
 ) => {
   const width = video.videoWidth;
   const height = video.videoHeight;
@@ -50,7 +51,7 @@ export const processFrame: TProcessFrame = (
       u_resolution: [width, height],
       u_focusPoint: [0.5, 0.5], // Center focus
       u_focusRange: aperture, // Depth of field controlled by aperture
-      u_maxBlur: 25.0 // Strong blur amount
+      u_maxBlur: !useBlur ? 0 : 25.0 // Strong blur amount
     });
   } else {
     // Gaussian blur with adjustable radius

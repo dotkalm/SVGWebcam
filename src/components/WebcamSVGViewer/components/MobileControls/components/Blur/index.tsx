@@ -189,6 +189,7 @@ export default function Blur({
                     step,
                     value,
                 } = configs[label];
+                const displayValue = blurMode !== SubMenuItemBlur.BOKEH ? value.toFixed(3) : `f/${(1/value).toFixed(1)}`;
                 return (
                     <Box
                         key={label}
@@ -229,7 +230,7 @@ export default function Blur({
                             </Typography>
                             <br />
                             <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
-                                {value.toFixed(3)}
+                                {displayValue}
                             </Typography>
                         </Box>
                     </Box>
