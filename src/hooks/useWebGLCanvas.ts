@@ -7,26 +7,24 @@ import {
   processFrame,
 } from '@/utils';
 
-import {
-  type TWebGLBuffers,
-  type TWebGLFramebuffers,
-  type TWebGLPrograms,
-  type TWebGLTextures,
-  type TUseWebGLCanvas,
-  SubMenuItemBlur
+import type {
+  TWebGLBuffers,
+  TWebGLFramebuffers,
+  TWebGLPrograms,
+  TWebGLTextures,
+  TUseWebGLCanvas,
 } from '@/types';
 
 export const useWebGLCanvas: TUseWebGLCanvas = ({
   canvasRef,
   highThreshold,
-  useMotionBlur = SubMenuItemBlur.GAUSSIAN,
+  useMotionBlur = 'gaussian',
   isStreaming,
   lowThreshold,
   videoRef,
   aperture = 0.15,
   motionBlurAmount = 60,
   motionBlurAngle = 0,
-  gaussianBlurAmount = 1.0,
 }) => {
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programsRef = useRef<TWebGLPrograms>({});
@@ -65,8 +63,7 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
           useMotionBlur,
           aperture,
           motionBlurAmount,
-          motionBlurAngle,
-          gaussianBlurAmount
+          motionBlurAngle
         );
       }
       animationId = requestAnimationFrame(render);
@@ -78,7 +75,7 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
       cleanupWebGL(gl, programsRef.current, framebuffersRef.current, texturesRef.current);
       glRef.current = null;
     };
-  }, [canvasRef, videoRef, isStreaming, lowThreshold, highThreshold, useMotionBlur, aperture, motionBlurAmount, motionBlurAngle, gaussianBlurAmount]);
+  }, [canvasRef, videoRef, isStreaming, lowThreshold, highThreshold, useMotionBlur, aperture, motionBlurAmount, motionBlurAngle]);
 
   return {
     texturesRef,
