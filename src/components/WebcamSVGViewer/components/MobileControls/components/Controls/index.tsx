@@ -247,7 +247,7 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                                     changeHandler: (_, value) => updateConfig({ gaussianBlurAmount: value as number }),
                                 },
                             }}
-                            blurMode={SubMenuItemBlur.GAUSSIAN}
+                            blurMode={config.blurMode}
                             useBlur={{
                                 value: !config.blurOff,
                                 changeHandler: () => updateConfig({ blurOff: !config.blurOff }),
