@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import type { RightControlPanelProps } from '@/types';
+import { type RightControlPanelProps, SubMenuItemBlur } from '@/types';
 
 export function RightControlPanel(props: RightControlPanelProps) {
   const {
@@ -70,7 +70,7 @@ export function RightControlPanel(props: RightControlPanelProps) {
           {/* Blur Mode Toggle Button */}
           <button
             onClick={() => {
-              const modes: Array<'gaussian' | 'motion' | 'bokeh'> = ['gaussian', 'motion', 'bokeh'];
+              const modes: SubMenuItemBlur[] = [SubMenuItemBlur.GAUSSIAN, SubMenuItemBlur.MOTION, SubMenuItemBlur.BOKEH];
               const currentIndex = modes.indexOf(config.blurMode);
               const nextIndex = (currentIndex + 1) % modes.length;
               updateConfig({ blurMode: modes[nextIndex] });
@@ -80,18 +80,18 @@ export function RightControlPanel(props: RightControlPanelProps) {
               fontSize: '16px',
               fontWeight: 'bold',
               cursor: 'pointer',
-              backgroundColor: config.blurMode === 'gaussian' ? '#2196F3' : config.blurMode === 'motion' ? '#4CAF50' : '#FF9800',
+              backgroundColor: config.blurMode === SubMenuItemBlur.GAUSSIAN ? '#2196F3' : config.blurMode === SubMenuItemBlur.MOTION ? '#4CAF50' : '#FF9800',
               color: 'white',
               border: 'none',
               borderRadius: '8px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             }}
           >
-            {config.blurMode === 'gaussian' ? 'Gaussian Blur' : config.blurMode === 'motion' ? 'Motion Blur' : 'Bokeh (Shallow DOF)'}
+            {config.blurMode === SubMenuItemBlur.GAUSSIAN ? 'Gaussian Blur' : config.blurMode === SubMenuItemBlur.MOTION ? 'Motion Blur' : 'Bokeh (Shallow DOF)'}
           </button>
 
           {/* Gaussian Blur Controls */}
-          {config.blurMode === 'gaussian' && (
+          {config.blurMode === SubMenuItemBlur.GAUSSIAN && (
             <Box
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -125,7 +125,7 @@ export function RightControlPanel(props: RightControlPanelProps) {
             </Box>
           )}
           {/* Motion Blur Controls */}
-          {config.blurMode === 'motion' && (
+          {config.blurMode === SubMenuItemBlur.MOTION && (
             <Box
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -231,7 +231,7 @@ export function RightControlPanel(props: RightControlPanelProps) {
           )}
 
           {/* Aperture Slider for Bokeh */}
-          {config.blurMode === 'bokeh' && (
+          {config.blurMode === SubMenuItemBlur.BOKEH && (
             <Box
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',

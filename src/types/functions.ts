@@ -1,3 +1,4 @@
+import { SubMenuItemBlur } from './components';
 import type {
   TUniformValue,
   TUseEdgeDetectionOptions,
@@ -33,7 +34,7 @@ export type TProcessFrame = (
   buffers: TWebGLBuffers,
   lowThreshold: number,
   highThreshold: number,
-  useMotionBlur?: 'gaussian' | 'motion' | 'bokeh' | boolean,
+  useMotionBlur?: SubMenuItemBlur | boolean,
   aperture?: number,
   motionBlurAmount?: number,
   motionBlurAngle?: number,

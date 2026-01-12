@@ -1,9 +1,14 @@
-import { type ViewerConfig, type UIState, SubMenuItemBlur, } from '@/types';
+import {
+  MenuItem,
+  SubMenuItemBlur,
+  type UIState,
+  type ViewerConfig,
+} from '@/types';
 
 export const DEFAULT_CONFIG: ViewerConfig = {
+  activeMenuItem: MenuItem.EDGE_DETECTION,
   blurOff: false,
   gaussianBlurAmount: 80,
-  activeSubMenuItemBlur: SubMenuItemBlur.GAUSSIAN,
   aperture: 0.15,
   backgroundDashSize: 8,
   backgroundFillColor: '#000000',
@@ -15,7 +20,7 @@ export const DEFAULT_CONFIG: ViewerConfig = {
   backgroundThreshold: 140,
   backgroundUseDashArray: false,
   backgroundWiggle: false,
-  blurMode: 'gaussian',
+  blurMode: SubMenuItemBlur.GAUSSIAN,
   cameraZoom: 1,
   enableBackground: true,
   enableOutlinePaths: true,

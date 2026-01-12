@@ -38,7 +38,7 @@ export interface ViewerConfig {
   
   // Blur settings
   blurOff: boolean;
-  blurMode: 'gaussian' | 'motion' | 'bokeh';
+  blurMode: SubMenuItemBlur;
   aperture: number;
   motionBlurAmount: number;
   motionBlurAngle: number;
@@ -83,7 +83,6 @@ export interface ViewerConfig {
   // menu items
   activeMenuItem?: MenuItem;
   activeSubMenuItem?: SubMenuItem;
-  activeSubMenuItemBlur: SubMenuItemBlur;
 }
 
 export interface UIState {
@@ -146,9 +145,13 @@ export type TStrokeProps = {
 export type TBlurProps = {
   configs: TConfigKey;
   blurMode: SubMenuItemBlur;
-  useBlur?: {
+  useBlur: {
     value: boolean;
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+  motionBlurAngle?: {
+    value: number;
+    changeHandler: (value: number) => void;
   };
 }
 

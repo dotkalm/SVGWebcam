@@ -6,7 +6,7 @@ import { type TConfigProps, SubMenuItem, MenuItem, SubMenuItemBlur } from '@/typ
 
 export default function Submenu({ config, updateConfig }: TConfigProps) {
     const theme = useTheme();
-    const { activeMenuItem, activeSubMenuItem, activeSubMenuItemBlur } = config;
+    const { activeMenuItem, activeSubMenuItem, blurMode: activeSubMenuItemBlur } = config;
 
     if (activeMenuItem !== MenuItem.BACKGROUND_STYLING && activeMenuItem !== MenuItem.OUTLINE && activeMenuItem !== MenuItem.BLUR) {
         return null;
@@ -68,7 +68,7 @@ export default function Submenu({ config, updateConfig }: TConfigProps) {
                                     });
                                 }else{
                                     updateConfig({
-                                        activeSubMenuItemBlur: item as SubMenuItemBlur,
+                                        blurMode: item as SubMenuItemBlur,
                                     });
                                 }
                             }}

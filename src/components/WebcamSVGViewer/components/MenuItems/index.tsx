@@ -29,17 +29,13 @@ export default function Menu({ config, updateConfig }: TConfigProps) {
     return (
         <Box
             sx={{
-                position: 'absolute',
                 zIndex: 10002,
-                width: '100%',
-                paddingLeft: '15dvw',
-                paddingRight: '1dvw',
                 gap: '1dvw',
                 display: 'flex',
                 flexDirection: 'row',
                 alignContent: 'center',
                 alignItems: 'center',
-                justifyContent: 'right',
+                justifyContent: 'center',
                 height: '6.5dvh',
             }}
         >

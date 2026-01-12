@@ -1,3 +1,5 @@
+import { SubMenuItemBlur } from "./components";
+
 export interface TWebGLPrograms {
   blur?: WebGLProgram | null;
   motionBlur?: WebGLProgram | null;
@@ -58,7 +60,7 @@ export interface TUseEdgeDetectionOptions {
   isStreaming: boolean;
   lowThreshold: number;
   highThreshold: number;
-  useMotionBlur?: 'gaussian' | 'motion' | 'bokeh';
+  useMotionBlur?: SubMenuItemBlur;
   aperture?: number;
   motionBlurAmount?: number;
   motionBlurAngle?: number;

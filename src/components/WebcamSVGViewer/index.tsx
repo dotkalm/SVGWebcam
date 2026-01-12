@@ -10,6 +10,7 @@ import { useGetCurrentWindowSize } from '@/hooks/useGetCurrentWindowSize';
 import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useSVGGeneration } from '@/hooks/useSVGGeneration';
 import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
+import Zoom from '@/components/WebcamSVGViewer/components/MobileControls/components/Zoom';
 import type {
   Preset,
   PresetSettings,
@@ -240,6 +241,13 @@ export default function WebcamSVGViewer() {
           dangerouslySetInnerHTML={{ __html: svgString }}
         />
       </Box>
+      {isPortrait && (
+        <Zoom
+          config={config}
+          updateConfig={updateConfig}
+        />
+
+      )}
     </Box>
   );
 }

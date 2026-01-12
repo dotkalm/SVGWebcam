@@ -7,7 +7,7 @@ import Submenu from '../SubMenu';
 import Blur from '../Blur';
 
 export default function Controls({ config, updateConfig }: TConfigProps) {
-    const { activeMenuItem, activeSubMenuItem, activeSubMenuItemBlur } = config;
+    const { activeMenuItem, activeSubMenuItem, blurMode } = config;
 
     if (!activeMenuItem) {
         return null;
@@ -19,15 +19,12 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                 sx={{
                     margin: '1dvw',
                     zIndex: 100010,
-                    position: 'absolute',
-                    top: '7dvh',
                     width: '98dvw',
                     borderRadius: '10px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'flex-start',
                     justifyContent: 'flex-start',
-                    height: '16dvh',
                 }}
             >
                 <Submenu {...{ config, updateConfig }} />
@@ -238,11 +235,11 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                     )
                 }
                 {(activeMenuItem === MenuItem.BLUR
-                    && activeSubMenuItemBlur === SubMenuItemBlur.GAUSSIAN)
+                    && blurMode === SubMenuItemBlur.GAUSSIAN)
                     && (
                         <Blur
                             configs={{
-                                'Blur Amount': {
+                                'Gaussian Blur Amount': {
                                     value: config.gaussianBlurAmount,
                                     min: 0,
                                     max: 150,
@@ -254,6 +251,31 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                             useBlur={{
                                 value: !config.blurOff,
                                 changeHandler: () => updateConfig({ blurOff: !config.blurOff }),
+                            }}
+                        />
+                    )
+                }
+                {(activeMenuItem === MenuItem.BLUR
+                    && blurMode === SubMenuItemBlur.MOTION)
+                    && (
+                        <Blur
+                            configs={{
+                                'Motion Blur Amount': {
+                                    value: config.gaussianBlurAmount,
+                                    min: 0,
+                                    max: 150,
+                                    step: 1,
+                                    changeHandler: (_, value) => updateConfig({ gaussianBlurAmount: value as number }),
+                                },
+                            }}
+                            blurMode={config.blurMode}
+                            useBlur={{
+                                value: !config.blurOff,
+                                changeHandler: () => updateConfig({ blurOff: !config.blurOff }),
+                            }}
+                            motionBlurAngle={{
+                                value: config.motionBlurAngle,
+                                changeHandler: (value) => updateConfig({ motionBlurAngle: value }),
                             }}
                         />
                     )

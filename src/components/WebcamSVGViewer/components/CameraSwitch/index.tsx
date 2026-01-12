@@ -5,9 +5,7 @@ export default function CameraSwitch() {
     return (
         <IconButton
             sx={{
-                left: '10px',
-                top: '2dvh',
-                position: 'absolute',
+                flex: 1,
             }}
         >
             <CameraSwitchIcon sx={{ color: '#ff6f00' }} />

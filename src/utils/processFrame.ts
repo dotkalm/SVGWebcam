@@ -1,5 +1,5 @@
 import { renderPass } from '@/utils';
-import type { TProcessFrame } from '@/types';
+import { type TProcessFrame, SubMenuItemBlur} from '@/types';
 
 export const processFrame: TProcessFrame = (
   gl,
@@ -10,7 +10,7 @@ export const processFrame: TProcessFrame = (
   buffers,
   lowThreshold,
   highThreshold,
-  useMotionBlur = 'gaussian',
+  useMotionBlur = SubMenuItemBlur.GAUSSIAN,
   aperture = 0.15,
   motionBlurAmount = 60,
   motionBlurAngle = 0,
@@ -34,7 +34,7 @@ export const processFrame: TProcessFrame = (
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tempCanvas);
 
   // Pass 1: Blur (Gaussian, Motion, or Bokeh)
-  if (useMotionBlur === 'motion') {
+  if (useMotionBlur === SubMenuItemBlur.MOTION) {
     // Motion blur with adjustable direction and amount
     const angleRad = (motionBlurAngle * Math.PI) / 180;
     const directionX = Math.cos(angleRad) * motionBlurAmount;
@@ -44,7 +44,7 @@ export const processFrame: TProcessFrame = (
       u_resolution: [width, height],
       u_direction: [directionX, directionY]
     });
-  } else if (useMotionBlur === 'bokeh') {
+  } else if (useMotionBlur === SubMenuItemBlur.BOKEH) {
     // Bokeh blur with adjustable depth of field
     renderPass(gl, programs.bokehBlur, framebuffers.blur, textures.input, buffers, width, height, {
       u_resolution: [width, height],
