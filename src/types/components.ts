@@ -37,6 +37,7 @@ export interface ViewerConfig {
   facingMode: 'user' | 'environment';
   
   // Blur settings
+  blurOff: boolean;
   blurMode: 'gaussian' | 'motion' | 'bokeh';
   aperture: number;
   motionBlurAmount: number;
@@ -82,7 +83,7 @@ export interface ViewerConfig {
   // menu items
   activeMenuItem?: MenuItem;
   activeSubMenuItem?: SubMenuItem;
-  activeSubMenuItemBlur?: SubMenuItemBlur;
+  activeSubMenuItemBlur: SubMenuItemBlur;
 }
 
 export interface UIState {
@@ -138,6 +139,15 @@ export type TStrokeProps = {
   configs: TConfigKey;
   strokeColor: {
     value: string;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  };
+}
+
+export type TBlurProps = {
+  configs: TConfigKey;
+  blurMode: SubMenuItemBlur;
+  useBlur?: {
+    value: boolean;
     changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   };
 }

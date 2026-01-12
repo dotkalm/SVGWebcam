@@ -6,13 +6,15 @@ import { type TConfigProps, SubMenuItem, MenuItem, SubMenuItemBlur } from '@/typ
 
 export default function Submenu({ config, updateConfig }: TConfigProps) {
     const theme = useTheme();
-    const { activeMenuItem, activeSubMenuItem } = config;
+    const { activeMenuItem, activeSubMenuItem, activeSubMenuItemBlur } = config;
 
     if (activeMenuItem !== MenuItem.BACKGROUND_STYLING && activeMenuItem !== MenuItem.OUTLINE && activeMenuItem !== MenuItem.BLUR) {
         return null;
     }
 
     const submenuItemsArray: SubMenuItem[] | SubMenuItemBlur[] = activeMenuItem !== MenuItem.BLUR ? Object.values(SubMenuItem) : Object.values(SubMenuItemBlur);
+
+    const activeItem = activeMenuItem !== MenuItem.BLUR ? activeSubMenuItem : activeSubMenuItemBlur;
 
     const {
         palette: {
@@ -44,7 +46,7 @@ export default function Submenu({ config, updateConfig }: TConfigProps) {
         >
             {
                 submenuItemsArray.map((item: SubMenuItem | SubMenuItemBlur, index: number) => {
-                    const isActive = item === activeSubMenuItem || (index === 0 && !activeSubMenuItem);
+                    const isActive = item === activeItem || (index === 0 && !activeItem);
                     return (
                         <Button
                             key={item}

@@ -1,6 +1,7 @@
 import { type ViewerConfig, type UIState, SubMenuItemBlur, } from '@/types';
 
 export const DEFAULT_CONFIG: ViewerConfig = {
+  blurOff: false,
   gaussianBlurAmount: 80,
   activeSubMenuItemBlur: SubMenuItemBlur.GAUSSIAN,
   aperture: 0.15,

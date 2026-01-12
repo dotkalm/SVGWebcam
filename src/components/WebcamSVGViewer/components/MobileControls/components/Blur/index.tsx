@@ -1,76 +1,126 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import Slider from '@mui/material/Slider';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { type TConfigProps, SubMenuItem, MenuItem } from '@/types';
+import type { TBlurProps } from '@/types';
+import { 
+    sliderContainer,
+    sliderStyles,
+} from '@/styles/styles';
+import { StyledSwitch } from '../Switch';
 
-export default function Submenu({ config, updateConfig }: TConfigProps) {
+
+export default function Fill({ 
+    blurMode,
+    configs, 
+    useBlur,
+ }: TBlurProps) {
     const theme = useTheme();
-    const { activeMenuItem, activeSubMenuItem } = config;
-
-    if (activeMenuItem !== MenuItem.BACKGROUND_STYLING && activeMenuItem !== MenuItem.OUTLINE) {
-        return null;
-    }
-    const {
-        palette: {
-            text: {
-                primary
-            },
-            colors: {
-                activeBackground,
-                activeBorder,
-                activeText,
-                border,
-            } 
-        } 
-    } = theme;
-
+    const blurLabel = !useBlur?.value ? 'Blur Off' : 'Blur On';
     return (
         <Box
             sx={{
-                alignItems: 'center',
-                display: 'flex',
-                height: '4dvh',
-                gap: '1dvw',
-                justifyContent: 'flex-end',
-                alignContent: 'center',
                 width: '98dvw',
-                zIndex: 100010,
-                paddingBottom: '2dvh',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
             }}
         >
-            {
-                Object.values(SubMenuItem).map((item: SubMenuItem, index: number) => {
-                    const isActive = item === activeSubMenuItem || (index === 0 && !activeSubMenuItem);
-                    return (
-                        <Button
-                            key={item}
+            {!!useBlur && (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        justifyContent: 'flex-end',
+                        flexDirection: 'row',
+                        width: '100%',
+                        px: '4dvw',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                            alignItems: 'flex-start',
+                            flexDirection: 'row',
+                            paddingLeft: '2dvw',
+                            width: '100%',
+                            '& .MuiFormControlLabel-label': {
+                                fontSize: '.8em !important',
+                            }
+                        }}
+                    >
+                        <FormControlLabel
+                            control={
+                                <StyledSwitch
+                                    checked={useBlur.value}
+                                    slotProps={{ input: { 'aria-label': blurLabel } }}
+                                    onChange={useBlur.changeHandler}
+                                />
+                            }
+                            label={blurLabel}
+                        />
+                    </Box>
+                </Box>
+            )}
+            {Object.keys(configs).map((label: string) => {
+                const {
+                    changeHandler,
+                    max,
+                    min,
+                    step,
+                    value,
+                } = configs[label];
+                return (
+                    <Box
+                        key={label}
+                        sx={{
+                            mb: 1,
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-end',
+                            px: '4dvw',
+                        }}
+                    >
+                        <Box
                             sx={{
-                                borderRadius: '5px',
-                                height: '3.5dvh',
-                                width: '16dvw',
+                                width: '100%',
                                 display: 'flex',
+                                flexDirection: 'row',
+                                alignContent: 'flex-end',
                                 alignItems: 'center',
-                                justifyContent: 'center',
-                                bgcolor: isActive ? activeBackground : 'transparent',
-                                border: isActive ? `2px solid ${activeBorder}` : `2px solid ${border}`,
-                                color: isActive ? activeText : primary,
-                            }}
-                            onClick={() => {
-                                updateConfig({
-                                    activeSubMenuItem: item,
-                                })
+                                justifyContent: 'space-around',
+                                gap: 2,
                             }}
                         >
-                            <Typography
-                                variant="caption"
-                            >
-                                {item}
+                            <Box sx={sliderContainer(theme)}>
+                                <Slider
+                                    max={max}
+                                    min={min}
+                                    onChange={changeHandler}
+                                    size='small'
+                                    step={step}
+                                    sx={sliderStyles(theme)}
+                                    value={value}
+                                    valueLabelDisplay="auto"
+                                    valueLabelFormat={(value) => `${value.toFixed(3)}x`}
+                                />
+                            </Box>
+                            <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
+                                {label}
                             </Typography>
-                        </Button>
-                    )
-                })
-            }
+                            <br />
+                            <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
+                                {value.toFixed(3)}
+                            </Typography>
+                        </Box>
+                    </Box>
+                );
+            })}
         </Box>
-    )
-}
+    );
+};

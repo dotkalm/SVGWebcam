@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import { type TConfigProps, MenuItem, SubMenuItem } from '@/types';
+import { type TConfigProps, MenuItem, SubMenuItem, SubMenuItemBlur } from '@/types';
 import TwoSliders from '../TwoSliders';
 import Stroke from '../Stroke';
 import Fill from '../Fill';
@@ -7,7 +7,7 @@ import Submenu from '../SubMenu';
 import Blur from '../Blur';
 
 export default function Controls({ config, updateConfig }: TConfigProps) {
-    const { activeMenuItem, activeSubMenuItem } = config;
+    const { activeMenuItem, activeSubMenuItem, activeSubMenuItemBlur } = config;
 
     if (!activeMenuItem) {
         return null;
@@ -233,6 +233,27 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                                 max: 50,
                                 step: 1,
                                 changeHandler: (_, value) => updateConfig({ outlinePathsDashSize: value as number }),
+                            }}
+                        />
+                    )
+                }
+                {(activeMenuItem === MenuItem.BLUR
+                    && activeSubMenuItemBlur === SubMenuItemBlur.GAUSSIAN)
+                    && (
+                        <Blur
+                            configs={{
+                                'Blur Amount': {
+                                    value: config.gaussianBlurAmount,
+                                    min: 0,
+                                    max: 150,
+                                    step: 1,
+                                    changeHandler: (_, value) => updateConfig({ gaussianBlurAmount: value as number }),
+                                },
+                            }}
+                            blurMode={SubMenuItemBlur.GAUSSIAN}
+                            useBlur={{
+                                value: !config.blurOff,
+                                changeHandler: () => updateConfig({ blurOff: !config.blurOff }),
                             }}
                         />
                     )
