@@ -7,12 +7,13 @@ import {
   processFrame,
 } from '@/utils';
 
-import type {
-  TWebGLBuffers,
-  TWebGLFramebuffers,
-  TWebGLPrograms,
-  TWebGLTextures,
-  TUseWebGLCanvas,
+import {
+  type TWebGLBuffers,
+  type TWebGLFramebuffers,
+  type TWebGLPrograms,
+  type TWebGLTextures,
+  type TUseWebGLCanvas,
+  SubMenuItemBlur
 } from '@/types';
 
 export const useWebGLCanvas: TUseWebGLCanvas = ({
