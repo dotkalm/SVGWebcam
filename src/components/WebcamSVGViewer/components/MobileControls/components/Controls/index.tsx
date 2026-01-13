@@ -5,6 +5,7 @@ import Stroke from '../Stroke';
 import Fill from '../Fill';
 import Submenu from '../SubMenu';
 import Blur from '../Blur';
+import Overall from '../Overall';
 
 export default function Controls({ config, updateConfig }: TConfigProps) {
     const { activeMenuItem, activeSubMenuItem, blurMode } = config;
@@ -29,7 +30,7 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
             >
                 <Submenu {...{ config, updateConfig }} />
                 {activeMenuItem === MenuItem.EDGE_DETECTION && (
-                    <TwoSliders
+                    <Overall
                         configs={{
                             'High Threshold': {
                                 value: config.highThreshold,

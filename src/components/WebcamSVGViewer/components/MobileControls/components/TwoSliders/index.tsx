@@ -11,7 +11,6 @@ import {
 
 export default function TwoSliders({ configs }: TTwoSlidersProps) {
     const theme = useTheme();
-    console.log({ configs });   
     return (
         <Box
             sx={{
