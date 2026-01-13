@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { type TConfigProps, SubMenuItem, MenuItem, SubMenuItemBlur } from '@/types';
 
-export default function Submenu({ config, updateConfig }: TConfigProps) {
+export default function Submenu({ config, updateConfig }: Pick<TConfigProps, 'config' | 'updateConfig'>) {
     const theme = useTheme();
     const { activeMenuItem, activeSubMenuItem, blurMode: activeSubMenuItemBlur } = config;
 

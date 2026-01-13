@@ -7,7 +7,7 @@ import type { TConfigProps } from '@/types';
 export default function Zoom({
     config,
     updateConfig,
-}: TConfigProps) {
+}: Pick<TConfigProps, 'config' | 'updateConfig'>) {
     const theme = useTheme();
     return (
         <Box

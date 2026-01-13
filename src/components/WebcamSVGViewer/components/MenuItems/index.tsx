@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { type TConfigProps, MenuItem, SubMenuItem } from '@/types';
 
-export default function Menu({ config, updateConfig }: TConfigProps) {
+export default function Menu({ config, updateConfig }: Pick<TConfigProps, 'config' | 'updateConfig'>) {
     const menuItems = [
         'Edges',
         'BG',

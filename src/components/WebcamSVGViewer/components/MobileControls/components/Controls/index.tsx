@@ -31,6 +31,10 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                 <Submenu {...{ config, updateConfig }} />
                 {activeMenuItem === MenuItem.EDGE_DETECTION && (
                     <Overall
+                        backgroundEnabled={{
+                            value: config.enableBackground,
+                            changeHandler: () => updateConfig({ enableBackground: !config.enableBackground }),
+                        }}
                         configs={{
                             'High Threshold': {
                                 value: config.highThreshold,
@@ -46,6 +50,10 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                                 step: 0.001,
                                 changeHandler: (_, value) => updateConfig({ lowThreshold: value as number }),
                             },
+                        }}
+                        outlineEnabled={{
+                            value: config.enableOutlinePaths,
+                            changeHandler: () => updateConfig({ enableOutlinePaths: !config.enableOutlinePaths }),
                         }}
                     />
                 )}

@@ -15,7 +15,7 @@ export interface LeftControlPanelProps {
 }
 
 export type TSliderProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig'>;
-export type TConfigProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig'>;
+export type TConfigProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig' | 'uiState' | 'updateUIState'  >;
 
 export interface RightControlPanelProps {
   config: ViewerConfig;
@@ -134,6 +134,19 @@ export type TConfigKey  = Record<string, {
 export type TTwoSlidersProps = {
   configs: TConfigKey;
 }
+
+export type TOverallProps = {
+  backgroundEnabled: {
+    value: boolean;
+    changeHandler: () => void;
+  };
+  configs: TConfigKey;
+  outlineEnabled: {
+    value: boolean;
+    changeHandler: () => void;
+  };
+}
+
 export type TStrokeProps = {
   configs: TConfigKey;
   strokeColor: {
