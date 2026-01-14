@@ -17,15 +17,21 @@ export default function Overall({
     configs,
     outlineEnabled,
     backgroundEnabled,
+    swapOrder,
 }: TOverallProps) {
     const theme = useTheme();
     const enableBackgroundLabel = !backgroundEnabled.value ? 'Background Off' : 'Background On';
     const enableOutlineLabel = !outlineEnabled.value ? 'Outline Off' : 'Outline On';
+
+    const labels = {
+        'outlinePaths': 'Outline',
+        'background': 'Background',
+    }
+
     return (
         <Box
             sx={{
                 display: 'flex',
-                gap: 2,
                 flexDirection: 'column',
                 alignItems: 'center',
             }}
@@ -38,7 +44,6 @@ export default function Overall({
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: 1,
                 }}
             >
                 {Object.keys(configs).map((label: string, index: number) => {
@@ -59,6 +64,7 @@ export default function Overall({
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'flex-end',
+                                paddingBottom: '1dvh',
                             }}
                         >
                             <Box
@@ -104,7 +110,7 @@ export default function Overall({
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        paddingTop: 1,
+                        paddingBottom: 1,
 
                     }}
                 >
@@ -115,6 +121,7 @@ export default function Overall({
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
+                            paddingLeft: '2dvw',
                         }}
                     >
                         <Box
@@ -133,10 +140,16 @@ export default function Overall({
                                         flex: 1,
                                     }}
                             >
-                                <Box
+                                     <Typography
+                                    sx={{
+                                        flex: 1,
+                                        textAlign: 'left',
+                                        fontSize: '1rem',
+                                        color: theme.palette.colors.activeBorder,    
+                                    }}
                                 >
                                     Visibility
-                                </Box>
+                                </Typography>
                             </Box>
                             <Box
                                     sx={{
@@ -156,6 +169,7 @@ export default function Overall({
                                         gap: 1,
                                         padding: 0,
                                     }}
+                                    onClick={swapOrder.changeHandler}
                                 >
                                 <Box
                                     sx={{
@@ -167,27 +181,37 @@ export default function Overall({
                                         flex: 1,
                                         textAlign: 'right',
                                         fontSize: '1rem',
-                                        color: 'text.primary',    
+                                        color: theme.palette.colors.activeBorder,    
                                     }}
                                 >
                                     Layer Order
                                 </Typography>
                                 </Box>
-                                    <SwapVertSharpIcon sx={{ color: '#ff6f00' }} />
+                                    <SwapVertSharpIcon sx={{ color: theme.palette.colors.activeBorder }} />
                                 </IconButton>
                             </Box>
                         </Box>
                         <Box
                             sx={{
-                                flex: 1,
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'flex-start',
+                                justifyContent: 'space-between',
                                 flexDirection: 'row',
-                                paddingLeft: '1dvw',
+                                paddingTop: '.5dvw',
+                                paddingLeft: '2dvw',
                                 width: '100%',
+                                position: 'relative',
+                                '&::after': {
+                                    content: '""',
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    right: 0,
+                                    width: '120px',
+                                    borderBottom: `1px solid ${theme.palette.colors.border}`,
+                                },
                                 '& .MuiFormControlLabel-label': {
-                                    fontSize: '.8em !important',
+                                    fontSize: '.95em !important',
+                                    paddingLeft: '1dvw',
                                 }
                             }}
                         >
@@ -201,18 +225,27 @@ export default function Overall({
                                 }
                                 label={enableBackgroundLabel}
                             />
+                            <Typography
+                                sx={{
+                                    textAlign: 'right',
+                                    paddingRight: '1.5dvw',
+                                }}
+                            >
+                                {labels[swapOrder.value[0]]}
+                            </Typography>
                         </Box>
                         <Box
                             sx={{
-                                flex: 1,
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'flex-start',
+                                justifyContent: 'space-between',
                                 flexDirection: 'row',
-                                paddingLeft: '1dvw',
+                                paddingTop: '.5dvw',
+                                paddingLeft: '2dvw',
                                 width: '100%',
                                 '& .MuiFormControlLabel-label': {
-                                    fontSize: '.8em !important',
+                                    fontSize: '.95em !important',
+                                    paddingLeft: '1dvw',
                                 }
                             }}
                         >
@@ -226,6 +259,14 @@ export default function Overall({
                                 }
                                 label={enableOutlineLabel}
                             />
+                            <Typography
+                                sx={{
+                                    textAlign: 'right',
+                                    paddingRight: '1.5dvw',
+                                }}
+                            >
+                                {labels[swapOrder.value[1]]}
+                            </Typography>
                         </Box>
                     </Box>
                 </Box>

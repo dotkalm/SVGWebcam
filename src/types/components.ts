@@ -104,8 +104,8 @@ export interface Preset {
 }
 
 export enum MenuItem {
-  EDGE_DETECTION = 'Edges',
-  BACKGROUND_STYLING = 'BG',
+  EDGE_DETECTION = 'Overall',
+  BACKGROUND_STYLING = 'Background',
   OUTLINE = 'Outline',
   BLUR = 'Blur',
   PRESETS = 'Presets',
@@ -145,7 +145,11 @@ export type TOverallProps = {
     value: boolean;
     changeHandler: () => void;
   };
-}
+  swapOrder: {
+    value: ('background' | 'outlinePaths')[];
+    changeHandler: () => void;
+  };
+};
 
 export type TStrokeProps = {
   configs: TConfigKey;

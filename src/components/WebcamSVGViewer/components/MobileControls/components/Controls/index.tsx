@@ -7,7 +7,7 @@ import Submenu from '../SubMenu';
 import Blur from '../Blur';
 import Overall from '../Overall';
 
-export default function Controls({ config, updateConfig }: TConfigProps) {
+export default function Controls({ config, updateConfig, uiState, updateUIState }: TConfigProps) {
     const { activeMenuItem, activeSubMenuItem, blurMode } = config;
 
     if (!activeMenuItem) {
@@ -54,6 +54,15 @@ export default function Controls({ config, updateConfig }: TConfigProps) {
                         outlineEnabled={{
                             value: config.enableOutlinePaths,
                             changeHandler: () => updateConfig({ enableOutlinePaths: !config.enableOutlinePaths }),
+                        }}
+                        swapOrder={{
+                            value: uiState.layerOrder,
+                            changeHandler: () => updateUIState({
+                                layerOrder: [
+                                    uiState.layerOrder[1],
+                                    uiState.layerOrder[0],
+                                ],
+                            }),
                         }}
                     />
                 )}

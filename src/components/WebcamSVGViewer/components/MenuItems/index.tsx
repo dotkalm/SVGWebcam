@@ -5,13 +5,6 @@ import Typography from '@mui/material/Typography';
 import { type TConfigProps, MenuItem, SubMenuItem } from '@/types';
 
 export default function Menu({ config, updateConfig }: Pick<TConfigProps, 'config' | 'updateConfig'>) {
-    const menuItems = [
-        'Edges',
-        'BG',
-        'Outline',
-        'Blur',
-        'Presets',
-    ];
     const theme = useTheme();
     const {
         palette: {
@@ -52,6 +45,9 @@ export default function Menu({ config, updateConfig }: Pick<TConfigProps, 'confi
                                 color: isActive ? activeText : primary,
                                 height: '4dvh',
                                 display: 'flex',
+                                minWidth: '15dvw',
+                                maxWidth: '15dvw',
+                                width: '15dvw',
                             }}
                             onClick={() => {
                                 updateConfig({
@@ -63,8 +59,13 @@ export default function Menu({ config, updateConfig }: Pick<TConfigProps, 'confi
                             <Typography
                                 key={item}
                                 sx={{
-                                    fontSize: '.8em',
+                                    fontSize: '.7em',
+                                    wordBreak: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                    hyphens: 'auto',
                                 }}
+                                lang="en"
                             >
                                 {item}
                             </Typography>
