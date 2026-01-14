@@ -3,6 +3,8 @@ import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useTheme } from '@mui/material/styles';
+import IconButton  from '@mui/material/IconButton';
+import SwapVertSharpIcon from '@mui/icons-material/SwapVertSharp';
 import type { TOverallProps } from '@/types';
 import { 
     sliderContainer,
@@ -18,6 +20,7 @@ export default function Overall({
 }: TOverallProps) {
     const theme = useTheme();
     const enableBackgroundLabel = !backgroundEnabled.value ? 'Background Off' : 'Background On';
+    const enableOutlineLabel = !outlineEnabled.value ? 'Outline Off' : 'Outline On';
     return (
         <Box
             sx={{
@@ -115,8 +118,64 @@ export default function Overall({
                         }}
                     >
                         <Box
+                            sx={{
+                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                                justifyContent: 'space-between',
+                            }}
                         >
-                           Visibility 
+                            <Box
+                                    sx={{
+                                        flex: 1,
+                                    }}
+                            >
+                                <Box
+                                >
+                                    Visibility
+                                </Box>
+                            </Box>
+                            <Box
+                                    sx={{
+                                        flex: 1,
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                            >
+                                <IconButton
+                                    sx={{
+                                        flex: 1,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: 1,
+                                        padding: 0,
+                                    }}
+                                >
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                    }}
+                                >
+                                <Typography
+                                    sx={{
+                                        flex: 1,
+                                        textAlign: 'right',
+                                        fontSize: '1rem',
+                                        color: 'text.primary',    
+                                    }}
+                                >
+                                    Layer Order
+                                </Typography>
+                                </Box>
+                                    <SwapVertSharpIcon sx={{ color: '#ff6f00' }} />
+                                </IconButton>
+                            </Box>
                         </Box>
                         <Box
                             sx={{
@@ -135,9 +194,9 @@ export default function Overall({
                             <FormControlLabel
                                 control={
                                     <StyledSwitch
-                                        checked={outlineEnabled.value}
+                                        checked={backgroundEnabled.value}
                                         slotProps={{ input: { 'aria-label': enableBackgroundLabel } }}
-                                        onChange={outlineEnabled.changeHandler}
+                                        onChange={backgroundEnabled.changeHandler}
                                     />
                                 }
                                 label={enableBackgroundLabel}
@@ -161,75 +220,11 @@ export default function Overall({
                                 control={
                                     <StyledSwitch
                                         checked={outlineEnabled.value}
-                                        slotProps={{ input: { 'aria-label': enableBackgroundLabel } }}
+                                        slotProps={{ input: { 'aria-label': enableOutlineLabel } }}
                                         onChange={outlineEnabled.changeHandler}
                                     />
                                 }
-                                label={enableBackgroundLabel}
-                            />
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Box
-                        >
-                            Layer Order
-                        </Box>
-                        <Box
-                            sx={{
-                                flex: 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'flex-start',
-                                flexDirection: 'row',
-                                paddingLeft: '1dvw',
-                                width: '100%',
-                                '& .MuiFormControlLabel-label': {
-                                    fontSize: '.8em !important',
-                                }
-                            }}
-                        >
-                            <FormControlLabel
-                                control={
-                                    <StyledSwitch
-                                        checked={outlineEnabled.value}
-                                        slotProps={{ input: { 'aria-label': enableBackgroundLabel } }}
-                                        onChange={outlineEnabled.changeHandler}
-                                    />
-                                }
-                                label={enableBackgroundLabel}
-                            />
-                        </Box>
-                        <Box
-                            sx={{
-                                flex: 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'flex-start',
-                                flexDirection: 'row',
-                                paddingLeft: '1dvw',
-                                width: '100%',
-                                '& .MuiFormControlLabel-label': {
-                                    fontSize: '.8em !important',
-                                }
-                            }}
-                        >
-                            <FormControlLabel
-                                control={
-                                    <StyledSwitch
-                                        checked={outlineEnabled.value}
-                                        slotProps={{ input: { 'aria-label': enableBackgroundLabel } }}
-                                        onChange={outlineEnabled.changeHandler}
-                                    />
-                                }
-                                label={enableBackgroundLabel}
+                                label={enableOutlineLabel}
                             />
                         </Box>
                     </Box>
