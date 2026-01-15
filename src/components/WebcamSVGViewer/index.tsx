@@ -10,7 +10,7 @@ import { useGetCurrentWindowSize } from '@/hooks/useGetCurrentWindowSize';
 import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useSVGGeneration } from '@/hooks/useSVGGeneration';
 import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
-import Zoom from '@/components/WebcamSVGViewer/components/MobileControls/components/Zoom';
+import MobileFooter from '@/components/WebcamSVGViewer/components/MobileControls/components/MobileFooter';
 import type {
   Preset,
   PresetSettings,
@@ -21,6 +21,7 @@ import {
   createPreset,
   createSVGString,
   downloadSVG,
+  downloadPNG,
   loadPresetsFromStorage, 
   savePresetsToStorage, 
 } from '@/utils';
@@ -161,6 +162,7 @@ export default function WebcamSVGViewer() {
               updateUIState={updateUIState}
               svgString={svgString}
               downloadSVG={downloadSVG}
+              downloadPNG={downloadPNG}
             />
 
             <RightControlPanel
@@ -183,7 +185,16 @@ export default function WebcamSVGViewer() {
               uiState={uiState}
               updateUIState={updateUIState}
               svgString={svgString}
+              downloadPNG={downloadPNG}
               downloadSVG={downloadSVG}
+              presets={{
+                deletePreset,
+                loadPreset,
+                presetName,
+                presets,
+                savePreset,
+                setPresetName,
+              }}
           />
         )
       }
@@ -243,9 +254,12 @@ export default function WebcamSVGViewer() {
         />
       </Box>
       {isPortrait && (
-        <Zoom
+        <MobileFooter
           config={config}
           updateConfig={updateConfig}
+          downloadSVG={downloadSVG}
+          downloadPNG={downloadPNG}
+          svgString={svgString}
         />
 
       )}

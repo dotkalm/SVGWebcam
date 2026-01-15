@@ -12,22 +12,28 @@ export interface LeftControlPanelProps {
   updateUIState: (updates: Partial<UIState>) => void;
   svgString: string;
   downloadSVG: (svg: string, filename: string) => void;
+  downloadPNG: (svg: string, filename: string, width: number, height: number) => void;
 }
 
 export type TSliderProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig'>;
-export type TConfigProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig' | 'uiState' | 'updateUIState'  >;
+export type TConfigProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig' | 'uiState' | 'updateUIState'> & {
+  presets: TPresets;
+};
+export interface TMobileFooterProps extends TSliderProps {
+  downloadSVG: LeftControlPanelProps['downloadSVG'];
+  downloadPNG: LeftControlPanelProps['downloadPNG'];
+  svgString: LeftControlPanelProps['svgString'];
+}
 
-export interface RightControlPanelProps {
+export interface RightControlPanelProps extends TPresets{
   config: ViewerConfig;
   updateConfig: (updates: Partial<ViewerConfig>) => void;
   uiState: UIState;
   updateUIState: (updates: Partial<UIState>) => void;
-  presets: Preset[];
-  presetName: string;
-  setPresetName: (name: string) => void;
-  savePreset: () => void;
-  loadPreset: (settings: PresetSettings) => void;
-  deletePreset: (index: number) => void;
+}
+
+export interface TMobileControlProps extends LeftControlPanelProps { 
+  presets: TPresets;
 }
 
 // Config types
@@ -133,6 +139,14 @@ export type TConfigKey  = Record<string, {
 
 export type TTwoSlidersProps = {
   configs: TConfigKey;
+}
+export interface TPresets {
+  presets: Preset[];
+  presetName: string;
+  setPresetName: (name: string) => void;
+  savePreset: () => void;
+  loadPreset: (settings: PresetSettings) => void;
+  deletePreset: (index: number) => void;
 }
 
 export type TOverallProps = {

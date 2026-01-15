@@ -18,6 +18,7 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
     updateUIState,
     svgString,
     downloadSVG,
+    downloadPNG,
   } = props;
 
   const [draggedSection, setDraggedSection] = useState<'background' | 'outlinePaths' | null>(null);

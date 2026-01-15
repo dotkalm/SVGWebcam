@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import CameraSwitch from '@mui/icons-material/Cameraswitch';
 import IconButton  from '@mui/material/IconButton';
-import type { LeftControlPanelProps as TMobileControlProps } from '@/types';
+import type { TMobileControlProps } from '@/types';
 import MenuItems from '@/components/WebcamSVGViewer/components/MenuItems';
 import Controls from './components/Controls';
 
@@ -11,6 +11,7 @@ export default function MobileControls({
     updateConfig,
     uiState,
     updateUIState,
+    presets,
 }: TMobileControlProps) {
     const { facingMode } = config;
     return (
@@ -45,7 +46,7 @@ export default function MobileControls({
                         width={140}
                         sx={{
                             color: '#454545ff',
-                            fontSize: '5dvh',
+                            fontSize: '4dvh',
                             zIndex: 100010,
 
                         }}
@@ -61,6 +62,7 @@ export default function MobileControls({
                 updateConfig={updateConfig}
                 uiState={uiState}
                 updateUIState={updateUIState}
+                presets={presets}
             />
         </Box>
     );

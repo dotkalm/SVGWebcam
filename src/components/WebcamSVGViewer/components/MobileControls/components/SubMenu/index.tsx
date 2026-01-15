@@ -75,6 +75,9 @@ export default function Submenu({ config, updateConfig }: Pick<TConfigProps, 'co
                         >
                             <Typography
                                 variant="caption"
+                                sx={{
+                                    fontSize: '.7em',
+                                }}
                             >
                                 {item}
                             </Typography>
