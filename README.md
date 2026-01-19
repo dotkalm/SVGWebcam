@@ -1,3 +1,35 @@
+<h1 style="font-size: '42px'">
+  SVG Webcam
+</h1>
+<table width="100%">
+<tr>
+  <td width="200px">
+    <img width="200px" height="200px" alt="IMG_9312" src="https://github.com/user-attachments/assets/e1dd0ea1-c005-41c1-ae84-2d86efe7a646" />
+  </td>
+    <td width="200px">
+    <img width="200px" height="200px" alt="IMG_9312" src="https://github.com/user-attachments/assets/99923f1e-9d16-4763-a763-be3e90618a03" />
+  </td>
+    <td width="200px">
+    <img width="200px" height="200px" alt="IMG_9312" src="https://github.com/user-attachments/assets/ef6037d0-866e-4496-bd2a-559197eba522" />
+  </td>
+
+</tr>
+  <tr>
+  <td width="200px">
+    screen recording
+  </td>
+  <td width="200px">
+    PNG Download
+  </td>
+      <td width="200px">
+    SVG Download
+  </td>
+</tr>
+
+</table>
+
+
+
 SVG Webcam - view at https://s-v-g.xyz
 a novel approach to webcam, using webgl2 to process video frames and rendering svg as animation frames
 
@@ -46,4 +78,14 @@ The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` wh
 <img width="735" height="606" alt="Screenshot 2025-11-20 at 2 18 15 PM" src="https://github.com/user-attachments/assets/b2225c8f-0dd9-45d2-8280-1dcf1f8cd786" />
 <img width="1215" height="791" alt="Screenshot 2025-11-20 at 12 53 28 PM" src="https://github.com/user-attachments/assets/2be0fc74-c233-420e-9c3c-d7f418a24c63" />
 <img width="1595" height="965" alt="Screenshot 2025-11-18 at 11 13 24 PM" src="https://github.com/user-attachments/assets/d790fa38-3f8c-4e76-9ccf-8637b733e80b" />
+
+
+
+
+
+
+
+
+
+
 
