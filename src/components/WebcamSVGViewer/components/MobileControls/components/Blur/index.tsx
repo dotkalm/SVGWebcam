@@ -214,6 +214,8 @@ export default function Blur({
                                     startAngle={0}
                                     endAngle={360}
                                     value={motionBlurAngle.value}
+                                    valueMin={0}
+                                    valueMax={360}
                                 >
                                     <GaugeReferenceArc />
                                     <GaugePointer />
