@@ -24,11 +24,11 @@ export default function BottomRow({
             sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
+                alignContent: 'center',
                 flexDirection: 'row',
                 width: '100%',
                 height: '5dvh',
-                px: '4dvw',
                 gap: 1,
             }}
         >
@@ -38,7 +38,7 @@ export default function BottomRow({
                     flexDirection: 'row',
                     alignContent: 'center',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     height: '5dvh',
                     flex: '1 1 25%',
                     maxWidth: '25%',

@@ -101,7 +101,12 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                         flexDirection: 'row',
                         paddingLeft: '1dvw',
                         width: '100%',
+                        '& .MuiFormControlLabel-root': {
+                            marginLeft: '0 !important',
+                            marginRight: '0 !important',
+                        },
                         '& .MuiFormControlLabel-label': {
+                            paddingLeft: '2dvw',
                             fontSize: '.8em !important',
                         }
                     }}

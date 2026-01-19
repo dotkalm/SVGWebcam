@@ -27,12 +27,13 @@ export default function Fill({
     return (
         <Box
             sx={{
-                width: '98dvw',
+                width: '100dvw',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'flex-start',
+                justifyContent: 'center',
+                paddingX: '2dvw',
             }}
         >
             {Object.keys(configs).map((label: string) => {
@@ -51,8 +52,9 @@ export default function Fill({
                             width: '100%',
                             display: 'flex',
                             flexDirection: 'column',
-                            alignItems: 'flex-end',
-                            px: '4dvw',
+                            alignItems: 'center',
+                            alignContent: 'center',
+                            justifyContent: 'center',
                         }}
                     >
                         <Box
@@ -62,7 +64,7 @@ export default function Fill({
                                 flexDirection: 'row',
                                 alignContent: 'flex-end',
                                 alignItems: 'center',
-                                justifyContent: 'space-around',
+                                justifyContent: 'space-between',
                                 gap: 2,
                             }}
                         >
@@ -94,10 +96,10 @@ export default function Fill({
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
+                    alignContent: 'center',
                     flexDirection: 'row',
                     width: '100%',
-                    px: '4dvw',
                 }}
             >
                 <Box
@@ -106,8 +108,11 @@ export default function Fill({
                         alignItems: 'center',
                         justifyContent: 'flex-start',
                         flexDirection: 'row',
-                        paddingLeft: '1dvw',
                         width: '50%',
+                        '& .MuiFormControlLabel-root': {
+                            marginLeft: '0 !important',
+                            marginRight: '0 !important',
+                        },
                         '& .MuiFormControlLabel-label': {
                             fontSize: '.8em !important',
                         }
@@ -138,8 +143,11 @@ export default function Fill({
                             alignItems: 'center',
                             justifyContent: 'flex-start',
                             flexDirection: 'row',
-                            paddingLeft: '1dvw',
                             width: '100%',
+                        '& .MuiFormControlLabel-root': {
+                            marginLeft: '0 !important',
+                            marginRight: '0 !important',
+                        },
                             '& .MuiFormControlLabel-label': {
                                 fontSize: '.8em !important',
                             }
