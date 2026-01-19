@@ -33,7 +33,7 @@ export default function Fill({
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingX: '2dvw',
+                paddingX: '4dvw',
             }}
         >
             {Object.keys(configs).map((label: string) => {

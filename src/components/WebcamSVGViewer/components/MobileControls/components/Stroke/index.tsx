@@ -19,13 +19,15 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
     return (
         <Box
             sx={{
-                width: '98dvw',
+                width: '100dvw',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'flex-start',
+                justifyContent: 'center',
+                alignContent: 'center',
                 gap: 1,
+                paddingX: '4dvw',
             }}
         >
             {Object.keys(configs).map((label: string) => {
@@ -45,7 +47,6 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'flex-end',
-                            px: '4dvw',
                         }}
                     >
                         <Box
@@ -55,7 +56,7 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                                 flexDirection: 'row',
                                 alignContent: 'flex-end',
                                 alignItems: 'center',
-                                justifyContent: 'space-around',
+                                justifyContent: 'space-between',
                                 gap: 2,
                             }}
                         >
@@ -87,19 +88,18 @@ export default function Stroke({ configs, strokeColor }: TStrokeProps) {
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
+                    alignContent: 'center',
                     flexDirection: 'row',
                     width: '100%',
-                    px: '4dvw',
                 }}
             >
                 <Box
                     sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'flex-start',
+                        justifyContent: 'space-between',
                         flexDirection: 'row',
-                        paddingLeft: '1dvw',
                         width: '100%',
                         '& .MuiFormControlLabel-root': {
                             marginLeft: '0 !important',
