@@ -120,7 +120,7 @@ export enum MenuItem {
 export enum SubMenuItemBlur {
   GAUSSIAN = 'Gaussian',
   MOTION = 'Motion',
-  BOKEH = 'Bokeh',
+  BOKEH = 'Lens',
 }
 
 export enum SubMenuItem {
