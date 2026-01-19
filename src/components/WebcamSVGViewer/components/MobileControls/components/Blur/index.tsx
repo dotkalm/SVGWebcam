@@ -64,10 +64,7 @@ export default function Blur({
         const deltaX = clientX - centerX;
         const deltaY = clientY - centerY;
         
-        // Calculate angle in degrees (0° at top, clockwise)
         let angle = Math.atan2(deltaX, -deltaY) * (180 / Math.PI);
-        
-        // Normalize to 0-360
         if (angle < 0) {
             angle += 360;
         }
@@ -101,6 +98,7 @@ export default function Blur({
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
+                    px: '4dvw',
             }}
         >
             <Box
@@ -111,9 +109,7 @@ export default function Blur({
                     alignContent: 'center',
                     flexDirection: 'row',
                     width: '100%',
-                    px: '4dvw',
-                    gap: 2,
-                    mb: 2,
+                    mb: 1,
                 }}
             >
                 <Box
@@ -122,9 +118,17 @@ export default function Blur({
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
+                        '& .MuiFormControlLabel-root': {
+                            marginLeft: '0 !important',
+                            marginRight: '0 !important',
+                        },
                         '& .MuiFormControlLabel-label': {
+                            paddingLeft: .5,
                             fontSize: '.8em !important',
-                        }
+                            marginLeft: '0 !important',
+                            marginRight: '0 !important',
+                        },
+                        flex: 2.5,
                     }}
                 >
                     <FormControlLabel
@@ -141,45 +145,102 @@ export default function Blur({
                 {(!!motionBlurAngle && blurMode === SubMenuItemBlur.MOTION) && (
                     <Box
                         sx={{
+                            flex: 5,
+                            width: '100%',
                             display: 'flex',
-                            flexDirection: 'column',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignContent: 'center',
                             alignItems: 'center',
-                            gap: 0.5,
+                            gap: .5,
                         }}
                     >
-                        <Typography 
-                            variant="caption" 
-                            color="text.secondary"
-                            sx={{ fontSize: '.7em', mb: -1 }}
-                        >
-                            Angle: {Math.round(motionBlurAngle.value)}°
-                        </Typography>
                         <Box
-                            ref={gaugeRef}
-                            onPointerDown={handlePointerDown}
-                            onPointerMove={handlePointerMove}
-                            onPointerUp={handlePointerUp}
                             sx={{
-                                cursor: 'pointer',
-                                touchAction: 'none',
-                                '& .MuiGauge-referenceArc': {
-                                    fill: theme.palette.colors.border,
-                                }
+                                flex: 5,
+                                width: '100%',
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignContent: 'flex-end',
+                                alignItems: 'center',
+                                justifyContent: 'space-around',
                             }}
                         >
-                            <GaugeContainer
-                                width={100}
-                                height={100}
-                                startAngle={0}
-                                endAngle={360}
-                                value={motionBlurAngle.value}
+                            <Box
+                                sx={{
+                                    ...sliderContainer(theme),
+                                    width: '100%',
+                                }}
                             >
-                                <GaugeReferenceArc />
-                                <GaugePointer />
-                            </GaugeContainer>
+                                <Slider
+                                    value={motionBlurAngle.value}
+                                    onChange={(_, value) => motionBlurAngle.changeHandler(value as number)}
+                                    min={0}
+                                    max={360}
+                                    step={1}
+                                    size='small'
+                                    sx={sliderStyles(theme)}
+                                    valueLabelDisplay="auto"
+                                    valueLabelFormat={(value) => `${Math.round(value)}°`}
+                                    aria-label="Motion blur angle"
+                                />
+                            </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                flex: 1,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                width: '100%',
+                            }}
+                        >
+                            <Box
+                                ref={gaugeRef}
+                                onPointerDown={handlePointerDown}
+                                onPointerMove={handlePointerMove}
+                                onPointerUp={handlePointerUp}
+                                sx={{
+                                    cursor: 'pointer',
+                                    touchAction: 'none',
+                                    '& .MuiGauge-referenceArc': {
+                                        fill: theme.palette.colors.border,
+                                    }
+                                }}
+                            >
+                                <GaugeContainer
+                                    width={60}
+                                    height={60}
+                                    startAngle={0}
+                                    endAngle={360}
+                                    value={motionBlurAngle.value}
+                                >
+                                    <GaugeReferenceArc />
+                                    <GaugePointer />
+                                </GaugeContainer>
+                            </Box>
                         </Box>
                     </Box>
                 )}
+            {(!!motionBlurAngle && blurMode === SubMenuItemBlur.MOTION) && (
+                <Box
+                    sx={{
+                    flex: .5,
+                    }}
+                >
+                <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    sx={{
+                        display: 'block',
+                        fontSize: '.8em',
+                        textAlign: 'right',    
+                    }}
+                >
+                    Angle {Math.round(motionBlurAngle.value)}°
+                </Typography>
+                </Box>
+            )}
             </Box>
             {Object.keys(configs).map((label: string) => {
                 const {
@@ -199,7 +260,7 @@ export default function Blur({
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'flex-end',
-                            px: '4dvw',
+                            justifyContent: 'space-between',
                         }}
                     >
                         <Box
@@ -209,10 +270,15 @@ export default function Blur({
                                 flexDirection: 'row',
                                 alignContent: 'flex-end',
                                 alignItems: 'center',
-                                justifyContent: 'space-around',
+                                justifyContent: 'space-between',
                             }}
                         >
-                            <Box sx={sliderContainer(theme)}>
+                            <Box 
+                            sx={{
+                                ...sliderContainer(theme),
+                                flex: 4,
+                            }}
+                            >
                                 <Slider
                                     max={max}
                                     min={min}
@@ -225,13 +291,24 @@ export default function Blur({
                                     valueLabelFormat={(value) => `${value.toFixed(3)}x`}
                                 />
                             </Box>
+                            <Box
+                                sx={{
+                                    flex: 2,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'flex-end',
+                                justifyContent: 'flex-end',
+                                alignContent: 'center',
+                                gap: 1,
+                                }}
+                            >
                             <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
                                 {label}
                             </Typography>
-                            <br />
                             <Typography variant="body1" color="text.secondary" sx={{ display: 'block', fontSize: '.8em' }}>
                                 {displayValue}
                             </Typography>
+                            </Box>
                         </Box>
                     </Box>
                 );

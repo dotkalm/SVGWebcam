@@ -22,14 +22,14 @@ export default function Zoom({
         >
             <Box
                 sx={{
-                    width: '70dvw',
-                    height: '5dvh',
+                    width: '85dvw',
+                    height: '2dvh',
                     backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     borderRadius: '50px',
                     borderColor: theme.palette.colors.border,
                     borderWidth: '.1em',
                     borderStyle: 'solid',
-                    p: 2,
+                    p: 1.5,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -68,7 +68,15 @@ export default function Zoom({
                     }}
                 />
             </Box>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 0.25, display: 'block' }}>
+            <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{
+                    mb: 0.25,
+                    display: 'block',
+                    fontSize: '.8rem',
+                }}
+            >
                 Camera Zoom: {config.cameraZoom?.toFixed(1)}x
             </Typography>
         </Box>

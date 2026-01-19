@@ -257,7 +257,7 @@ export default function Controls({ config, updateConfig, uiState, updateUIState,
                 && (
                     <Blur
                         configs={{
-                            'Gaussian Blur Amount': {
+                            'Amount': {
                                 value: config.gaussianBlurAmount,
                                 min: 0,
                                 max: 10,
@@ -278,7 +278,7 @@ export default function Controls({ config, updateConfig, uiState, updateUIState,
                 && (
                     <Blur
                         configs={{
-                            'Motion Blur Amount': {
+                            'Amount': {
                                 value: config.motionBlurAmount,
                                 min: 0,
                                 max: 150,

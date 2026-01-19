@@ -42,10 +42,7 @@ export default function MobileDownload({
 
     const handleDownloadSVG = async () => {
         try {
-            console.log('SVG download started');
             const result = await downloadSVG(svgString, 'edge-detection.svg');
-            console.log('SVG download result:', result);
-            
             if (result.action === 'shared' && result.success) {
                 setSnackbar({ open: true, message: 'SVG saved successfully!', severity: 'success' });
             } else if (result.action === 'downloaded' && result.success) {
@@ -65,14 +62,14 @@ export default function MobileDownload({
             <Box
                 sx={{
                     width: '100%',
-                    paddingBottom: 2,
+                    paddingBottom: .5,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     alignContent: 'center',
                     px: 8,
                     gap: 8,
-                    height: '4dvh',
+                    height: '3dvh',
                 }}
             >
             <IconButton
