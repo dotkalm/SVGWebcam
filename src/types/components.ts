@@ -12,7 +12,7 @@ export interface LeftControlPanelProps {
   updateUIState: (updates: Partial<UIState>) => void;
   svgString: string;
   downloadSVG: (svg: string, filename: string) => void;
-  downloadPNG: (svg: string, filename: string, width: number, height: number) => void;
+  downloadPNG: (svg: string, filename: string, width: number, height: number) => Promise<{ action: 'shared' | 'downloaded' | 'cancelled'; success: boolean }>;
 }
 
 export type TSliderProps = Pick<LeftControlPanelProps, 'config' | 'updateConfig'>;
