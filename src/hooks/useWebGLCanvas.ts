@@ -28,6 +28,7 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
   motionBlurAngle = 0,
   gaussianBlurAmount = 1.0,
   useBlur = true,
+  facingMode = 'user',
 }) => {
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programsRef = useRef<TWebGLPrograms>({});
@@ -68,7 +69,8 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
           useBlur ? motionBlurAmount : 0,
           motionBlurAngle,
           useBlur ? gaussianBlurAmount : 0,
-          useBlur
+          useBlur,
+          facingMode
         );
       }
       animationId = requestAnimationFrame(render);
@@ -80,7 +82,7 @@ export const useWebGLCanvas: TUseWebGLCanvas = ({
       cleanupWebGL(gl, programsRef.current, framebuffersRef.current, texturesRef.current);
       glRef.current = null;
     };
-  }, [canvasRef, videoRef, isStreaming, lowThreshold, highThreshold, useMotionBlur, aperture, motionBlurAmount, motionBlurAngle, gaussianBlurAmount, useBlur]);
+  }, [canvasRef, videoRef, isStreaming, lowThreshold, highThreshold, useMotionBlur, aperture, motionBlurAmount, motionBlurAngle, gaussianBlurAmount, useBlur, facingMode]);
 
   return {
     texturesRef,

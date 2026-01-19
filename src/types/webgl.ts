@@ -66,6 +66,7 @@ export interface TUseEdgeDetectionOptions {
   motionBlurAngle?: number;
   gaussianBlurAmount?: number;
   useBlur: boolean;
+  facingMode?: 'user' | 'environment';
 }
 
 export interface TUseWebcamOptions {

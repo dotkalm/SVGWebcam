@@ -44,12 +44,10 @@ export default function WebcamSVGViewer() {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [presetName, setPresetName] = useState('');
   
-  // Helper to update config
   const updateConfig = (updates: Partial<ViewerConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }));
   };
   
-  // Helper to update UI state
   const updateUIState = (updates: Partial<UIState>) => {
     setUIState(prev => ({ ...prev, ...updates }));
   };
@@ -118,6 +116,7 @@ export default function WebcamSVGViewer() {
     aperture: config.aperture,
     blurMode: config.blurMode,
     canvasRef,
+    facingMode: config.facingMode,
     gaussianBlurAmount: config.gaussianBlurAmount,
     highThreshold: config.highThreshold,
     isStreaming,

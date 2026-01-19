@@ -16,6 +16,7 @@ export const processFrame: TProcessFrame = (
   motionBlurAngle = 0,
   gaussianBlurAmount = 1.0,
   useBlur = true,
+  facingMode = 'user',
 ) => {
   const width = video.videoWidth;
   const height = video.videoHeight;
@@ -26,8 +27,12 @@ export const processFrame: TProcessFrame = (
   tempCanvas.height = height;
   const tempCtx = tempCanvas.getContext('2d')!;
   tempCtx.save();
-  tempCtx.translate(width, 0);
-  tempCtx.scale(-1, 1);
+  
+  // Only mirror for front-facing camera (user mode)
+  if (facingMode === 'user') {
+    tempCtx.translate(width, 0);
+    tempCtx.scale(-1, 1);
+  }
   tempCtx.drawImage(video, 0, 0, width, height);
   tempCtx.restore();
 
