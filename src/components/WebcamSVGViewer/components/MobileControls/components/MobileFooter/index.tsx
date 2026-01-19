@@ -1,8 +1,11 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
+import IconButton  from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Attribution';
 import type { TMobileFooterProps } from '@/types';
 import Zoom from '../Zoom';
 import MobileDownload from '../MobileDownload';
+import { Typography } from '@mui/material';
 
 export default function MobileFooter({
     config,
@@ -35,6 +38,40 @@ export default function MobileFooter({
                 downloadPNG={downloadPNG}
                 svgString={svgString}
             />
+            <IconButton
+                aria-label='info - about'
+                href="https://joelholmberg.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 6,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    width: '10dvw',
+                    height: '10dvw',
+                    gap: .15,
+                }}
+            >
+                <InfoIcon
+                    sx={{
+                        color: "gray",
+                    }}
+                />
+                <Typography
+                sx={{
+                    fontSize: '.3rem',
+                    textAlign: 'left',
+                }}
+                >
+                    Joel Holmberg
+                    2026
+                </Typography>
+            </IconButton>
         </Box >
     );
 }
