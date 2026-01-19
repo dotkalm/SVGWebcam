@@ -40,6 +40,26 @@ export default function MobileDownload({
         }
     };
 
+    const handleDownloadSVG = async () => {
+        try {
+            console.log('SVG download started');
+            const result = await downloadSVG(svgString, 'edge-detection.svg');
+            console.log('SVG download result:', result);
+            
+            if (result.action === 'shared' && result.success) {
+                setSnackbar({ open: true, message: 'SVG saved successfully!', severity: 'success' });
+            } else if (result.action === 'downloaded' && result.success) {
+                setSnackbar({ open: true, message: 'SVG downloaded!', severity: 'success' });
+            } else if (result.action === 'cancelled') {
+                console.log('SVG download cancelled');
+                // Don't show anything for cancelled
+            }
+        } catch (error) {
+            console.error('SVG download error:', error);
+            setSnackbar({ open: true, message: 'Failed to save SVG', severity: 'error' });
+        }
+    };
+
     return (
         <Fragment>
             <Box
@@ -82,7 +102,7 @@ export default function MobileDownload({
                 <FileDownloadIcon sx={{ color: "black" }} />
             </IconButton>
             <IconButton
-                onClick={() => downloadSVG(svgString, 'edge-detection.svg')}
+                onClick={handleDownloadSVG}
                 aria-label='download SVG'
                 sx={{
                     width: '40%',

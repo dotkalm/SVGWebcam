@@ -11,7 +11,7 @@ export interface LeftControlPanelProps {
   uiState: UIState;
   updateUIState: (updates: Partial<UIState>) => void;
   svgString: string;
-  downloadSVG: (svg: string, filename: string) => void;
+  downloadSVG: (svg: string, filename: string) => Promise<{ action: 'shared' | 'downloaded' | 'cancelled'; success: boolean }>;
   downloadPNG: (svg: string, filename: string, width: number, height: number) => Promise<{ action: 'shared' | 'downloaded' | 'cancelled'; success: boolean }>;
 }
 
