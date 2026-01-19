@@ -288,11 +288,17 @@ export function RightControlPanel(props: RightControlPanelProps) {
             {/* Save Preset */}
             <Box sx={{ mb: 2 }}>
               <input
+                inputMode="text"
                 type="text"
                 placeholder="Preset name..."
                 value={presetName}
                 onChange={(e) => setPresetName(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && savePreset()}
+                onKeyDown={(e) => e.key === 'Enter' && savePreset()}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
+                data-form-type="other"
                 style={{
                   width: '100%',
                   padding: '8px 12px',

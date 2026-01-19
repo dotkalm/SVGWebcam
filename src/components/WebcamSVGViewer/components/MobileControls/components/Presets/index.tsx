@@ -38,11 +38,18 @@ export default function Presets({
                 paddingX: '6dvw',
             }}>
                 <Input
+                    inputMode="text"
                     type="text"
                     placeholder="Preset name..."
                     value={presetName}
                     onChange={(e) => setPresetName(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && savePreset()}
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    inputProps={{
+                        'data-form-type': 'other',
+                    }}
                     sx={{
                         flex: 20,
                         padding: 1,
