@@ -69,7 +69,7 @@ The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` wh
 </tr>
 </table>
 
-# What can you do? 👇
+## What can you do? 👇
 
 <table>
 <tr>
@@ -108,23 +108,34 @@ The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` wh
 
 </td>
 
-  <td width="33%" valign="top">
-   download as .png 
-  </td>
+<td width="33%" valign="top">
+ 
+  ### download as .png 
+  <img src="https://github.com/user-attachments/assets/ca143d5c-ec05-4c25-a205-2968a7393558" width="70%" alt="download png" />
+
+</td>
 </tr>
 <tr>
 
-  <td width="33%" valign="top">
-    toggle facing mode on mobile devices
-  </td>
+<td width="33%" valign="top">
+  
+### toggle facing mode on mobile devices
+<img src="https://github.com/user-attachments/assets/b3276cb3-f6f7-41fc-90e1-972dd0c50489" width="60%" />
+  
+</td>
 
-  <td width="33%" valign="top">
-    adjust line weights
-  </td>
+<td width="33%" valign="top">
+  
+### zoom on mobile using both either facing mode camera
+<img src="https://github.com/user-attachments/assets/a25dc5b1-9dfc-4ee8-8b79-95441d218428" width="40%" />
+<img src="https://github.com/user-attachments/assets/ff2f4e0d-8e59-48a9-8704-cb5ddfd0ba71"  width="40%"/>
 
-  <td width="33%" valign="top">
-    adjust line weights
-  </td>
+</td>
+<td width="33%" valign="top">
+  
+### use fills, adjust fill color and opacity
+<img src="https://github.com/user-attachments/assets/6b8556d1-4b85-48bf-8085-d1e60ec8367c" width="60%" />
+</td>
 </tr>
 </table>
 
@@ -150,11 +161,6 @@ The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` wh
 
 </tr>
 </table>
-
-
-
-
-
 
 
 
