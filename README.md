@@ -107,9 +107,24 @@ The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` wh
 <img width="70%" alt="Screenshot 2025-11-20 at 1 52 18 PM" src="https://github.com/user-attachments/assets/35f774f6-acd0-4b96-8153-245854d2e2c9" />
 
 </td>
-<td width="33%" valign="top">
 
-</td>
+  <td width="33%" valign="top">
+   download as .png 
+  </td>
+</tr>
+<tr>
+
+  <td width="33%" valign="top">
+    toggle facing mode on mobile devices
+  </td>
+
+  <td width="33%" valign="top">
+    adjust line weights
+  </td>
+
+  <td width="33%" valign="top">
+    adjust line weights
+  </td>
 </tr>
 </table>
 

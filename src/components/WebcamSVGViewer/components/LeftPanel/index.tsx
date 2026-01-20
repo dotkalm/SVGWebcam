@@ -341,24 +341,44 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
 
           {/* Download SVG Button (Outline only) */}
           {sectionType === 'outlinePaths' && (
-            <button
-              onClick={() => downloadSVG(svgString, 'edge-detection.svg')}
-              style={{
-                width: '100%',
-                padding: '12px',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                backgroundColor: '#9c27b0',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                marginTop: '8px',
-              }}
-            >
-              Download SVG
-            </button>
+            <>
+              <button
+                onClick={() => downloadSVG(svgString, 'edge-detection.svg')}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  backgroundColor: '#9c27b0',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  marginTop: '8px',
+                }}
+              >
+                Download SVG
+              </button>
+              <button
+                onClick={() => downloadPNG(svgString, 'edge-detection.png', window.innerWidth, window.innerHeight)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  backgroundColor: '#9c27b0',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  marginTop: '8px',
+                }}
+              >
+                Download PNG
+              </button>
+            </>
           )}
         </Collapse>
       </Box>
