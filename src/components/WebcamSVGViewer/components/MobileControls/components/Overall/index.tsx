@@ -189,7 +189,7 @@ export default function Overall({
                                     </Box>
                                     <SwapVertSharpIcon
                                         sx={{
-                                                fontSize: '1rem',
+                                            fontSize: '1rem',
                                             color: theme.palette.colors.activeBorder
                                         }}
                                     />
@@ -286,8 +286,9 @@ export default function Overall({
                             gridRow: '1 / 3',
                             display: 'flex',
                             flexDirection: 'column',
-                            alignItems: 'center',
+                            alignItems: 'flex-end',
                             justifyContent: 'flex-start',
+                            paddingRight: '.5dvw',
                         }}
                     >
                         <Box
@@ -299,7 +300,6 @@ export default function Overall({
                                 alignItems: 'center',
                                 width: '100%',
                                 justifyContent: 'space-between',
-                                paddingRight: '.5dvw',
                             }}
                         >
                             <Box
@@ -324,9 +324,8 @@ export default function Overall({
                                 flex: 2,
                                 display: 'flex',
                                 flexDirection: 'row',
-                                alignContent: 'center',
-                                alignItems: 'center',
-                                width: '100%',
+                                alignContent: 'flex-end',
+                                alignItems: 'flex-end',
                                 justifyContent: 'flex-end',
                             }}
                         >
@@ -339,6 +338,8 @@ export default function Overall({
                                     alignItems: 'center',
                                     width: '100%',
                                     justifyContent: 'flex-end',
+                                    border: `1px solid ${theme.palette.colors.border}`,
+                                    borderRadius: '4px',
                                 }}
                             >
 
