@@ -22,6 +22,7 @@ export const DEFAULT_CONFIG: ViewerConfig = {
   backgroundWiggle: false,
   blurMode: SubMenuItemBlur.GAUSSIAN,
   cameraZoom: 1,
+  canvasColor: '#ffffff',
   enableBackground: true,
   enableOutlinePaths: true,
   facingMode: 'user',

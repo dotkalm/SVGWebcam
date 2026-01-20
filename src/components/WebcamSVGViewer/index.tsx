@@ -140,7 +140,7 @@ export default function WebcamSVGViewer() {
     setSvgOutlinePaths,
   });
 
-  const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths, uiState.layerOrder);
+  const svgString = createSVGString(width, height, svgBackground, svgOutlinePaths, uiState.layerOrder, config.canvasColor);
 
   return (
     <Box

@@ -19,6 +19,7 @@ export default function MobileControls({
             sx={{
                     position: 'absolute',
                     zIndex: 10000,
+                    background: 'rgba(255, 255, 255, .9)',
                     backdropFilter: 'blur(8px)',
             }}
         >

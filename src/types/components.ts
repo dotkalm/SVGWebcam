@@ -86,6 +86,9 @@ export interface ViewerConfig {
   outlinePathsUseDashArray: boolean;
   outlinePathsDashSize: number;
 
+  // Canvas settings
+  canvasColor: string;
+
   // menu items
   activeMenuItem?: MenuItem;
   activeSubMenuItem?: SubMenuItem;
@@ -153,6 +156,10 @@ export type TOverallProps = {
   backgroundEnabled: {
     value: boolean;
     changeHandler: () => void;
+  };
+  canvasColor: {
+    value: string;
+    changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   };
   configs: TConfigKey;
   outlineEnabled: {

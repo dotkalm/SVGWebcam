@@ -40,7 +40,8 @@ export const createSVGString = (
   height: number,
   svgBackground: string,
   svgOutlinePaths: string,
-  layerOrder: ('background' | 'outlinePaths')[] = ['background', 'outlinePaths']
+  layerOrder: ('background' | 'outlinePaths')[] = ['background', 'outlinePaths'],
+  canvasColor?: string
 ): string => {
   const layers: Record<string, string> = {
     background: svgBackground,
@@ -49,8 +50,10 @@ export const createSVGString = (
   
   const orderedLayers = layerOrder.map(layerKey => layers[layerKey]).join('\n');
   
+  const canvasBackground = canvasColor ? `  <rect width="${width}" height="${height}" fill="${canvasColor}"/>\n` : '';
+  
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
-${orderedLayers}
+${canvasBackground}${orderedLayers}
 </svg>`;
 };
