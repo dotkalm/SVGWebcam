@@ -35,6 +35,10 @@ export default function Controls({ config, updateConfig, uiState, updateUIState,
                         value: config.enableBackground,
                         changeHandler: () => updateConfig({ enableBackground: !config.enableBackground }),
                     }}
+                    canvasColor={{
+                        value: config.canvasColor,
+                        changeHandler: (e) => updateConfig({ canvasColor: e.target.value }),
+                    }}
                     configs={{
                         'High Threshold': {
                             value: config.highThreshold,

@@ -24,7 +24,9 @@ export default function MobileFooter({
                 right: 0,
                 zIndex: 110000,
                 width: '100%',
-                paddingBottom: 1,
+                paddingY: 1,
+                background: 'rgba(255, 255, 255, .9)',
+                backdropFilter: 'blur(8px)',
             }}
         >
             <Zoom

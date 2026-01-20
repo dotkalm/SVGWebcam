@@ -540,6 +540,19 @@ export function LeftControlPanel(props: LeftControlPanelProps) {
             </Box>
           </Collapse>
 
+          {/* Canvas Color Section */}
+          <Box sx={{ mt: 2, mb: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="caption" color="text.secondary">
+              Canvas Color
+            </Typography>
+            <input
+              type="color"
+              value={config.canvasColor}
+              onChange={(e) => updateConfig({ canvasColor: e.target.value })}
+              style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '4px' }}
+            />
+          </Box>
+
           {/* Edge Detection Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>

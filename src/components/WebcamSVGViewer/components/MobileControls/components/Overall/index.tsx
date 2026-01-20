@@ -18,6 +18,7 @@ export default function Overall({
     outlineEnabled,
     backgroundEnabled,
     swapOrder,
+    canvasColor,
 }: TOverallProps) {
     const theme = useTheme();
     const enableBackgroundLabel = !backgroundEnabled.value ? 'Background Off' : 'Background On';
@@ -142,7 +143,7 @@ export default function Overall({
                                 <Typography
                                     sx={{
                                         flex: 1,
-                                        fontSize: '1rem',
+                                        fontSize: '.75rem',
                                         color: theme.palette.colors.activeBorder,
                                         marginLeft: '2dvw',
                                     }}
@@ -179,14 +180,19 @@ export default function Overall({
                                             sx={{
                                                 flex: 1,
                                                 textAlign: 'right',
-                                                fontSize: '1rem',
+                                                fontSize: '.75rem',
                                                 color: theme.palette.colors.activeBorder,
                                             }}
                                         >
                                             Layer Order
                                         </Typography>
                                     </Box>
-                                    <SwapVertSharpIcon sx={{ color: theme.palette.colors.activeBorder }} />
+                                    <SwapVertSharpIcon
+                                        sx={{
+                                            fontSize: '1rem',
+                                            color: theme.palette.colors.activeBorder
+                                        }}
+                                    />
                                 </IconButton>
                             </Box>
                         </Box>
@@ -205,14 +211,14 @@ export default function Overall({
                                     position: 'absolute',
                                     bottom: 0,
                                     right: 0,
-                                    width: '120px',
+                                    width: '100px',
                                     borderBottom: `1px solid ${theme.palette.colors.border}`,
                                 },
                                 '& .MuiFormControlLabel-root': {
                                     margin: '0',
                                 },
                                 '& .MuiFormControlLabel-label': {
-                                    fontSize: '.95em !important',
+                                    fontSize: '.65em !important',
                                     paddingLeft: '1dvw',
                                 }
                             }}
@@ -230,6 +236,7 @@ export default function Overall({
                             <Typography
                                 sx={{
                                     textAlign: 'right',
+                                    fontSize: '.65em !important',
                                 }}
                             >
                                 {labels[swapOrder.value[0]]}
@@ -244,8 +251,11 @@ export default function Overall({
                                 paddingTop: '.5dvw',
                                 paddingLeft: '2dvw',
                                 width: '100%',
+                                '& .MuiFormControlLabel-root': {
+                                    margin: '0',
+                                },
                                 '& .MuiFormControlLabel-label': {
-                                    fontSize: '.95em !important',
+                                    fontSize: '.65em !important',
                                     paddingLeft: '1dvw',
                                 }
                             }}
@@ -263,6 +273,7 @@ export default function Overall({
                             <Typography
                                 sx={{
                                     textAlign: 'right',
+                                    fontSize: '.65em !important',
                                 }}
                             >
                                 {labels[swapOrder.value[1]]}
@@ -275,8 +286,9 @@ export default function Overall({
                             gridRow: '1 / 3',
                             display: 'flex',
                             flexDirection: 'column',
-                            alignItems: 'center',
+                            alignItems: 'flex-end',
                             justifyContent: 'flex-start',
+                            paddingRight: '.5dvw',
                         }}
                     >
                         <Box
@@ -288,7 +300,6 @@ export default function Overall({
                                 alignItems: 'center',
                                 width: '100%',
                                 justifyContent: 'space-between',
-                                paddingRight: '.5dvw',
                             }}
                         >
                             <Box
@@ -300,7 +311,7 @@ export default function Overall({
                                     sx={{
                                         flex: 1,
                                         textAlign: 'right',
-                                        fontSize: '1rem',
+                                        fontSize: '.75rem',
                                         color: theme.palette.colors.activeBorder,
                                     }}
                                 >
@@ -313,9 +324,8 @@ export default function Overall({
                                 flex: 2,
                                 display: 'flex',
                                 flexDirection: 'row',
-                                alignContent: 'center',
-                                alignItems: 'center',
-                                width: '100%',
+                                alignContent: 'flex-end',
+                                alignItems: 'flex-end',
                                 justifyContent: 'flex-end',
                             }}
                         >
@@ -328,13 +338,15 @@ export default function Overall({
                                     alignItems: 'center',
                                     width: '100%',
                                     justifyContent: 'flex-end',
+                                    border: `1px solid ${theme.palette.colors.border}`,
+                                    borderRadius: '4px',
                                 }}
                             >
 
                                 <input
                                     type="color"
-                                    value={''}
-                                    onChange={() => { }}
+                                    value={canvasColor.value}
+                                    onChange={canvasColor.changeHandler}
                                     style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '8px', background: 'none' }}
                                 />
                             </Box>
