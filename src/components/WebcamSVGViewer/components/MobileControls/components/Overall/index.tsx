@@ -104,24 +104,23 @@ export default function Overall({
                 })}
                 <Box
                     sx={{
-                        width: '100dvw',
-                        px: '4dvw',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
+                        width: '100%',
+                        display: 'grid',
+                        gridTemplateColumns: '2.5fr 1fr',
+                        gridTemplateRows: 'auto auto auto',
+                        alignItems: 'start',
                         justifyContent: 'center',
                         paddingBottom: 1,
-
                     }}
                 >
                     <Box
                         sx={{
-                            flex: 1,
+                            gridColumn: '1',
+                            gridRow: '1',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            paddingLeft: '2dvw',
                         }}
                     >
                         <Box
@@ -136,29 +135,29 @@ export default function Overall({
                             }}
                         >
                             <Box
-                                    sx={{
-                                        flex: 1,
-                                    }}
+                                sx={{
+                                    flex: 1,
+                                }}
                             >
-                                     <Typography
+                                <Typography
                                     sx={{
                                         flex: 1,
-                                        textAlign: 'left',
                                         fontSize: '1rem',
-                                        color: theme.palette.colors.activeBorder,    
+                                        color: theme.palette.colors.activeBorder,
+                                        marginLeft: '2dvw',
                                     }}
                                 >
                                     Visibility
                                 </Typography>
                             </Box>
                             <Box
-                                    sx={{
-                                        flex: 1,
-                                        width: '100%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
+                                sx={{
+                                    flex: 1,
+                                    width: '100%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
                             >
                                 <IconButton
                                     sx={{
@@ -171,22 +170,22 @@ export default function Overall({
                                     }}
                                     onClick={swapOrder.changeHandler}
                                 >
-                                <Box
-                                    sx={{
-                                        flex: 1,
-                                    }}
-                                >
-                                <Typography
-                                    sx={{
-                                        flex: 1,
-                                        textAlign: 'right',
-                                        fontSize: '1rem',
-                                        color: theme.palette.colors.activeBorder,    
-                                    }}
-                                >
-                                    Layer Order
-                                </Typography>
-                                </Box>
+                                    <Box
+                                        sx={{
+                                            flex: 1,
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                flex: 1,
+                                                textAlign: 'right',
+                                                fontSize: '1rem',
+                                                color: theme.palette.colors.activeBorder,
+                                            }}
+                                        >
+                                            Layer Order
+                                        </Typography>
+                                    </Box>
                                     <SwapVertSharpIcon sx={{ color: theme.palette.colors.activeBorder }} />
                                 </IconButton>
                             </Box>
@@ -209,6 +208,9 @@ export default function Overall({
                                     width: '120px',
                                     borderBottom: `1px solid ${theme.palette.colors.border}`,
                                 },
+                                '& .MuiFormControlLabel-root': {
+                                    margin: '0',
+                                },
                                 '& .MuiFormControlLabel-label': {
                                     fontSize: '.95em !important',
                                     paddingLeft: '1dvw',
@@ -228,7 +230,6 @@ export default function Overall({
                             <Typography
                                 sx={{
                                     textAlign: 'right',
-                                    paddingRight: '1.5dvw',
                                 }}
                             >
                                 {labels[swapOrder.value[0]]}
@@ -262,11 +263,81 @@ export default function Overall({
                             <Typography
                                 sx={{
                                     textAlign: 'right',
-                                    paddingRight: '1.5dvw',
                                 }}
                             >
                                 {labels[swapOrder.value[1]]}
                             </Typography>
+                        </Box>
+                    </Box>
+                    <Box
+                        sx={{
+                            gridColumn: '2',
+                            gridRow: '1 / 3',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                                justifyContent: 'space-between',
+                                paddingRight: '.5dvw',
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        flex: 1,
+                                        textAlign: 'right',
+                                        fontSize: '1rem',
+                                        color: theme.palette.colors.activeBorder,
+                                    }}
+                                >
+                                    Canvas Color
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                flex: 2,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignContent: 'center',
+                                alignItems: 'center',
+                                width: '100%',
+                                justifyContent: 'flex-end',
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    justifyContent: 'flex-end',
+                                }}
+                            >
+
+                                <input
+                                    type="color"
+                                    value={''}
+                                    onChange={() => { }}
+                                    style={{ cursor: 'pointer', height: '24px', width: '48px', border: 'none', borderRadius: '8px', background: 'none' }}
+                                />
+                            </Box>
                         </Box>
                     </Box>
                 </Box>

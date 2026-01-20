@@ -53,7 +53,7 @@ export default function TwoSliders({ configs }: TTwoSlidersProps) {
                                 flexDirection: 'row',
                                 alignContent: 'flex-end',
                                 alignItems: 'center',
-                                justifyContent: 'space-around',
+                                justifyContent: 'space-between',
                                 gap: 2,
                             }}
                         >
