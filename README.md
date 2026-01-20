@@ -41,35 +41,7 @@ I'm a visual artist with a painting background. I often use cnc tools like vinyl
 
 I wanted a vector-first image capture tool where I didn't need to open a photo in a graphics program in order to turn it into a vector file.
 
-## How it works
-
-`initWebGL.ts` compiles shaders and creates programs, textures, framebuffers.
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### The outline layer is made from 4 sequential passes to isolate the subject.
-
-1. Apply blur (gaussian, motion, or lens)
-2. Detect direction of edge
-3. Thin edge
-4. Apply thresholds 
-
-The `useWebGLCanvas` runs the shaders and returns the outputs in frame buffers as a ref.
-
-</td>
-<td width="50%" valign="top">
-
-### The background layer takes a shortcut and only applies the selected blur
-
-The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` where the edge data and user options are used to create SVG markup.
-
-</td>
-</tr>
-</table>
-
-## What can you do? 👇
+## Features
 
 <table>
 <tr>
@@ -139,6 +111,34 @@ The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` wh
 </tr>
 </table>
 
+
+## How it works
+
+`initWebGL.ts` compiles shaders and creates programs, textures, framebuffers.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### The outline layer is made from 4 sequential passes to isolate the subject.
+
+1. Apply blur (gaussian, motion, or lens)
+2. Detect direction of edge
+3. Thin edge
+4. Apply thresholds 
+
+The `useWebGLCanvas` runs the shaders and returns the outputs in frame buffers as a ref.
+
+</td>
+<td width="50%" valign="top">
+
+### The background layer takes a shortcut and only applies the selected blur
+
+The `useSVGGeneration` hook reads the frame buffers and calls `edgeDataToSVG` where the edge data and user options are used to create SVG markup.
+
+</td>
+</tr>
+</table>
 
 # More examples
 
