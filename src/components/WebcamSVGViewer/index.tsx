@@ -11,6 +11,7 @@ import { useGetWebcam } from '@/hooks/useGetWebcam';
 import { useSVGGeneration } from '@/hooks/useSVGGeneration';
 import { useWebGLCanvas } from '@/hooks/useWebGLCanvas';
 import MobileFooter from '@/components/WebcamSVGViewer/components/MobileControls/components/MobileFooter';
+import Attribution from './components/Attribution';
 import type {
   Preset,
   PresetSettings,
@@ -252,7 +253,7 @@ export default function WebcamSVGViewer() {
           dangerouslySetInnerHTML={{ __html: svgString }}
         />
       </Box>
-      {isPortrait && (
+      {isPortrait ? (
         <MobileFooter
           config={config}
           updateConfig={updateConfig}
@@ -261,7 +262,9 @@ export default function WebcamSVGViewer() {
           svgString={svgString}
         />
 
-      )}
+      ) :
+        <Attribution />
+      }
     </Box>
   );
 }

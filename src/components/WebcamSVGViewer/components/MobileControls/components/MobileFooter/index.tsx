@@ -2,10 +2,10 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import IconButton  from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Attribution';
+import Typography from '@mui/material/Typography';
 import type { TMobileFooterProps } from '@/types';
 import Zoom from '../Zoom';
 import MobileDownload from '../MobileDownload';
-import { Typography } from '@mui/material';
 
 export default function MobileFooter({
     config,
