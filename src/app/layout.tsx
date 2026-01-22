@@ -5,7 +5,7 @@ import LayoutWrapper from '../theme/LayoutWrapper';
 
 export const metadata: Metadata = {
   title: "SVG based Webcam",
-  description: "An SVG based webcam build with WebGL Shaders",
+  description: "Joel Holmberg 2026",
 };
 
 export default function RootLayout({
